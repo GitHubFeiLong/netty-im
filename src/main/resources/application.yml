@@ -1,0 +1,39 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /im
+
+logging:
+  level:
+    ROOT: INFO
+    com.feilong: DEBUG
+
+spring:
+  application:
+    name: netty-im
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/im?useUnicode=true&useSSL=false&allowMultiQueries=true&characterEncoding=utf8&serverTimezone=GMT%2B8&createDatabaseIfNotExist=true
+    username: root
+    password: l(=8gp_04h*&
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开启SQL日志
+    map-underscore-to-camel-case: true # 下划线转驼峰
+  global-config:
+    db-config:
+      id-type: auto # 主键策略
+      logic-delete-field: deleted # 逻辑删除字段
+      logic-delete-value: 1 # 删除值
+      logic-not-delete-value: 0 # 未删除值
+  mapper-locations: classpath:mapper/*.xml # XML映射文件位置
+
+
+im:
+  netty:
+    port: 8081
+    path: ${server.servlet.context-path}
+    boss-thread-count: 1
+    worker-thread-count: 4
