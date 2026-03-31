@@ -4,7 +4,7 @@ import com.feilong.im.config.NettyServerHandler;
 import com.feilong.im.config.TraceIdHandler;
 import com.feilong.im.context.CurrentTimeContext;
 import com.feilong.im.context.TraceIdContext;
-import com.feilong.im.service.IThreadService;
+import com.feilong.im.service.ThreadService;
 import com.feilong.im.util.CommonUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author cfl 2026/03/26
@@ -20,7 +22,7 @@ import java.util.concurrent.Executor;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ThreadServiceImpl implements IThreadService {
+public class ThreadServiceImpl implements ThreadService {
 
     private final Executor processLogicThreadPool;
     private final TraceIdHandler traceIdHandler;
@@ -34,6 +36,27 @@ public class ThreadServiceImpl implements IThreadService {
     public void execute(ChannelHandlerContext ctx, Runnable runnable) {
         Channel channel = ctx.channel();
         String traceId = CommonUtil.genSubThreadTraceId(channel);
+        // try (ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor()){
+        //     try {
+        //         // 设置TraceId
+        //         TraceIdContext.set(traceId);
+        //         // 设置当前请求时间
+        //         CurrentTimeContext.set();
+        //         // 提交任务
+        //         virtualExecutor.submit(runnable);
+        //     } catch (Exception e) {
+        //         log.error("异步执行出现异常");
+        //         NettyServerHandler.exceptionCaughtStatic(ctx, e);
+        //     } finally {
+        //         // 清除 channel 属性
+        //         traceIdHandler.handlerRemoved(ctx);
+        //         // 清理时间
+        //         CurrentTimeContext.remove();
+        //         // 清除TraceId
+        //         TraceIdContext.remove();
+        //     }
+        //
+        // }
         processLogicThreadPool.execute(() -> {
             try {
                 // 设置TraceId

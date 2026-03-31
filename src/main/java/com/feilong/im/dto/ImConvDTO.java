@@ -55,4 +55,24 @@ public class ImConvDTO implements Serializable {
      * 最后更新时间
      */
     private LocalDateTime updateTime;
+
+    /**
+     * 用户1信息
+     */
+    private ImUserDTO user1;
+
+    /**
+     * 用户2信息
+     */
+    private ImUserDTO user2;
+
+    /**
+     * 最后一条消息
+     */
+    private ImMessageDTO lastMsg;
+
+    /**
+     * 未读消息数
+     */
+    private Integer unreadCount;
 }

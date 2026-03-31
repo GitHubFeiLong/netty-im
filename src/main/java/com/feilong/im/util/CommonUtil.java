@@ -12,8 +12,6 @@ import java.util.Optional;
  */
 public class CommonUtil {
 
-
-
     /**
      * 根据是否是官方客服店铺生成店铺的IM昵称
      * @param isOwnOfficialShopId 是否是官方客服店铺ID，true-是；false-不是

@@ -13,5 +13,13 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="71c4c9f4-48aa-4ec1-a438-ecbf7447cc02">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

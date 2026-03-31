@@ -1,0 +1,213 @@
+package com.feilong.im.util;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * String工具类
+ * @author cfl
+ * @date 2025-04-01
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public class StringUtil {
+    //~fields
+    //==================================================================================================================
+    /**
+     * 定义SpringBuilder的初始容量
+     * @since 1.0
+     */
+    public static final int STRING_BUILDER_SIZE = 256;
+
+    //~methods
+    //==================================================================================================================
+    /**
+     * 判断字符串是null或者是空串
+     * @param str   需要判断的字符串
+     * @return      true：字符串是null或者是空串；false：字符串不是null也不是空串
+     */
+    public static boolean isEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    /**
+     * 判断字符串不是null也不是空串
+     * @param str   需要判断的字符串
+     * @return      true：字符串不是null且不是空串；false：字符串是null或者是空串
+     */
+    public static boolean isNotEmpty(String str) {
+        return !isEmpty(str);
+    }
+
+    /**
+     * 判断字符串是null或者是空白字符串
+     * @param str   需要判断的字符串
+     * @return      true：字符串是null或者是空白字符串；false：字符串不是null也不是空白字符串
+     */
+    public static boolean isBlank(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+
+    /**
+     * 判断字符串不是null也不是空白字符串，
+     * @param str   需要判断的字符串
+     * @return      true：字符串不是null且不是空白字符串；false：字符串是null或者是空白字符串
+     */
+    public static boolean isNotBlank(String str) {
+        return !isBlank(str);
+    }
+
+    /**
+     * 将{@code content} 从0开始，指定步长{@code step}查找下次{@code split}进行切割，最后将结果放在@{code result}中
+     * @param split 切割的字符
+     * @param content 被切割的内容
+     * @param step 步长，
+     * @return result
+     */
+    public static List<String> split(char split, String content, int step) {
+        if (content == null || content.isEmpty() || step <= 0) {
+            return new ArrayList<>(0);
+        }
+        List<String> result = new ArrayList<>();
+        split(split, content, 0, step, result);
+        return result;
+    }
+    /**
+     * 将{@code content} 从{@code startIndex}开始，指定步长{@code step}查找下次{@code split}进行切割，将每次分割后的结果放在@{code result}中
+     * @param split 切割字符
+     * @param content 文本内容
+     * @param startIndex 开始的下标 0
+     * @param step 下一次
+     * @param result 切割后的结果集
+     */
+    private static void split(char split, String content, int startIndex, int step , List<String> result) {
+        // 表明已到截取完成
+        if (startIndex >= content.length() - 1) {
+            return;
+        }
+        int endIndex = content.indexOf(split, startIndex + step);
+
+        String sub;
+
+        // 切割到最后了，直接返回
+        if (endIndex == -1) {
+            sub = content.substring(startIndex);
+            result.add(sub);
+            return;
+        }
+
+        sub = content.substring(startIndex, endIndex);
+        result.add(sub);
+        // 左闭右开，换行符不需要
+        split(split, content, endIndex + 1, step, result);
+    }
+
+    /**
+     * 切割字符串，每个子串最大都只有 step字符
+     * @param content   需要切割的字符串
+     * @param step      切割补偿
+     * @return  将字符串切割后存放的集合
+     */
+    public static List<String> split(String content, int step) {
+        if (content == null || content.isEmpty() || step <= 0) {
+            return new ArrayList<>(0);
+        }
+        int length = content.length();
+        int start = 0, end = 0, maxEndIndex = length - 1;
+
+        List<String> result = new ArrayList<>(length / step + 1);
+        while (end < maxEndIndex) {
+            // 加上步长
+            end += step;
+            end = Math.min(end, maxEndIndex);
+            String substring;
+            if(end >= maxEndIndex) {
+                // 截取到末尾
+                substring = content.substring(start);
+            } else {
+                substring = content.substring(start, end);
+            }
+
+            result.add(substring);
+
+            start = end;
+        }
+
+        return result;
+    }
+
+    /**
+     * 将{@code iterable}使用分隔符{@code separator}进行拼接
+     * @param iterable  实现Iterable接口得对象
+     * @param separator 分隔符
+     * @return  拼接后的字符串
+     */
+    public static <T> String join(Iterable<T> iterable, final String separator) {
+        return join(iterable.iterator(), separator);
+    }
+    /**
+     * 将{@code iterator}使用分隔符{@code separator}进行拼接
+     * @param iterator  迭代器，集合
+     * @param separator 分隔符
+     * @return  拼接后的字符串
+     */
+    public static <T> String join(Iterator<T> iterator, final String separator) {
+        // handle null, zero and one elements before building a buffer
+        if (iterator == null) {
+            return null;
+        }
+        if (!iterator.hasNext()) {
+            return "";
+        }
+        final Object first = iterator.next();
+        if (!iterator.hasNext()) {
+            return Objects.toString(first, "");
+        }
+
+        // two or more elements
+        final StringBuilder buf = new StringBuilder(STRING_BUILDER_SIZE);
+        if (first != null) {
+            buf.append(first);
+        }
+
+        while (iterator.hasNext()) {
+            if (separator != null) {
+                buf.append(separator);
+            }
+            final Object obj = iterator.next();
+            if (obj != null) {
+                buf.append(obj);
+            }
+        }
+        return buf.toString();
+    }
+
+    /**
+     * 将驼峰命名法的字符串转换为中横线命名法
+     *
+     * @param camelCaseStr 驼峰命名法的字符串
+     * @return 中横线命名法的字符串
+     */
+    public static String camelToKebab(String camelCaseStr) {
+        if (isBlank(camelCaseStr)) {
+            return camelCaseStr;
+        }
+
+        StringBuilder kebabCaseStr = new StringBuilder();
+        for (int i = 0; i < camelCaseStr.length(); i++) {
+            char c = camelCaseStr.charAt(i);
+            if (Character.isUpperCase(c)) {
+                if (i != 0) {
+                    kebabCaseStr.append('-');
+                }
+                kebabCaseStr.append(Character.toLowerCase(c));
+            } else {
+                kebabCaseStr.append(c);
+            }
+        }
+
+        return kebabCaseStr.toString();
+    }
+}

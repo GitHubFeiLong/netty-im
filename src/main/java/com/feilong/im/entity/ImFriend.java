@@ -13,18 +13,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * im会话表
- * </p>
- *
- * @author author
- * @since 2026-03-18
+ * @author cfl 2026/03/31
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("im_conv")
-public class ImConv implements Serializable {
+@TableName("im_friend")
+public class ImFriend implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -36,34 +31,16 @@ public class ImConv implements Serializable {
     private Long id;
 
     /**
-     * 会话类型（1-单聊，2-群聊）
+     * 用户ID
      */
-    @TableField("type")
-    private Integer type;
+    @TableField("user_id")
+    private Long userId;
 
     /**
-     * 单聊时：用户1 ID（与user2_id组合唯一，需满足user1_id < user2_id）
+     * 好友ID
      */
-    @TableField("user1_id")
-    private Long user1Id;
-
-    /**
-     * 单聊时：用户2 ID（单聊必填，群聊为空）
-     */
-    @TableField("user2_id")
-    private Long user2Id;
-
-    /**
-     * 群聊时：关联group_id（群聊必填，单聊为空）
-     */
-    @TableField("group_id")
-    private Long groupId;
-
-    /**
-     * 最后一条消息ID
-     */
-    @TableField("last_msg_id")
-    private Long lastMsgId;
+    @TableField("friend_id")
+    private Long friendId;
 
     /**
      * 创建时间

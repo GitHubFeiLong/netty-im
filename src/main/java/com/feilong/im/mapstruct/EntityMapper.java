@@ -6,7 +6,7 @@ import java.util.List;
  * 为entity和dto映射器订立契约
  * @author cfl 2026/3/26
  */
-public interface IMapper<E, D> {
+public interface EntityMapper<E, D> {
 
     /**
      * dto转entity

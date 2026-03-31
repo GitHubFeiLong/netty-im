@@ -1,6 +1,7 @@
 package com.feilong.im.mapstruct;
 
 import com.feilong.im.dto.ImMessageDTO;
+import com.feilong.im.entity.ImMessage;
 import org.mapstruct.Mapper;
 
 /**
@@ -12,6 +13,6 @@ import org.mapstruct.Mapper;
  * @since 2026-03-18
  */
 @Mapper(componentModel = "spring")
-public interface IImMessageMapper extends IMapper<IImMessageMapper, ImMessageDTO> {
+public interface ImMessageEntityMapper extends EntityMapper<ImMessage, ImMessageDTO> {
 
 }

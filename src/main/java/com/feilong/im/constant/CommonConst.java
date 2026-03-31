@@ -5,4 +5,8 @@ package com.feilong.im.constant;
  */
 public interface CommonConst {
 
+    /**
+     * 时间戳范围，单位分钟
+     */
+    int TIMESTAMP_RANGE_MINUTE = 10;
 }

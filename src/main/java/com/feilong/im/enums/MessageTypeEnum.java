@@ -1,5 +1,7 @@
 package com.feilong.im.enums;
 
+import com.feilong.im.enums.cmd.*;
+import com.google.common.base.Strings;
 import lombok.Getter;
 
 import java.util.List;
@@ -16,19 +18,19 @@ public enum MessageTypeEnum {
     /**
      * 会话相关操作
      */
-    CONV,
+    CONV("会话消息", MessageCmdConvEnum.class),
     /**
      * 消息相关操作
      */
-    MESSAGE,
+    MESSAGE("消息相关操作", MessageCmdMessageEnum.class),
     /**
      * 联系人操作
      */
-    CONTACT,
+    CONTACT("联系人操作", MessageCmdContactEnum.class),
     /**
      * 系统通知
      */
-    NOTIFICATION,
+    NOTIFICATION("系统通知", MessageCmdNotificationEnum.class),
 
     ;
 
@@ -40,6 +42,7 @@ public enum MessageTypeEnum {
      * 消息类型的子命令集
      */
     private final List<IMessageCmdEnum> cmds;
+
 
     MessageTypeEnum(String name, Class<? extends IMessageCmdEnum> clazz) {
         this.name = name;
@@ -54,5 +57,20 @@ public enum MessageTypeEnum {
     MessageTypeEnum(String name, List<IMessageCmdEnum> cmds) {
         this.name = name;
         this.cmds = cmds;
+    }
+
+    /**
+     * 根据子命令名称获取枚举
+     * @param cmdName 子命令名称
+     * @return 子命令枚举，找不到返回 null
+     */
+    public IMessageCmdEnum getCmdEnumByName(String cmdName) {
+        if (Strings.isNullOrEmpty(cmdName)) {
+            return null;
+        }
+        return cmds.stream()
+                .filter(cmd -> cmd.name().equals(cmdName))
+                .findFirst()
+                .orElse(null);
     }
 }

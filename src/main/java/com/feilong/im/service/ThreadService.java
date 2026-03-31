@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * @author cfl 2026/03/26
  */
-public interface IThreadService {
+public interface ThreadService {
     /**
      * 具有上下文的环境下，执行任务，执行完任务并清理上下文
      * @param ctx 上下文

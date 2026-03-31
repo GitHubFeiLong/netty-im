@@ -1,5 +1,8 @@
-package com.feilong.im.enums;
+package com.feilong.im.enums.cmd;
 
+import com.feilong.im.message.MessageReq;
+import com.feilong.im.message.MessageResp;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 
 /**
@@ -11,8 +14,8 @@ public enum MessageCmdConvEnum implements IMessageCmdEnum {
     /**
      * 拉取会话列表请求
      */
-    FETCH_LIST_REQ("拉取会话列表请求"),
-    FETCH_LIST_RESP("拉取会话列表响应"),
+    PAGE_REQ("拉取会话列表请求"),
+    PAGE_RESP("拉取会话列表响应"),
     CREATE_REQ("创建会话请求"),
     CREATE_RESP("创建会话请求"),
     DELETE_REQ("删除会话请求"),
@@ -24,5 +27,15 @@ public enum MessageCmdConvEnum implements IMessageCmdEnum {
 
     MessageCmdConvEnum(String name) {
         this.name = name;
+    }
+
+    /**
+     * 处理子命令
+     *
+     * @param ctx 上下文
+     * @param req 请求参数
+     */
+    @Override
+    public void handler(ChannelHandlerContext ctx, MessageReq req) {
     }
 }

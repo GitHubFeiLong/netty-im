@@ -1,5 +1,6 @@
 package com.feilong.im.context;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -8,19 +9,19 @@ import java.util.Date;
  */
 public class CurrentTimeContext {
 
-    private static final InheritableThreadLocal<Date> THREAD_LOCAL = new InheritableThreadLocal<>();
+    private static final InheritableThreadLocal<LocalDateTime> THREAD_LOCAL = new InheritableThreadLocal<>();
 
     public static void set() {
-        THREAD_LOCAL.set(new Date());
+        THREAD_LOCAL.set(LocalDateTime.now());
     }
 
-    public static void set(Date date) {
-        THREAD_LOCAL.set(date);
+    public static void set(LocalDateTime localDateTime) {
+        THREAD_LOCAL.set(localDateTime);
     }
 
-    public static Date get() {
-        Date date = THREAD_LOCAL.get();
-        if (date == null) {
+    public static LocalDateTime get() {
+        LocalDateTime localDateTime = THREAD_LOCAL.get();
+        if (localDateTime == null) {
             set();
         }
 

@@ -13,6 +13,6 @@ import org.mapstruct.Mapper;
  * @since 2026-03-18
  */
 @Mapper(componentModel = "spring")
-public interface IImConvUserMapper extends IMapper<ImConvUser, ImConvUserDTO> {
+public interface ImConvUserEntityMapper extends EntityMapper<ImConvUser, ImConvUserDTO> {
 
 }
