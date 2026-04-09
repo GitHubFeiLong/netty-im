@@ -54,9 +54,14 @@ public class MessageResp<T> {
     private LocalDateTime timestamp;
 
     public MessageResp() {
+        this.errCode = MessageErrorEnum.SUCCESSFUL.getErrCode();
+        this.errMsg = MessageErrorEnum.SUCCESSFUL.getErrMsg();
         this.timestamp = CurrentTimeContext.get();
     }
+
     public MessageResp(MessageReq messageReq, IMessageCmdEnum cmdEnum, T data) {
+        this.errCode = MessageErrorEnum.SUCCESSFUL.getErrCode();
+        this.errMsg = MessageErrorEnum.SUCCESSFUL.getErrMsg();
         this.type = messageReq.getType();
         this.cmd = cmdEnum.name();
         this.data = data;
@@ -65,6 +70,8 @@ public class MessageResp<T> {
     }
 
     public MessageResp(MessageTypeEnum typeEnum, IMessageCmdEnum cmdEnum, T data) {
+        this.errCode = MessageErrorEnum.SUCCESSFUL.getErrCode();
+        this.errMsg = MessageErrorEnum.SUCCESSFUL.getErrMsg();
         this.type = typeEnum;
         this.cmd = cmdEnum.name();
         this.data = data;
@@ -73,9 +80,29 @@ public class MessageResp<T> {
     }
 
     public MessageResp(MessageReq messageReq, MessageTypeEnum typeEnum, IMessageCmdEnum cmdEnum, T data) {
+        this.errCode = MessageErrorEnum.SUCCESSFUL.getErrCode();
+        this.errMsg = MessageErrorEnum.SUCCESSFUL.getErrMsg();
         this.type = typeEnum;
         this.cmd = cmdEnum.name();
         this.data = data;
+        this.reqId = messageReq.getReqId();
+        this.timestamp = CurrentTimeContext.get();
+    }
+
+    public MessageResp(MessageReq messageReq, MessageTypeEnum typeEnum, IMessageCmdEnum cmdEnum, MessageErrorEnum errorEnum) {
+        this.errCode = errorEnum.getErrCode();
+        this.errMsg = errorEnum.getErrMsg();
+        this.type = typeEnum;
+        this.cmd = cmdEnum.name();
+        this.reqId = messageReq.getReqId();
+        this.timestamp = CurrentTimeContext.get();
+    }
+
+    public MessageResp(MessageReq messageReq, MessageTypeEnum typeEnum, IMessageCmdEnum cmdEnum, MessageErrorEnum errorEnum, String errMsg) {
+        this.errCode = errorEnum.getErrCode();
+        this.errMsg = errMsg;
+        this.type = typeEnum;
+        this.cmd = cmdEnum.name();
         this.reqId = messageReq.getReqId();
         this.timestamp = CurrentTimeContext.get();
     }

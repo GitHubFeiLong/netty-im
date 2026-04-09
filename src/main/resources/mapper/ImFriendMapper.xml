@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.feilong.im.dao.ImFriendMapper">
 
+    <select id="listPage" resultType="com.feilong.im.entity.ImUser">
+        SELECT iu.id, iu.nickname, iu.avatar, iu.status
+        FROM `im_friend` im_f
+        inner join im_user iu on iu.id = im_f.friend_id
+        where im_f.user_id = #{imUserId}
+        order by iu.nickname
+    </select>
 </mapper>

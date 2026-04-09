@@ -41,9 +41,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.baomidou:mybatis-plus-spring-boot3-starter:3.5.9")
+    implementation("com.baomidou:mybatis-plus-jsqlparser:3.5.9")
     implementation("io.netty:netty-all:4.1.131.Final")
 
-    implementation("com.baomidou:mybatis-plus-spring-boot3-starter:3.5.12")
     implementation("com.google.guava:guava:33.5.0-jre")
     runtimeOnly("com.mysql:mysql-connector-j:9.5.0")
     // MapStruct 核心

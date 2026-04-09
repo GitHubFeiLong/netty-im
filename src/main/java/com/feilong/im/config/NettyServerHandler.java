@@ -1,8 +1,10 @@
 package com.feilong.im.config;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.feilong.im.enums.MessageErrorEnum;
 import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
+import com.feilong.im.exception.ClientException;
 import com.feilong.im.handler.cmd.SystemHeartbeatReqHandler;
 import com.feilong.im.handler.cmd.resp.SystemOfflineResp;
 import com.feilong.im.message.MessageReq;
@@ -55,12 +57,33 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
     /**
      * 获取当前用户ID
      * @param ctx 上下文
+     * @param defaultUserId 默认用户ID
+     * @return 用户ID
+     */
+    public static Long getCurrentUserIdOrDefault(ChannelHandlerContext ctx, Long defaultUserId) {
+        return channelUserMap.getOrDefault(ctx.channel(), defaultUserId);
+    }
+
+    /**
+     * 获取当前用户ID
+     * @param ctx 上下文
+     * @return 用户ID
+     */
+    public static Long getCurrentUserIdOrDefault(ChannelHandlerContext ctx) {
+        return channelUserMap.getOrDefault(ctx.channel(), null);
+    }
+
+    /**
+     * 获取当前用户ID，如果不存在则抛出异常
+     * @param ctx 上下文
      * @return 用户ID
      */
     public static Long getCurrentUserId(ChannelHandlerContext ctx) {
-        return channelUserMap.get(ctx.channel());
+        if (channelUserMap.containsKey(ctx.channel())) {
+            return channelUserMap.get(ctx.channel());
+        }
+        throw new ClientException(MessageErrorEnum.CLIENT_UNAUTHORIZED_ERROR);
     }
-
 
     private final ImUserService imUserService;
     private final ImUserManageService imUserManageService;
@@ -78,8 +101,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
         String text = msg.text();
         log.info("收到客户端消息: {}", text);
         try {
-            threadService.execute(ctx, () -> {
-                MessageReq messageReq = JsonUtil.toObject(text, MessageReq.class);
+            MessageReq messageReq = JsonUtil.toObject(text, MessageReq.class);
+            threadService.execute(ctx, messageReq, () -> {
                 // 检查参数
                 messageReq.check();
                 // 处理消息
@@ -138,7 +161,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
      */
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) {
-        threadService.execute(ctx, () -> {
+        threadService.execute(ctx, new MessageReq(), () -> {
             Channel channel = ctx.channel();
             log.info("客户端断开连接: {}", channel.remoteAddress());
             channels.remove(channel);
@@ -194,21 +217,18 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        log.debug("userEventTriggered 进入了");
         if (evt instanceof IdleStateEvent) {
-            log.debug("userEventTriggered 进入了 IdleStateEvent");
             IdleStateEvent event = (IdleStateEvent) evt;
             // 服务端检测到读空闲（客户端超过一段时间没发消息）
-            if (event.state() == IdleState.READER_IDLE) {
-                log.debug("又检测到读空闲了！");
+            if (event.state() == IdleState.ALL_IDLE) {
                 if (channelUserMap.containsKey(ctx.channel())) {
                     Long userId = channelUserMap.get(ctx.channel());
-                    log.debug("读空闲，发送心跳: {} - {}", userId, ctx.channel().remoteAddress());
+                    log.debug("读写空闲，发送心跳: {} - {}", userId, ctx.channel().remoteAddress());
                     // 响应会话
                     MessageResp<String> messageResp = new MessageResp<>(
                             MessageTypeEnum.SYSTEM,
                             MessageCmdSystemEnum.HEARTBEAT_REQ,
-                            "pong"
+                            "ping"
                     );
                     ctx.channel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJsonString(messageResp)));
                 } else {
@@ -220,18 +240,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
         }
     }
 
-    /**
-     * 处理心跳消息
-     * @param ctx 上下文
-     */
-    private void handleHeartbeat(ChannelHandlerContext ctx) {
-        threadService.execute(ctx, () -> {
-            log.debug("收到客户端心跳请求");
-            Channel currentChannel = ctx.channel();
-            // 响应会话
-            // sendSystemMessage(ChartMessageTypeEnum.HEARTBEAT, currentChannel, "pong");
-        });
-    }
 
     /**
      * 处理用户上线
@@ -641,9 +649,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
         //     errorMessage.setErrMsg(ChatMessageErrorEnum.CLIENT_PARAM_ERROR.getErrMsg());
         // }
 
-        // // 发送错误信息给客户端
-        // String errorMsg = JsonUtil.toJsonString(errorMessage);
-        // ctx.writeAndFlush(new TextWebSocketFrame(errorMsg));
+
         // 直接关闭连接
         ctx.close();
     }

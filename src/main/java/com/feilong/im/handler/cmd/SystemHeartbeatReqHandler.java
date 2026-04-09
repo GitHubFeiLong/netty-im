@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 心跳请求处理
+ * @see MessageCmdSystemEnum#HEARTBEAT_REQ
  * @author cfl 2026/03/31
  */
 @Slf4j

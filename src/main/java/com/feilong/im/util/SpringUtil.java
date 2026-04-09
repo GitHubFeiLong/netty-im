@@ -1,20 +1,23 @@
 package com.feilong.im.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
  * @author cfl 2026/03/30
  */
+@Slf4j
 @Component
 public class SpringUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         SpringUtil.applicationContext = applicationContext;
     }
 
@@ -25,7 +28,8 @@ public class SpringUtil implements ApplicationContextAware {
      */
     public static <T> T getBean(Class<T> clazz) {
         if (applicationContext == null) {
-            throw new IllegalStateException("ApplicationContext 未初始化");
+            log.warn("ApplicationContext 未初始化");
+            return null;
         }
         return applicationContext.getBean(clazz);
     }
@@ -38,7 +42,8 @@ public class SpringUtil implements ApplicationContextAware {
      */
     public static <T> T getBean(String name, Class<T> clazz) {
         if (applicationContext == null) {
-            throw new IllegalStateException("ApplicationContext 未初始化");
+            log.warn("ApplicationContext 未初始化");
+            return null;
         }
         return applicationContext.getBean(name, clazz);
     }

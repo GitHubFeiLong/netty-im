@@ -1,9 +1,6 @@
 package com.feilong.im.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -24,7 +21,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("im_user")
-public class ImUser implements Serializable {
+public class ImUser extends BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -54,16 +51,14 @@ public class ImUser implements Serializable {
     private Integer status;
 
     /**
-     * 创建时间
+     * 乐观锁，版本号
      */
-    @TableField("create_time")
-    private LocalDateTime createTime;
+    private Integer version;
 
     /**
-     * 最后更新时间
+     * 删除状态（0-未删除；>0删除时的时间戳）
      */
-    @TableField("update_time")
-    private LocalDateTime updateTime;
-
-
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
+    private Long deleted;
 }

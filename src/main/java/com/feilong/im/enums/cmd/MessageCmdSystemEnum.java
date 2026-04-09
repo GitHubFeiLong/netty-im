@@ -25,17 +25,17 @@ public enum MessageCmdSystemEnum implements IMessageCmdEnum {
      * 服务端→客户端
      * 返回认证结果（成功/失败）
      */
-    AUTH_RESP("认证响应", SpringUtil.getBean(NoneHandler.class)),
+    AUTH_RESP("认证响应"),
 
     /**
      * 服务端→客户端
      */
-    ONLINE_RESP("上线通知", SpringUtil.getBean(NoneHandler.class)),
+    ONLINE_RESP("上线通知"),
 
     /**
      * 服务端→客户端
      */
-    OFFLINE_RESP("下线通知", SpringUtil.getBean(NoneHandler.class)),
+    OFFLINE_RESP("下线通知"),
 
     /**
      * 客户端→服务端
@@ -45,21 +45,27 @@ public enum MessageCmdSystemEnum implements IMessageCmdEnum {
     /**
      * 服务端→客户端	心跳响应（确认存活）
      */
-    HEARTBEAT_RESP("心跳响应", SpringUtil.getBean(NoneHandler.class)),
+    HEARTBEAT_RESP("心跳响应"),
 
     /**
      * 服务端→客户端	错误通知（如认证失败、参数错误）
      */
-    ERROR("错误通知", SpringUtil.getBean(NoneHandler.class)),
+    ERROR("错误通知"),
     ;
 
+    /**
+     * 子命令名称
+     */
     private final String name;
 
+    /**
+     * 子命令处理对象
+     */
     private final CmdHandler cmdHandler;
 
     MessageCmdSystemEnum(String name) {
         this.name = name;
-        this.cmdHandler = null;
+        this.cmdHandler = SpringUtil.getBean(NoneHandler.class);
     }
 
     MessageCmdSystemEnum(String name, CmdHandler cmdHandler) {

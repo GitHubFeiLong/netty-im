@@ -14,10 +14,15 @@ public enum MessageErrorEnum {
      * 成功
      */
     SUCCESSFUL("0", "成功"),
+
+    /**
+     * 客户端未认证
+     */
+    CLIENT_UNAUTHORIZED_ERROR("401", "请登录认证"),
     /**
      * 客户端参数错误
      */
-    CLIENT_PARAM_ERROR("1001", "参数错误"),
+    CLIENT_PARAM_ERROR("1000", "参数错误"),
 
     /**
      * 服务器错误

@@ -57,9 +57,9 @@ public class NettyServer {
                         // 连接超时
                         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, imNettyProperties.getConnectTimeout())
                         // 接收缓冲区
-                        .option(ChannelOption.SO_RCVBUF, imNettyProperties.getRecvBufSize())
+                        .childOption(ChannelOption.SO_RCVBUF, imNettyProperties.getRecvBufSize())
                         // 发送缓冲区
-                        .option(ChannelOption.SO_SNDBUF, imNettyProperties.getSendBufSize())
+                        .childOption(ChannelOption.SO_SNDBUF, imNettyProperties.getSendBufSize())
                         // 长连接 保持连接
                         .childOption(ChannelOption.SO_KEEPALIVE, true)
                         // 服务端日志处理器
@@ -87,7 +87,7 @@ public class NettyServer {
                                 // WebSocket处理器
                                 pipeline.addLast(new WebSocketServerProtocolHandler(imNettyProperties.getPath()));
                                 // 心跳检测
-                                pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
+                                pipeline.addLast(new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
                                 // 自定义处理器
                                 pipeline.addLast(nettyServerHandler);
                             }

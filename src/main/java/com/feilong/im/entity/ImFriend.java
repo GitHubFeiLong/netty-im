@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("im_friend")
-public class ImFriend implements Serializable {
+public class ImFriend extends BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -42,15 +42,5 @@ public class ImFriend implements Serializable {
     @TableField("friend_id")
     private Long friendId;
 
-    /**
-     * 创建时间
-     */
-    @TableField("create_time")
-    private LocalDateTime createTime;
 
-    /**
-     * 最后更新时间
-     */
-    @TableField("update_time")
-    private LocalDateTime updateTime;
 }
