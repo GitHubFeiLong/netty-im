@@ -1,5 +1,8 @@
 package com.feilong.im.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.feilong.im.core.MyJsonView;
 import lombok.Data;
 
 import java.io.Serial;
@@ -20,6 +23,17 @@ public class ImUserDTO implements Serializable {
      * 用户唯一ID
      */
     private Long id;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    @JsonView(MyJsonView.Detail.class)
+    private String password;
 
     /**
      * 昵称

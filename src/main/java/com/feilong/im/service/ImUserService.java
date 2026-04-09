@@ -2,7 +2,9 @@ package com.feilong.im.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.feilong.im.dto.ImUserDTO;
+import com.feilong.im.dto.req.ImUserSignUpReq;
 import com.feilong.im.entity.ImUser;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -44,4 +46,10 @@ public interface ImUserService extends IService<ImUser> {
      */
     List<ImUser> listInfoByUserIds(List<Long> userIds);
 
+    /**
+     * 用户注册
+     * @param req  用户注册请求参数
+     * @return  用户信息
+     */
+    ImUserDTO signUp(@Valid ImUserSignUpReq req);
 }

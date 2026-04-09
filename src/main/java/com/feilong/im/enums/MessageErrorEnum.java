@@ -22,7 +22,7 @@ public enum MessageErrorEnum {
     /**
      * 客户端参数错误
      */
-    CLIENT_PARAM_ERROR("1000", "参数错误"),
+    CLIENT_PARAM_ERROR("400", "请求参数错误"),
 
     /**
      * 服务器错误

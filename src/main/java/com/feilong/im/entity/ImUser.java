@@ -33,6 +33,17 @@ public class ImUser extends BaseEntity implements Serializable {
     private Long id;
 
     /**
+     * 用户名
+     */
+    @TableField("username")
+    private String username;
+
+    /**
+     * 密码
+     */
+    @TableField("password")
+    private String password;
+    /**
      * 昵称
      */
     @TableField("nickname")
