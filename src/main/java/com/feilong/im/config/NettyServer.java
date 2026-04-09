@@ -94,8 +94,8 @@ public class NettyServer {
                         });
 
                 // 绑定监听端口
-                channelFuture = bootstrap.bind(imNettyProperties.getPort()).sync();
-                log.info("Netty WebSocket服务器启动成功，端口：{}，路径：{}", imNettyProperties.getPort(), imNettyProperties.getPath());
+                channelFuture = bootstrap.bind(imNettyProperties.getHost(), imNettyProperties.getPort()).sync();
+                log.info("Netty WebSocket服务器启动成功，地址：ws://127.0.0.1:{}{}", imNettyProperties.getPort(), imNettyProperties.getPath());
 
                 channelFuture.channel().closeFuture().sync();
             } catch (Exception e) {

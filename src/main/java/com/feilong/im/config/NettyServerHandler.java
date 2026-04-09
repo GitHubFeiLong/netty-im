@@ -108,38 +108,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
                 // 处理消息
                 messageReq.getCmdEnum().handler(ctx, messageReq);
             });
-
-            // switch (chatMessage.getType()) {
-            //     case HEARTBEAT:
-            //         handleHeartbeat(ctx);
-            //         break;
-            //     case ONLINE:
-            //         handleOnline(ctx, chatMessage);
-            //         break;
-            //     case CHAT:
-            //         handleChatMessage(ctx, chatMessage);
-            //         break;
-            //     case CREATE_SINGLE_CONVERSATION:
-            //         handleCreateSingleConversation(ctx, chatMessage);
-            //         break;
-            //     case PULL_CONVERSATION_LIST:
-            //         handlePullConversationList(ctx, chatMessage);
-            //         break;
-            //     case PULL_CONVERSATION_DETAIL:
-            //         handlePullConversationDetail(ctx, chatMessage);
-            //         break;
-            //     case PULL_MESSAGE_LIST:
-            //         handlePullMessageList(ctx, chatMessage);
-            //         break;
-            //     case CONVERSATION_MESSAGE_READ_MARK:
-            //         handleConversationMessageReadMark(ctx, chatMessage);
-            //         break;
-            //     case DELETE_CONVERSATION:
-            //         handleDeleteConversation(ctx, chatMessage);
-            //         break;
-            //     default:
-            //         log.warn("未知的消息类型: {}", chatMessage.getType());
-            // }
         } catch (Exception e) {
             log.error("消息解析失败", e);
             throw e;
@@ -217,23 +185,17 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent event = (IdleStateEvent) evt;
+        if (evt instanceof IdleStateEvent event) {
             // 服务端检测到读空闲（客户端超过一段时间没发消息）
             if (event.state() == IdleState.ALL_IDLE) {
-                if (channelUserMap.containsKey(ctx.channel())) {
-                    Long userId = channelUserMap.get(ctx.channel());
-                    log.debug("读写空闲，发送心跳: {} - {}", userId, ctx.channel().remoteAddress());
-                    // 响应会话
-                    MessageResp<String> messageResp = new MessageResp<>(
-                            MessageTypeEnum.SYSTEM,
-                            MessageCmdSystemEnum.HEARTBEAT_REQ,
-                            "ping"
-                    );
-                    ctx.channel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJsonString(messageResp)));
-                } else {
-                    ctx.close();
-                }
+                log.debug("读写空闲，发送心跳: {}",  ctx.channel().remoteAddress());
+                // 响应会话
+                MessageResp<String> messageResp = new MessageResp<>(
+                        MessageTypeEnum.SYSTEM,
+                        MessageCmdSystemEnum.HEARTBEAT_REQ,
+                        "ping"
+                );
+                ctx.channel().writeAndFlush(new TextWebSocketFrame(JsonUtil.toJsonString(messageResp)));
             }
         } else {
             super.userEventTriggered(ctx, evt);

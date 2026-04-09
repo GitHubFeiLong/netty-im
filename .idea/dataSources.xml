@@ -21,5 +21,21 @@
       <jdbc-url>jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="faded738-38a6-4bed-bfd8-7aebafb8c4f5">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="864fc448-0df5-4e68-9cf0-c100b2982537">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
