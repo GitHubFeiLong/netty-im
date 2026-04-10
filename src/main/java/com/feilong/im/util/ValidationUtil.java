@@ -1,7 +1,7 @@
 package com.feilong.im.util;
 
 import com.feilong.im.enums.MessageErrorEnum;
-import com.feilong.im.exception.ClientException;
+import com.feilong.im.exception.NettyClientException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -35,7 +35,7 @@ public class ValidationUtil {
             String errorMsg = violations.stream()
                     .map(v -> v.getPropertyPath() + ": " + v.getMessage())
                     .collect(Collectors.joining(", "));
-            throw new ClientException("参数校验失败: " + errorMsg, MessageErrorEnum.CLIENT_PARAM_ERROR);
+            throw new NettyClientException("参数校验失败: " + errorMsg, MessageErrorEnum.CLIENT_PARAM_ERROR);
         }
     }
 }

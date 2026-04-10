@@ -3,12 +3,11 @@ package com.feilong.im.service.impl;
 import com.feilong.im.config.NettyServerHandler;
 import com.feilong.im.config.TraceIdHandler;
 import com.feilong.im.context.CurrentTimeContext;
-import com.feilong.im.context.CurrentUser;
 import com.feilong.im.context.CurrentUserContext;
 import com.feilong.im.context.TraceIdContext;
 import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
-import com.feilong.im.exception.ClientException;
+import com.feilong.im.exception.NettyClientException;
 import com.feilong.im.message.MessageReq;
 import com.feilong.im.message.MessageResp;
 import com.feilong.im.service.ThreadService;
@@ -22,8 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author cfl 2026/03/26
@@ -75,7 +72,7 @@ public class ThreadServiceImpl implements ThreadService {
                 CurrentTimeContext.set();
                 CurrentUserContext.set(ctx);
                 runnable.run();
-            } catch (ClientException e) {
+            } catch (NettyClientException e) {
                 log.warn("客户端异常", e);
                 // 发送错误信息给客户端
                 MessageResp<Object> resp = new MessageResp<>(messageReq, MessageTypeEnum.SYSTEM, MessageCmdSystemEnum.ERROR, e.getErrorEnum(), e.getMessage());

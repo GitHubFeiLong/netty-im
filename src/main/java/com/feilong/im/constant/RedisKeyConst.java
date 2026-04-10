@@ -15,6 +15,10 @@ public interface RedisKeyConst {
      * 缓存会话信息
      */
     String IM_CONV_KEY = "cache:im:conv:{type}:{user1Id}:{userOrGroupId}";
+    /**
+     * 缓存JWT 无效的Token
+     */
+    String JWT_TOKEN_BLACKLIST = "cache:jwt:token:black:{jwtId}";
 
     /**
      * 获取完整的key

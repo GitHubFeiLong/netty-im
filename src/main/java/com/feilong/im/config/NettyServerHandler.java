@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.feilong.im.enums.MessageErrorEnum;
 import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
-import com.feilong.im.exception.ClientException;
-import com.feilong.im.handler.cmd.SystemHeartbeatReqHandler;
+import com.feilong.im.exception.NettyClientException;
 import com.feilong.im.handler.cmd.resp.SystemOfflineResp;
 import com.feilong.im.message.MessageReq;
 import com.feilong.im.message.MessageResp;
@@ -82,7 +81,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
         if (channelUserMap.containsKey(ctx.channel())) {
             return channelUserMap.get(ctx.channel());
         }
-        throw new ClientException(MessageErrorEnum.CLIENT_UNAUTHORIZED_ERROR);
+        throw new NettyClientException(MessageErrorEnum.CLIENT_UNAUTHORIZED_ERROR);
     }
 
     private final ImUserService imUserService;

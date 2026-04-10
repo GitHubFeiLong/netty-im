@@ -64,6 +64,7 @@ public class ImUser extends BaseEntity implements Serializable {
     /**
      * 乐观锁，版本号
      */
+    @Version
     private Integer version;
 
     /**

@@ -1,6 +1,7 @@
 package com.feilong.im.context;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -30,5 +31,21 @@ public class CurrentTimeContext {
 
     public static void remove() {
         THREAD_LOCAL.remove();
+    }
+
+    /**
+     * 获取当前时间戳
+     * @return 时间戳
+     */
+    public static long getTimestamp() {
+        return get().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
+    /**
+     * 获取当前时间
+     * @return  时间
+     */
+    public static Date getDate() {
+        return Date.from(get().atZone(ZoneId.systemDefault()).toInstant());
     }
 }

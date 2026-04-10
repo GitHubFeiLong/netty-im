@@ -41,12 +41,26 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.security:spring-security-crypto")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.baomidou:mybatis-plus-spring-boot3-starter:3.5.9")
     implementation("com.baomidou:mybatis-plus-jsqlparser:3.5.9")
     implementation("io.netty:netty-all:4.1.131.Final")
+    implementation("cn.hutool:hutool-all:5.8.36")
+
+    implementation("com.github.xiaoymin:knife4j-openapi3-jakarta-spring-boot-starter:4.4.0") {
+        exclude(group = "org.apache.commons", module = "commons-lang3")
+        // 2. 排除它自带的老旧版 springdoc-ui，防止与高版本 Spring Boot 3.5.9 冲突
+        exclude(group = "org.springdoc", module = "springdoc-openapi-starter-webmvc-ui")
+    }
+    implementation("org.apache.commons:commons-lang3:3.18.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
 
     implementation("com.google.guava:guava:33.5.0-jre")
+
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
     runtimeOnly("com.mysql:mysql-connector-j:9.5.0")
     // MapStruct 核心
     implementation("org.mapstruct:mapstruct:1.5.5.Final")

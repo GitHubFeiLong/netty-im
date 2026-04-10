@@ -1,16 +1,11 @@
 package com.feilong.im.handler.cmd;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.feilong.im.config.NettyServerHandler;
-import com.feilong.im.context.CurrentTimeContext;
-import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.entity.ImFriend;
 import com.feilong.im.enums.MessageErrorEnum;
-import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdContactEnum;
-import com.feilong.im.exception.ClientException;
+import com.feilong.im.exception.NettyClientException;
 import com.feilong.im.handler.cmd.req.ContactCreateReq;
-import com.feilong.im.handler.cmd.req.ContactPageReq;
 import com.feilong.im.message.MessageReq;
 import com.feilong.im.message.MessageResp;
 import com.feilong.im.service.ImFriendService;
@@ -23,9 +18,6 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-
-import java.util.Objects;
 
 /**
  * 添加联系人
@@ -51,7 +43,7 @@ public class ContactCreateReqHandler implements CmdHandler {
     public void handle(ChannelHandlerContext ctx, MessageReq messageReq) {
         Long imUserId = NettyServerHandler.getCurrentUserId(ctx);
         ContactCreateReq req = JsonUtil.toObject(messageReq.getData(), ContactCreateReq.class);
-        AssertUtil.isNotEquals(imUserId, req.getFriendId(), () -> new ClientException("不能添加自己为好友", MessageErrorEnum.CLIENT_PARAM_ERROR));
+        AssertUtil.isNotEquals(imUserId, req.getFriendId(), () -> new NettyClientException("不能添加自己为好友", MessageErrorEnum.CLIENT_PARAM_ERROR));
         log.info("用户{}添加好友{}", imUserId, req.getFriendId());
         // 校验是否已添加
         ImFriend imFriend = imFriendService.lambdaQuery().eq(ImFriend::getUserId, imUserId).eq(ImFriend::getFriendId, req.getFriendId()).one();
