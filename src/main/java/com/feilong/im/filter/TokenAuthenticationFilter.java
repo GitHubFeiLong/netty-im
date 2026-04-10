@@ -1,9 +1,9 @@
 package com.feilong.im.filter;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.jwt.JWTException;
 import com.feilong.im.config.security.token.TokenManager;
 import com.feilong.im.constant.SecurityConstants;
+import com.feilong.im.exception.ClientException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +47,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 // 执行令牌有效性检查（包含密码学验签和过期时间验证）
                 boolean isValidToken = tokenManager.validateToken(rawToken);
                 if (!isValidToken) {
-                    throw new JWTException("Token is invalid");
+                    throw ClientException.of("Token is invalid");
                 }
 
                 // 将令牌解析为 Spring Security 上下文认证对象
@@ -57,7 +57,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception ex) {
             // 安全上下文清除保障（防止上下文残留）
             SecurityContextHolder.clearContext();
-            throw new JWTException("Token is invalid");
+            throw ClientException.of("Token is invalid");
         }
 
         // 继续后续过滤器链执行
