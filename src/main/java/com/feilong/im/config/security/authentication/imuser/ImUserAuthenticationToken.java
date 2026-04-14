@@ -12,7 +12,7 @@ import java.util.Collection;
 public class ImUserAuthenticationToken extends AbstractAuthenticationToken {
 
     /**
-     * 认证信息 (用户名)
+     * 认证信息 (用户信息)
      */
     private final Object principal;
 
@@ -38,7 +38,7 @@ public class ImUserAuthenticationToken extends AbstractAuthenticationToken {
      * @param principal 用户名
      * @param authorities 权限
      */
-    public ImUserAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
+    public ImUserAuthenticationToken(ImUserDetails principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
         this.credentials = null;

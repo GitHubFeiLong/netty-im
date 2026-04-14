@@ -3,6 +3,7 @@ package com.feilong.im.exception;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
@@ -19,6 +20,7 @@ import java.util.Map;
 @ToString(callSuper = true)
 @Data
 @Slf4j
+@Accessors(chain=true)
 public class BasicException extends RuntimeException {
 
     @Serial

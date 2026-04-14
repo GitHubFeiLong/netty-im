@@ -4,7 +4,7 @@ package com.feilong.im.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.feilong.im.core.MyJsonView;
 import com.feilong.im.dto.ImUserDTO;
-import com.feilong.im.dto.req.ImUserSignUpReq;
+import com.feilong.im.dto.req.ImSignUpReq;
 import com.feilong.im.service.ImUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +32,5 @@ public class ImUserController {
 
     private final ImUserService imUserService;
 
-    @PostMapping("/sign-up")
-    @JsonView(MyJsonView.Simple.class)
-    public ResponseEntity<ImUserDTO> signUp(@Valid @RequestBody ImUserSignUpReq req) {
-        return ResponseEntity.ok(imUserService.signUp(req));
-    }
+
 }

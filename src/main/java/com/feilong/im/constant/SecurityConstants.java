@@ -29,17 +29,10 @@ public interface SecurityConstants {
     String ROLE_PREFIX = "ROLE_";
 
     /**
-     * JWT 载荷字段 id
+     * JWT 载荷字段 用户详情json的key
      */
-    String JWT_KEY_ID = "id";
-    /**
-     * JWT 载荷字段 username
-     */
-    String JWT_KEY_USERNAME = "username";
-    /**
-     * JWT 载荷字段 nickname
-     */
-    String JWT_KEY_NICKNAME = "nickname";
+    String JWT_KEY_USER_DETAIL = "jwtUserDetail";
+
     /**
      * JWT 载荷字段 jwtUserType
      */

@@ -6,13 +6,12 @@ import com.feilong.im.constant.RedisKeyConst;
 import com.feilong.im.context.CurrentTimeContext;
 import com.feilong.im.dao.ImUserMapper;
 import com.feilong.im.dto.ImUserDTO;
-import com.feilong.im.dto.req.ImUserSignUpReq;
+import com.feilong.im.dto.req.ImSignUpReq;
 import com.feilong.im.entity.ImUser;
 import com.feilong.im.enums.status.ImUserStatusEnum;
 import com.feilong.im.mapstruct.ImUserEntityMapper;
 import com.feilong.im.service.ImUserService;
 import com.feilong.im.util.JsonUtil;
-import com.feilong.im.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
@@ -125,29 +123,5 @@ public class ImUserServiceImpl extends ServiceImpl<ImUserMapper, ImUser> impleme
             return Collections.emptyList();
         }
         return lambdaQuery().select(ImUser::getId, ImUser::getNickname, ImUser::getAvatar, ImUser::getStatus).in(ImUser::getId, userIds).list();
-    }
-
-    /**
-     * 用户注册
-     * @param req  用户注册请求参数
-     * @return 用户信息
-     */
-    @Override
-    public ImUserDTO signUp(ImUserSignUpReq req) {
-        log.info("用户注册：{}", req);
-        Long count = lambdaQuery().eq(ImUser::getUsername, req.getUsername()).count();
-        if (count > 0) {
-            throw new IllegalArgumentException("用户已存在，请直接进行登录");
-        }
-        ImUser imUser = new ImUser();
-        imUser.setUsername(req.getUsername());
-        imUser.setPassword(passwordEncoder.encode(req.getPassword()));
-        imUser.setNickname(req.getNickname());
-        imUser.setAvatar(req.getAvatar());
-        imUser.setStatus(ImUserStatusEnum.OFFLINE.getId());
-        imUser.setDeleted(0L);
-
-        save(imUser);
-        return imUserEntityMapper.toDto(imUser);
     }
 }

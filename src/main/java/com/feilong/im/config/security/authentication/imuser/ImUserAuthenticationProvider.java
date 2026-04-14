@@ -51,7 +51,12 @@ public class ImUserAuthenticationProvider implements AuthenticationProvider {
 
             // 构建用户信息
             // 已认证
-            return new ImUserAuthenticationToken(imUser, null);
+            ImUserDetails imUserDetails = new ImUserDetails();
+            imUserDetails.setId(imUser.getId());
+            imUserDetails.setUsername(imUser.getUsername());
+            imUserDetails.setNickname(imUser.getNickname());
+
+            return new ImUserAuthenticationToken(imUserDetails, null);
         }
         throw new RuntimeException("认证方式错误");
     }

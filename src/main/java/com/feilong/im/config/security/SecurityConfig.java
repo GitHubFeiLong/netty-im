@@ -46,11 +46,9 @@ public class SecurityConfig {
 
     private final SecurityProperties securityProperties;
     private final UserDetailsService userDetailsService;
-    // private final UserService userService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
     private final TokenManager tokenManager;
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -79,7 +77,7 @@ public class SecurityConfig {
                         // 放行 actuator 端点
                         .requestMatchers("/actuator/**").permitAll()
                         // 放行swagger, knife4j 相关路径
-                        // .requestMatchers("/doc.html", "/webjars/**", "/favicon.ico", "/v3/api-docs/swagger-config", "/v3/api-docs").permitAll()
+                        .requestMatchers("/doc.html", "/webjars/**", "/favicon.ico", "/v3/api-docs/swagger-config", "/v3/api-docs").permitAll()
                         // .requestMatchers("/admin/**").hasRole("ADMIN")  // 需ADMIN角色
                         // .requestMatchers("/api/**")
                         // .access((authentication, object) -> accessDecisionManager.decode(authentication, object))

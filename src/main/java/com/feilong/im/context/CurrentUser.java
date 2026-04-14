@@ -8,6 +8,10 @@ import lombok.Data;
  */
 @Data
 public class CurrentUser {
+    /**
+     * JWT ID
+     */
+    private String jwtId;
 
     /**
      * 用户ID

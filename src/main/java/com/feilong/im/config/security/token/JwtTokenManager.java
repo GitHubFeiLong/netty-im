@@ -1,19 +1,29 @@
 package com.feilong.im.config.security.token;
 
+import cn.hutool.core.lang.generator.UUIDGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feilong.im.config.security.authentication.imuser.ImUserAuthenticationToken;
 import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
 import com.feilong.im.constant.RedisKeyConst;
 import com.feilong.im.constant.SecurityConstants;
 import com.feilong.im.context.CurrentTimeContext;
+import com.feilong.im.entity.SysAuthTokenBlacklist;
+import com.feilong.im.enums.status.AuthTokenStatusEnum;
 import com.feilong.im.exception.ClientException;
 import com.feilong.im.properties.SecurityProperties;
+import com.feilong.im.service.SysAuthTokenBlacklistService;
+import com.feilong.im.util.JsonUtil;
+import com.feilong.im.util.StringUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -27,17 +37,20 @@ import java.util.concurrent.TimeUnit;
  * @author Ray.Hao
  * @since 2024/11/15
  */
+@Slf4j
 @ConditionalOnProperty(value = "security.session.type", havingValue = "jwt")
-@Service
+@Component
 public class JwtTokenManager implements TokenManager {
 
     private final SecurityProperties securityProperties;
     private final StringRedisTemplate stringRedisTemplate;
     private final SecretKey secretKey;
+    private final SysAuthTokenBlacklistService sysAuthTokenBlacklistService;
 
-    public JwtTokenManager(SecurityProperties securityProperties, StringRedisTemplate stringRedisTemplate) {
+    public JwtTokenManager(SecurityProperties securityProperties, StringRedisTemplate stringRedisTemplate, SysAuthTokenBlacklistService sysAuthTokenBlacklistService) {
         this.securityProperties = securityProperties;
         this.stringRedisTemplate = stringRedisTemplate;
+        this.sysAuthTokenBlacklistService = sysAuthTokenBlacklistService;
         this.secretKey = Keys.hmacShaKeyFor(securityProperties.getSession().getJwt().getSecretKey().getBytes());
     }
 
@@ -95,13 +108,8 @@ public class JwtTokenManager implements TokenManager {
         Object jwtUserType = claims.get(SecurityConstants.JWT_KEY_JWT_USER_TYPE);
 
         if (Objects.equals(jwtUserType, SecurityConstants.JWT_VALUE_JWT_USER_TYPE_IM_USER)) {
-            ImUserDetails imUserDetails = new ImUserDetails();
-            imUserDetails.setId((Long)claims.get(SecurityConstants.JWT_KEY_ID));
-            imUserDetails.setUsername((String)claims.get(SecurityConstants.JWT_KEY_USERNAME));
-            imUserDetails.setNickname((String)claims.get(SecurityConstants.JWT_KEY_NICKNAME));
-
-            claims.get(SecurityConstants.JWT_KEY_JWT_USER_TYPE);
-
+            ImUserDetails imUserDetails = JsonUtil.toObject(claims.get(SecurityConstants.JWT_KEY_USER_DETAIL).toString(), ImUserDetails.class);
+            imUserDetails.setTokenId(jwtId);
             return new ImUserAuthenticationToken(imUserDetails,null);
         }
 
@@ -116,10 +124,43 @@ public class JwtTokenManager implements TokenManager {
      */
     @Override
     public boolean validateToken(String token) {
-        Claims claims = parseTokenToClaims(token);
-        // 校验黑名单
-        if (stringRedisTemplate.hasKey(RedisKeyConst.getKey(RedisKeyConst.JWT_TOKEN_BLACKLIST, claims.getId()))) {
-            throw ClientException.of("Token %s 已被加入黑名单", claims.getId());
+        Claims claims = parseTokenToClaims(token);;
+
+        String tokenId = claims.getId();
+        log.debug("校验tokenId: {} 是否有效", tokenId);
+        String key = RedisKeyConst.getKey(RedisKeyConst.AUTH_TOKEN_STATUS_KEY, tokenId);
+        if (stringRedisTemplate.hasKey(key)) {
+            log.debug("redis中存在token id信息");
+            String status = stringRedisTemplate.opsForValue().get(key);
+            if (Objects.equals(status, AuthTokenStatusEnum.VALID.getId())) {
+                log.debug("token有效");
+                return true;
+            }
+            log.debug("token无效");
+            throw ClientException.of("登录失效，请重新登录", claims.getId());
+        }
+        log.debug("redis中不存在token id信息");
+        synchronized (this) {
+            if (stringRedisTemplate.hasKey(key)) {
+                log.debug("redis中存在token id信息");
+                String status = stringRedisTemplate.opsForValue().get(key);
+                if (Objects.equals(status, AuthTokenStatusEnum.VALID.getId())) {
+                    log.debug("token有效");
+                    return true;
+                }
+                log.debug("token无效");
+                throw ClientException.of("登录失效，请重新登录", claims.getId());
+            }
+
+            boolean exists = sysAuthTokenBlacklistService.lambdaQuery().eq(SysAuthTokenBlacklist::getId, claims.getId()).exists();
+
+            AuthTokenStatusEnum authTokenStatusEnum = exists ? AuthTokenStatusEnum.INVALID : AuthTokenStatusEnum.VALID;
+            // 设置缓存
+            stringRedisTemplate.opsForValue().set(key, authTokenStatusEnum.getId(), 2, TimeUnit.HOURS);
+            if (exists) {
+                log.debug("token无效");
+                throw ClientException.of("登录失效，请重新登录", claims.getId());
+            }
         }
         return true;
     }
@@ -135,15 +176,14 @@ public class JwtTokenManager implements TokenManager {
      * @param token JWT Token
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void invalidateToken(String token) {
-        Claims claims = parseTokenToClaims(token);
-        String jwtId = claims.getId();
-
-        // 黑名单Token Key
-        String key = RedisKeyConst.getKey(RedisKeyConst.JWT_TOKEN_BLACKLIST, jwtId);
-        if (stringRedisTemplate.hasKey(key)) {
+        if (StringUtil.isBlank(token)) {
+            log.warn("token为空");
             return;
         }
+        Claims claims = parseTokenToClaims(token);
+        String tokenId = claims.getId();
 
         Date expiration = claims.getExpiration();
         if (expiration != null) {
@@ -152,8 +192,29 @@ public class JwtTokenManager implements TokenManager {
                 return;
             }
         }
-        // 将其加入黑名单
-        stringRedisTemplate.opsForValue().set(key, "", 3600, TimeUnit.SECONDS);
+
+        // 黑名单Token Key
+        String key = RedisKeyConst.getKey(RedisKeyConst.AUTH_TOKEN_STATUS_KEY, tokenId);
+        if (stringRedisTemplate.hasKey(key)) {
+            // 本身无效，就不需要再设置无效
+            if (Objects.equals(stringRedisTemplate.opsForValue().get(key), AuthTokenStatusEnum.INVALID.getId())) {
+                return;
+            }
+        }
+
+        synchronized (this) {
+            if (stringRedisTemplate.hasKey(key)) {
+                // 本身无效，就不需要再设置无效
+                if (Objects.equals(stringRedisTemplate.opsForValue().get(key), AuthTokenStatusEnum.INVALID.getId())) {
+                    return;
+                }
+            }
+
+            // 保存
+            sysAuthTokenBlacklistService.save(tokenId, token);
+            // 设置缓存
+            stringRedisTemplate.opsForValue().set(key, AuthTokenStatusEnum.INVALID.getId(), 2, TimeUnit.HOURS);
+        }
     }
 
     /**
@@ -198,12 +259,8 @@ public class JwtTokenManager implements TokenManager {
         Map<String, Object> payload = new HashMap<>();
         Object principal = authentication.getPrincipal();
         if (principal instanceof ImUserDetails imUserDetails) {
-            payload.put(SecurityConstants.JWT_KEY_ID, imUserDetails.getId());
-            payload.put(SecurityConstants.JWT_KEY_USERNAME, imUserDetails.getUsername());
-            payload.put(SecurityConstants.JWT_KEY_NICKNAME, imUserDetails.getNickname());
+            payload.put(SecurityConstants.JWT_KEY_USER_DETAIL, JsonUtil.toJsonString(imUserDetails));
             payload.put(SecurityConstants.JWT_KEY_JWT_USER_TYPE, SecurityConstants.JWT_VALUE_JWT_USER_TYPE_IM_USER);
-        } else {
-
         }
 
         // 过期时间
@@ -218,7 +275,7 @@ public class JwtTokenManager implements TokenManager {
         return Jwts.builder()
                 .claims(payload)
                 .subject(authentication.getName())
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().toString().replace("-", ""))
                 .issuedAt(CurrentTimeContext.getDate())
                 .expiration(expiration)
                 .signWith(secretKey)

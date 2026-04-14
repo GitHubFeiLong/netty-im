@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AccountExpiredException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -46,6 +43,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
             case AccountExpiredException c -> result.setClientMessage("用户已失效");
             case DisabledException c -> result.setClientMessage("用户未激活");
             case LockedException c -> result.setClientMessage("用户已锁定");
+            case InsufficientAuthenticationException c -> result.setClientMessage("认证信息不足，请重新登录");
             default -> result.clientMessage(authException.getMessage());
         }
 

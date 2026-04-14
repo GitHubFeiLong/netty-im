@@ -4,6 +4,8 @@ import com.feilong.im.core.Result;
 import com.feilong.im.exception.BasicException;
 import com.feilong.im.exception.ClientException;
 import com.feilong.im.exception.ServerException;
+import io.jsonwebtoken.ClaimJwtException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -50,18 +55,27 @@ public class GlobalExceptionHandler {
     public final HttpServletResponse response;
 
 
-   /* *//**
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Result<BasicException> authenticationExceptionDispose(ExpiredJwtException exception){
+        ClientException e = ClientException.of(exception, "登录失效，请重新登录");
+        printErrorMessage(e);
+        return Result.ofFail(e);
+    }
+    /**
      * 认证异常，直接抛出
      * <p>只有抛出后，才能执行spring security 自定义配置的异常处理器进行处理</p>
      * @see AccessDeniedHandler
      * @see AuthenticationEntryPoint
      * @param exception 自定义异常对象
      * @return 响应对象
-     *//*
+     */
     @ExceptionHandler(AuthenticationException.class)
     public Result<BasicException> authenticationExceptionDispose(AuthenticationException exception){
-        throw exception;
-    }*/
+        ClientException e = ClientException.of(exception, "用户名或密码错误");
+        printErrorMessage(e);
+        return Result.ofFail(e);
+    }
 
     /**
      * 缺少请求参数异常，直接抛出
