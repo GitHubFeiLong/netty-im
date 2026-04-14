@@ -9,11 +9,16 @@ import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.model.ClassAnnotationAttributes;
+import com.feilong.im.entity.BaseEntity;
 import com.google.common.collect.Lists;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import net.sf.jsqlparser.schema.Column;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author cfl 2026/04/14
@@ -45,6 +50,7 @@ public class CodeGenerator {
             // "im_user",
             // "im_friend",
             // "im_message"
+            "sys_app"
     );
 
     public static void main(String[] args) {
@@ -53,7 +59,7 @@ public class CodeGenerator {
                 .globalConfig(builder -> builder
                         .author(AUTHOR)
                         .outputDir(OUTPUT_DIR)
-                        .commentDate("yyyy-MM-dd")
+                        .commentDate("yyyy/MM/dd")
                         .dateType(DateType.TIME_PACK)
                         .disableOpenDir()  // 禁止自动打开输出目录
                 )
@@ -71,15 +77,15 @@ public class CodeGenerator {
                 .strategyConfig(builder -> builder
                         // 设置需要生成的表名
                         .addInclude(getTables())
-                        // 排除不需要生成的表
-                        .addExclude("flyway_schema_history")
+                        // 排除不需要生成的表 不能和 addInclude 同时使用
+                        // .addExclude("flyway_schema_history")
                         // 实体配置
                         .entityBuilder()
                         .javaTemplate("/templates/entity.java")
                         .idType(IdType.AUTO)
                         .naming(NamingStrategy.underline_to_camel) // 数据库表字段映射到实体的命名策略，默认下划线转驼峰
                         .enableSerialAnnotation() // 启用 java.io.Serial注解
-                        .enableLombok(new ClassAnnotationAttributes("@Data", "lombok.Data")) // 是否使用lombok
+                        .enableLombok(new ClassAnnotationAttributes("@Data", "lombok.Data"))
                         .enableChainModel()  // 启用链式模型
                         .enableTableFieldAnnotation() // 启用字段注解
                         .enableFileOverride() // 开启覆盖已生成的文件
@@ -111,6 +117,7 @@ public class CodeGenerator {
                 )
                 // 使用 Freemarker 模板引擎
                 .templateEngine(new FreemarkerTemplateEngine())
+
                 // 执行
                 .execute();
     }

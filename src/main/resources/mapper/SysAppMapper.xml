@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.feilong.im.dao.SysAppMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.feilong.im.entity.SysApp">
+        <id column="id" property="id" />
+        <result column="secret" property="secret" />
+        <result column="name" property="name" />
+        <result column="index_url" property="indexUrl" />
+        <result column="remark" property="remark" />
+        <result column="status" property="status" />
+        <result column="version" property="version" />
+        <result column="deleted" property="deleted" />
+        <result column="created_time" property="createdTime" />
+        <result column="created_by" property="createdBy" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="updated_by" property="updatedBy" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, secret, name, index_url, remark, status, version, deleted, created_time, created_by, updated_time, updated_by
+    </sql>
+
+</mapper>

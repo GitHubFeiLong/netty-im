@@ -9,13 +9,10 @@ import ${superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
  * ${table.comment!} 服务实现类
- * </p>
- *
- * @author ${author}
- * @since ${date}
+ * @author ${author} ${date}
  */
+
 @Service
 <#if kotlin>
 open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>()<#if generateService>, ${table.serviceName}</#if> {

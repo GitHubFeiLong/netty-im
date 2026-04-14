@@ -4,7 +4,6 @@ package ${package.Mapper};
 import ${pkg};
 </#list>
 <#if importMapperJavaPackages?size !=0>
-
   <#list importMapperJavaPackages as pkg>
 import ${pkg};
    </#list>
@@ -15,8 +14,7 @@ import ${pkg};
  * ${table.comment!} Mapper 接口
  * </p>
  *
- * @author ${author}
- * @since ${date}
+ * @author ${author} ${date}
  */
 <#if mapperAnnotationClass??>
 @${mapperAnnotationClass.simpleName}

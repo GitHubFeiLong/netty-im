@@ -1,55 +1,48 @@
 package ${package.Entity};
 
 <#list importEntityFrameworkPackages as pkg>
-    import ${pkg};
+import ${pkg};
 </#list>
 
 <#list importEntityJavaPackages as pkg>
-    import ${pkg};
+import ${pkg};
 </#list>
 
 /**
-* <p>
-* ${table.comment!}
-* </p>
-*
-* @author ${author}
-* @since ${date}
-*/
+ * ${table.comment!}
+ * @author ${author} ${date}
+ */
 <#list entityClassAnnotations as an>
-    ${an.displayName}
+${an.displayName}
 </#list>
 <#if superEntityClass??>
-    public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
+public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
 <#elseif activeRecord>
-    public class ${entity} extends Model<${entity}> {
+public class ${entity} extends Model<${entity}> {
 <#elseif entitySerialVersionUID>
-    public class ${entity} implements Serializable {
+public class ${entity} implements Serializable {
 <#else>
-    public class ${entity} {
+public class ${entity} {
 </#if>
 <#if entitySerialVersionUID>
-
-    <#if entitySerialAnnotation>
-        @Serial
-    </#if>
+    <#if entitySerialAnnotation>@Serial</#if>
     private static final long serialVersionUID = 1L;
 </#if>
-<#-- ----------  BEGIN 字段循环遍历  ---------->
+<#----------  BEGIN 字段循环遍历  ---------->
 <#list table.fields as field>
     <#if field.keyFlag>
         <#assign keyPropertyName="${field.propertyName}"/>
     </#if>
 
     <#if field.comment!?length gt 0>
-        <#if entityFieldUseJavaDoc>
-            /**
-            * ${field.comment}
-            */
-        </#if>
+    <#if entityFieldUseJavaDoc>
+    /**
+     * ${field.comment}
+     */
+    </#if>
     </#if>
     <#list field.annotationAttributesList as an>
-        ${an.displayName}
+    ${an.displayName}
     </#list>
     private ${field.propertyType} ${field.propertyName};
 </#list>
@@ -111,3 +104,4 @@ package ${package.Entity};
     }
 </#if>
 }
+
