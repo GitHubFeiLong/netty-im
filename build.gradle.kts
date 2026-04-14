@@ -45,11 +45,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
 
     // ========== MyBatis-Plus ==========
-    implementation("com.baomidou:mybatis-plus-spring-boot3-starter:3.5.9")
-    implementation("com.baomidou:mybatis-plus-jsqlparser:3.5.9")
+    implementation("com.baomidou:mybatis-plus-spring-boot3-starter:3.5.15")
+    implementation("com.baomidou:mybatis-plus-jsqlparser:3.5.15")
 
     // MyBatis-Plus 代码生成器
-    implementation("com.baomidou:mybatis-plus-generator:3.5.9")
+    implementation("com.baomidou:mybatis-plus-generator:3.5.15")
     implementation("org.freemarker:freemarker:2.3.33")
 
     // ========== Netty (使用 Spring Boot 管理的版本) ==========

@@ -1,11 +1,14 @@
 package com.feilong.im.generator;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.po.LikeTable;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.baomidou.mybatisplus.generator.model.ClassAnnotationAttributes;
 import com.google.common.collect.Lists;
 import net.sf.jsqlparser.schema.Column;
 
@@ -58,7 +61,7 @@ public class CodeGenerator {
                 .packageConfig(builder -> builder
                         .parent(PARENT_PACKAGE)
                         .entity("entity")
-                        .mapper("mapper")
+                        .mapper("dao")
                         .service("service")
                         .serviceImpl("service.impl")
                         .controller("controller")
@@ -70,34 +73,41 @@ public class CodeGenerator {
                         .addInclude(getTables())
                         // 排除不需要生成的表
                         .addExclude("flyway_schema_history")
-
-                        // Entity 策略配置
+                        // 实体配置
                         .entityBuilder()
-                        .enableLombok()  // 启用 Lombok
+                        .javaTemplate("/templates/entity.java")
+                        .idType(IdType.AUTO)
+                        .naming(NamingStrategy.underline_to_camel) // 数据库表字段映射到实体的命名策略，默认下划线转驼峰
+                        .enableSerialAnnotation() // 启用 java.io.Serial注解
+                        .enableLombok(new ClassAnnotationAttributes("@Data", "lombok.Data")) // 是否使用lombok
                         .enableChainModel()  // 启用链式模型
-                        .logicDeleteColumnName("deleted")  // 逻辑删除字段
-                        .enableTableFieldAnnotation()  // 启用字段注解
-                        .naming(NamingStrategy.underline_to_camel)  // 表名映射策略：下划线转驼峰
-                        .columnNaming(NamingStrategy.underline_to_camel)  // 列名映射策略
+                        .enableTableFieldAnnotation() // 启用字段注解
+                        .enableFileOverride() // 开启覆盖已生成的文件
+                        .enableRemoveIsPrefix() // 开启移除is前缀
+                        .versionColumnName("version")
+                        .logicDeleteColumnName("deleted") // 逻辑删除字段名
                         .addTableFills(
-                                new Column("create_time", FieldFill.INSERT),
-                                new Column("update_time", FieldFill.INSERT_UPDATE)
+                                new com.baomidou.mybatisplus.generator.fill.Column("created_time", FieldFill.INSERT),
+                                new com.baomidou.mybatisplus.generator.fill.Column("updated_time", FieldFill.INSERT_UPDATE)
                         )
-
-                        // Mapper 策略配置
+                        // mapper配置
                         .mapperBuilder()
-                        .enableBaseResultMap()  // 启用 BaseResultMap
+                        .mapperTemplate("/templates/mapper.java")
+                        .mapperXmlTemplate("/templates/mapper.xml")
+                        .enableFileOverride() // 开启覆盖已生成的文件(小心数据丢失)
                         .enableBaseColumnList()  // 启用 BaseColumnList
-
-                        // Service 策略配置
+                        .enableBaseResultMap()// 启用 BaseResultMap
+                        // service 配置
                         .serviceBuilder()
                         .formatServiceFileName("%sService")
-                        .formatServiceImplFileName("%sServiceImpl")
-
-                        // Controller 策略配置
+                        .serviceTemplate("/templates/service.java") // 设置 Service 模板
+                        .serviceImplTemplate("/templates/serviceImpl.java") // 设置 ServiceImpl 模板
+                        // controller 配置
                         .controllerBuilder()
-                        .enableRestStyle()  // 启用 REST 风格
-                        .enableHyphenStyle()  // 启用连字符风格
+                        .template("/templates/controller.java")
+                        .formatFileName("%sController")
+                        .enableHyphenStyle()
+                        .enableRestStyle()
                 )
                 // 使用 Freemarker 模板引擎
                 .templateEngine(new FreemarkerTemplateEngine())
@@ -110,7 +120,7 @@ public class CodeGenerator {
      * @return 表名数组
      */
     private static String[] getTables() {
-        if (TABLE_NAMES == null || TABLE_NAMES.isEmpty()) {
+        if (TABLE_NAMES.isEmpty()) {
             return new String[0];  // 空数组表示生成所有表
         }
         return TABLE_NAMES.toArray(new String[0]);
