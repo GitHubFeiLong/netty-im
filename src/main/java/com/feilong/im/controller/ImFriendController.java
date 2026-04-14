@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ImFriendController {
 
-    @Operation(summary = "添加好友")
-    @PostMapping
-    public Result<ImFriendDTO> addFriend() {
-        return null;
-    }
+    // @Operation(summary = "添加好友")
+    // @PostMapping
+    // public Result<ImFriendDTO> addFriend() {
+    //     return null;
+    // }
 
 }
