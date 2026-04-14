@@ -7,7 +7,6 @@ import java.util.Set;
  * @author cfl 2026/03/02
  */
 public interface ImUserManageService {
-
     /**
      * 查询用户所有好友ID
      * @param userId 用户ID

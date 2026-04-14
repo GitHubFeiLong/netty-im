@@ -7,6 +7,7 @@ import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.IMessageCmdEnum;
 import com.google.common.base.Strings;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.function.Supplier;
@@ -16,6 +17,7 @@ import java.util.function.Supplier;
  * @author cfl 2026/03/27
  */
 @Data
+@Accessors(chain=true)
 public class MessageReq {
 
     /**

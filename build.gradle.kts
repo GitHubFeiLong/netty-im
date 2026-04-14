@@ -48,6 +48,10 @@ dependencies {
     implementation("com.baomidou:mybatis-plus-spring-boot3-starter:3.5.9")
     implementation("com.baomidou:mybatis-plus-jsqlparser:3.5.9")
 
+    // MyBatis-Plus 代码生成器
+    implementation("com.baomidou:mybatis-plus-generator:3.5.9")
+    implementation("org.freemarker:freemarker:2.3.33")
+
     // ========== Netty (使用 Spring Boot 管理的版本) ==========
     implementation("io.netty:netty-all")
 
@@ -85,6 +89,9 @@ dependencies {
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
+    // Lombok (测试代码)
+    testCompileOnly("org.projectlombok:lombok:1.18.42")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
     // ========== Test ==========
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 

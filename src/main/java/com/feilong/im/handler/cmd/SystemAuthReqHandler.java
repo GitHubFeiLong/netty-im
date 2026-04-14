@@ -2,6 +2,9 @@ package com.feilong.im.handler.cmd;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.feilong.im.config.NettyServerHandler;
+import com.feilong.im.config.security.authentication.imuser.ImUserAuthenticationToken;
+import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
+import com.feilong.im.config.security.token.TokenManager;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
@@ -14,12 +17,15 @@ import com.feilong.im.message.MessageReq;
 import com.feilong.im.message.MessageResp;
 import com.feilong.im.service.ImUserManageService;
 import com.feilong.im.service.ImUserService;
+import com.feilong.im.service.SysAuthTokenBlacklistService;
+import com.feilong.im.util.AssertUtil;
 import com.feilong.im.util.JsonUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -36,6 +42,7 @@ public class SystemAuthReqHandler implements CmdHandler {
 
     private final ImUserService imUserService;
     private final ImUserManageService imUserManageService;
+    private final TokenManager tokenManager;
 
     /**
      * 处理子命令
@@ -47,7 +54,17 @@ public class SystemAuthReqHandler implements CmdHandler {
     public void handle(ChannelHandlerContext ctx, MessageReq messageReq) {
         SystemAuthReq req = JsonUtil.toObject(messageReq.getData(), SystemAuthReq.class);
 
-        Long imUserId = req.getImUserId();
+        Long imUserId = null;
+        String token = req.getToken();
+        tokenManager.validateToken(token);
+        Authentication authentication = tokenManager.parseToken(token);
+        if (authentication instanceof ImUserAuthenticationToken imUserAuthenticationToken) {
+            if (imUserAuthenticationToken.getPrincipal() instanceof ImUserDetails imUserDetails) {
+                imUserId = imUserDetails.getId();
+            }
+        }
+
+        AssertUtil.isNotNull(imUserId, "Token无效");
 
         log.info("用户{}进行登录IM", imUserId);
         // 获取或创建用户

@@ -7,8 +7,9 @@ import lombok.Data;
  */
 @Data
 public class SystemAuthReq {
+
     /**
-     * 用户id
+     * token
      */
-    private Long imUserId;
+    private String token;
 }
