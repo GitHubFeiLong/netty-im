@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author cfl 2026/04/13
  */
-@Tag(name = "登录注册")
 @Slf4j
+@Tag(name = "登录注册")
 @RequestMapping("/auth")
 @RestController
 @RequiredArgsConstructor

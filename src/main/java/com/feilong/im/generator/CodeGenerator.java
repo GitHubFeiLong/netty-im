@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.LikeTable;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
@@ -15,10 +16,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import net.sf.jsqlparser.schema.Column;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author cfl 2026/04/14
@@ -115,6 +113,111 @@ public class CodeGenerator {
                         .enableHyphenStyle()
                         .enableRestStyle()
                 )
+                // 注入配置(设置扩展类的模板路径和包路径)
+                .injectionConfig(consumer -> {
+
+                    // 自定义文件
+                    List<CustomFile> customFiles = new ArrayList<>();
+
+                    // DTO文件生成
+                    customFiles.add(new CustomFile
+                            .Builder()
+                            .fileName("DTO.java") // 创建的DTO文件后缀，例如sys_dept实体创建的是SysDeptDTO.java,其中DTO.java就是这个属性控制
+                            .templatePath("/templates/dto.java.ftl") //指定生成模板路径
+                            .packageName("dto") //包名,自3.5.10开始,可通过在package里面获取自定义包全路径,低版本下无法获取,示例:${package.DTO}
+                            .enableFileOverride() // 开启覆盖已生成的文件
+                            .build()
+                    );
+
+                    // VO文件生成
+                    customFiles.add(new CustomFile.Builder()
+                            .fileName("VO.java")
+                            .templatePath("/templates/vo.java.ftl")
+                            .packageName("dto.vo")
+                            .enableFileOverride()
+                            .build()
+                    );
+
+                    // // BO文件生成
+                    // customFiles.add(new CustomFile.Builder()
+                    //         .fileName("BO.java")
+                    //         .templatePath("/templates/vm/bo.java.vm")
+                    //         .packageName("model.bo")
+                    //         .enableFileOverride()
+                    //         .build()
+                    // );
+
+                    // 分页查询
+                    customFiles.add(new CustomFile.Builder()
+                            .fileName("PageQuery.java")
+                            .templatePath("/templates/pageQuery.java.ftl")
+                            .packageName("dto.page.query")
+                            .enableFileOverride()
+                            .build()
+                    );
+                    //
+                    // // 分页结果
+                    // customFiles.add(new CustomFile.Builder()
+                    //         .fileName("PageVO.java")
+                    //         .templatePath("/templates/vm/pageVO.java.vm")
+                    //         .packageName("model.vo")
+                    //         .enableFileOverride()
+                    //         .build()
+                    // );
+                    //
+                    // 表单，用于新增和修改
+                    customFiles.add(new CustomFile.Builder()
+                            .fileName("Form.java")
+                            .templatePath("/templates/form.java.ftl")
+                            .packageName("dto.form")
+                            .enableFileOverride()
+                            .build()
+                    );
+
+                    // mapstruct接口文件
+                    customFiles.add(new CustomFile.Builder()
+                            .fileName("EntityMapper.java")
+                            .templatePath("/templates/entityMapper.java.ftl")
+                            .packageName("mapstruct")
+                            .enableFileOverride()
+                            .build()
+                    );
+
+                    consumer.customFile(customFiles);
+                    consumer.beforeOutputFile((tableInfo, objectMap) -> {
+                        // 为每个表生成首字母小写的实体名
+                        String entityName = tableInfo.getEntityName();
+                        String firstCharLowerCaseEntity = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+                        // 注入自定义参数
+                        objectMap.put("firstCharLowerCaseEntity", firstCharLowerCaseEntity);
+                        //
+                        // objectMap.put("projectPackage", projectPackage);
+
+                        // 检测需要导入的包
+                        boolean needBigDecimal = tableInfo.getFields().stream()
+                                .anyMatch(field -> "BigDecimal".equals(field.getPropertyType()));
+                        objectMap.put("needBigDecimal", needBigDecimal);
+                        boolean needLocalDateTime = tableInfo.getFields().stream()
+                                .anyMatch(field -> "LocalDateTime".equals(field.getPropertyType()));
+                        objectMap.put("needLocalDateTime", needLocalDateTime);
+                        boolean needLocalDate = tableInfo.getFields().stream()
+                                .anyMatch(field -> "LocalDate".equals(field.getPropertyType()));
+                        objectMap.put("needLocalDate", needLocalDate);
+                        boolean needLocalTime = tableInfo.getFields().stream()
+                                .anyMatch(field -> "LocalTime".equals(field.getPropertyType()));
+                        objectMap.put("needLocalTime", needLocalTime);
+
+                        List<String> pojoPkgs = new ArrayList<>();
+                        // DTO 包
+                        pojoPkgs.add("com.feilong.im.entity." + entityName);
+                        pojoPkgs.add("com.feilong.im.dto." + entityName + "DTO");
+                        pojoPkgs.add("com.feilong.im.dto.vo." + entityName + "VO");
+                        pojoPkgs.add("com.feilong.im.dto.form." + entityName + "Form");
+                        pojoPkgs.add("com.feilong.im.dto.page.query." + entityName + "PageQuery");
+                        pojoPkgs.add("com.feilong.im.core.Result");
+                        objectMap.put("pojoPkgs", pojoPkgs);
+                    });
+                })
                 // 使用 Freemarker 模板引擎
                 .templateEngine(new FreemarkerTemplateEngine())
 
