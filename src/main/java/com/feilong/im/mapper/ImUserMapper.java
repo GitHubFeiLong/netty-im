@@ -1,4 +1,4 @@
-package com.feilong.im.dao;
+package com.feilong.im.mapper;
 
 import com.feilong.im.entity.ImUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

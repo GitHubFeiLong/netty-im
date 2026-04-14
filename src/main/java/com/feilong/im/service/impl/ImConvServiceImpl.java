@@ -1,13 +1,10 @@
 package com.feilong.im.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.feilong.im.constant.RedisKeyConst;
-import com.feilong.im.context.CurrentTimeContext;
-import com.feilong.im.dao.ImConvMapper;
+import com.feilong.im.mapper.ImConvMapper;
 import com.feilong.im.dto.ImConvDTO;
 import com.feilong.im.entity.ImConv;
-import com.feilong.im.entity.ImConvUser;
 import com.feilong.im.enums.type.ImConvTypeEnum;
 import com.feilong.im.mapstruct.ImConvEntityMapper;
 import com.feilong.im.service.ImConvService;
@@ -16,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**

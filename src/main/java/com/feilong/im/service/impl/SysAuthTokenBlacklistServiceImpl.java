@@ -1,7 +1,7 @@
 package com.feilong.im.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.feilong.im.dao.SysAuthTokenBlacklistMapper;
+import com.feilong.im.mapper.SysAuthTokenBlacklistMapper;
 import com.feilong.im.entity.SysAuthTokenBlacklist;
 import com.feilong.im.service.SysAuthTokenBlacklistService;
 import lombok.RequiredArgsConstructor;

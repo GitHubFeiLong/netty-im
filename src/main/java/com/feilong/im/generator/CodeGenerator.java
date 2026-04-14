@@ -65,7 +65,7 @@ public class CodeGenerator {
                 .packageConfig(builder -> builder
                         .parent(PARENT_PACKAGE)
                         .entity("entity")
-                        .mapper("dao")
+                        .mapper("mapper")
                         .service("service")
                         .serviceImpl("service.impl")
                         .controller("controller")
@@ -220,9 +220,11 @@ public class CodeGenerator {
                 })
                 // 使用 Freemarker 模板引擎
                 .templateEngine(new FreemarkerTemplateEngine())
-
                 // 执行
                 .execute();
+
+        System.out.println("Done!");
+        System.exit(0);
     }
 
     /**

@@ -3,7 +3,7 @@ package com.feilong.im.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.feilong.im.dao.ImFriendMapper;
+import com.feilong.im.mapper.ImFriendMapper;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.entity.ImFriend;
 import com.feilong.im.entity.ImUser;

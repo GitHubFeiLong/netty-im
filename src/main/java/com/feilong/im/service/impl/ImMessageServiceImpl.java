@@ -1,7 +1,7 @@
 package com.feilong.im.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.feilong.im.dao.ImMessageMapper;
+import com.feilong.im.mapper.ImMessageMapper;
 import com.feilong.im.entity.ImMessage;
 import com.feilong.im.enums.status.ImMessageStatusEnum;
 import com.feilong.im.service.ImMessageService;

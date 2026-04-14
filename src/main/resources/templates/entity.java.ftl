@@ -24,6 +24,7 @@ public class ${entity} implements Serializable {
 <#else>
 public class ${entity} {
 </#if>
+
 <#if entitySerialVersionUID>
     <#if entitySerialAnnotation>@Serial</#if>
     private static final long serialVersionUID = 1L;

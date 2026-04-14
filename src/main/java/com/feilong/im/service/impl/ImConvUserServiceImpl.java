@@ -2,7 +2,7 @@ package com.feilong.im.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.feilong.im.context.CurrentTimeContext;
-import com.feilong.im.dao.ImConvUserMapper;
+import com.feilong.im.mapper.ImConvUserMapper;
 import com.feilong.im.entity.ImConvUser;
 import com.feilong.im.service.ImConvUserService;
 import com.feilong.im.service.ImMessageService;
@@ -11,9 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * <p>

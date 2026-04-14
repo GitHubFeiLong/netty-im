@@ -3,6 +3,8 @@ package ${package.PageQuery};
 import java.io.Serializable;
 import java.io.Serial;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ import ${package.PageQuery}.BasePageQuery;
  * @author ${author} ${date}
  */
 @Data
+@ToString(callSuper=true)
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "${entity}PageQuery")
 public class ${entity}PageQuery extends BasePageQuery implements Serializable {
 

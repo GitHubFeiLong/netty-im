@@ -3,6 +3,7 @@ package ${package.Form};
 import java.io.Serializable;
 import java.io.Serial;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author ${author} ${date}
  */
 @Data
+@Accessors(chain = true)
 @Schema(description = "${entity}Form")
 public class ${entity}Form implements Serializable {
 

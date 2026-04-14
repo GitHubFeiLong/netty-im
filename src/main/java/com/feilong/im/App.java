@@ -12,7 +12,7 @@ import org.springframework.util.StopWatch;
  * @author cfl 2026/03/18
  */
 @SpringBootApplication
-@MapperScan("com.feilong.im.dao")
+@MapperScan("com.feilong.im.mapper")
 public class App {
     public static void main(String[] args) {
         StopWatch stopWatch = new StopWatch();
