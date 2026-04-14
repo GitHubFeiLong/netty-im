@@ -10,10 +10,7 @@ import ${pkg};
 </#if>
 
 /**
- * <p>
  * ${table.comment!} Mapper 接口
- * </p>
- *
  * @author ${author} ${date}
  */
 <#if mapperAnnotationClass??>

@@ -10,7 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 /**
- * $!{table.comment} EntityMapper
+ * ${table.comment} EntityMapper
  * @see ${package.Entity}.${entity}
  * @author ${author} ${date}
  */

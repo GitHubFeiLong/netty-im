@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * $!{table.comment} VO
+ * ${table.comment} VO
  * @see ${package.Entity}.${entity}
  * @author ${author} ${date}
  */

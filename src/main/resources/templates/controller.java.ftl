@@ -17,11 +17,11 @@ import ${package.Service}.${entity}Service;
 import ${package.EntityMapper}.${entity}EntityMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 /**
  * ${table.comment!} 前端控制器
  * @author ${author} ${date}

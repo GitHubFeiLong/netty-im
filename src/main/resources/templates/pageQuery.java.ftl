@@ -8,15 +8,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import io.swagger.v3.oas.annotations.media.Schema;
+import ${package.PageQuery}.BasePageQuery;
 
 /**
- * $!{table.comment} PageQuery
+ * ${table.comment} PageQuery
  * @see ${package.Entity}.${entity}
  * @author ${author} ${date}
  */
 @Data
 @Schema(description = "${entity}PageQuery")
-public class ${entity}PageQuery implements Serializable {
+public class ${entity}PageQuery extends BasePageQuery implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
