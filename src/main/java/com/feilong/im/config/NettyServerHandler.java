@@ -187,7 +187,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<TextWebSocke
         if (evt instanceof IdleStateEvent event) {
             // 服务端检测到读空闲（客户端超过一段时间没发消息）
             if (event.state() == IdleState.ALL_IDLE) {
-                log.debug("读写空闲，发送心跳: {}",  ctx.channel().remoteAddress());
+                log.trace("读写空闲，发送心跳: {}",  ctx.channel().remoteAddress());
                 // 响应会话
                 MessageResp<String> messageResp = new MessageResp<>(
                         MessageTypeEnum.SYSTEM,

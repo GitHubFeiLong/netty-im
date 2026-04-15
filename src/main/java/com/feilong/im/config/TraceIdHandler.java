@@ -23,13 +23,14 @@ public class TraceIdHandler extends ChannelDuplexHandler {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            String traceId = TraceIdContext.get();
+            String traceId = TraceIdContext.generateTraceId();
             // 设置TraceId到MDC
             TraceIdContext.set(traceId);
             ctx.channel().attr(TRACE_ID_KEY).set(traceId);
             // 继续处理下一个Handler
             super.channelRead(ctx, msg);
         } finally {
+            ctx.channel().attr(TRACE_ID_KEY).set(null);
             TraceIdContext.remove();
         }
     }

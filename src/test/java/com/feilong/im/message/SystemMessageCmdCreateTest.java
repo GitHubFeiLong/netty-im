@@ -39,7 +39,7 @@ public class SystemMessageCmdCreateTest {
     void testCreateAuthReq() {
         MessageReq messageReq = create(MessageTypeEnum.SYSTEM, MessageCmdSystemEnum.AUTH_REQ);
         SystemAuthReq req = new SystemAuthReq();
-        req.setToken("eyJhbGciOiJIUzUxMiJ9.eyJqd3RVc2VyRGV0YWlsIjoie1wiaWRcIjpcIjFcIixcInVzZXJuYW1lXCI6XCJhZG1pblwifSIsImp3dFVzZXJUeXBlIjoiaW1Vc2VyIiwic3ViIjoiSW1Vc2VyRGV0YWlscyhpZD0xLCB1c2VybmFtZT1hZG1pbiwgbmlja25hbWU9bnVsbCkiLCJqdGkiOiI4MDAwYTI2Mi1iZmQzLTQxYWItYWExNS05YmM0NWJiMDBlNjciLCJpYXQiOjE3NzYxMzMxNjIsImV4cCI6MTc3NjczNzk2Mn0.r8dHhxgonid_2H08_mFXjnlSwun9pPQ-YalOYX55csa9cvK5DoVrfaB9ZfO6aX2u__nRJs4I52WUhkP3j9UXpg");
+        req.setToken("eyJhbGciOiJIUzUxMiJ9.eyJqd3RVc2VyRGV0YWlsIjoie1wiaWRcIjpcIjFcIixcInVzZXJuYW1lXCI6XCJhZG1pblwifSIsImp3dFVzZXJUeXBlIjoiaW1Vc2VyIiwic3ViIjoiSW1Vc2VyRGV0YWlscyh0b2tlbklkPW51bGwsIGlkPTEsIHVzZXJuYW1lPWFkbWluLCBuaWNrbmFtZT1udWxsKSIsImp0aSI6IjcyNWY4ODY1N2RiMTQ1YjE4ZjUxNGQ5ZGIxODY4ZGNmIiwiaWF0IjoxNzc2MjUzNDU0LCJleHAiOjE3NzYyNjA2NTR9.rGx_R8X9-zoE_guyiy-47roCS7LeBiJMHjBTQ-hfvqzheyP2xb8yHqWb3y31OMf5hnQjQemWCIvN83m_9nTf9A");
         messageReq.setData(JsonUtil.toJsonString(req));
 
         log.info("{}", JsonUtil.toJsonString(messageReq));

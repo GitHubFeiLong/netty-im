@@ -20,6 +20,7 @@ import com.feilong.im.service.ImUserService;
 import com.feilong.im.service.SysAuthTokenBlacklistService;
 import com.feilong.im.util.AssertUtil;
 import com.feilong.im.util.JsonUtil;
+import com.feilong.im.util.ValidationUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -53,6 +54,7 @@ public class SystemAuthReqHandler implements CmdHandler {
     @Override
     public void handle(ChannelHandlerContext ctx, MessageReq messageReq) {
         SystemAuthReq req = JsonUtil.toObject(messageReq.getData(), SystemAuthReq.class);
+        ValidationUtil.validate(req);
 
         Long imUserId = null;
         String token = req.getToken();

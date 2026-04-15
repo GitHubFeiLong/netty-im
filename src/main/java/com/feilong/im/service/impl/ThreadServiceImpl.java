@@ -43,27 +43,6 @@ public class ThreadServiceImpl implements ThreadService {
     public void execute(ChannelHandlerContext ctx, MessageReq messageReq, Runnable runnable) {
         Channel channel = ctx.channel();
         String traceId = CommonUtil.genSubThreadTraceId(channel);
-        // try (ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor()){
-        //     try {
-        //         // 设置TraceId
-        //         TraceIdContext.set(traceId);
-        //         // 设置当前请求时间
-        //         CurrentTimeContext.set();
-        //         // 提交任务
-        //         virtualExecutor.submit(runnable);
-        //     } catch (Exception e) {
-        //         log.error("异步执行出现异常");
-        //         NettyServerHandler.exceptionCaughtStatic(ctx, e);
-        //     } finally {
-        //         // 清除 channel 属性
-        //         traceIdHandler.handlerRemoved(ctx);
-        //         // 清理时间
-        //         CurrentTimeContext.remove();
-        //         // 清除TraceId
-        //         TraceIdContext.remove();
-        //     }
-        //
-        // }
         processLogicThreadPool.execute(() -> {
             try {
                 // 设置TraceId

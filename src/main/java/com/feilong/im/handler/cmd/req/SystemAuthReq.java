@@ -1,5 +1,6 @@
 package com.feilong.im.handler.cmd.req;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -11,5 +12,6 @@ public class SystemAuthReq {
     /**
      * token
      */
+    @NotBlank
     private String token;
 }
