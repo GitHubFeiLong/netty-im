@@ -49,15 +49,15 @@ public class ${table.controllerName} {
 
     @Operation(summary = "${table.comment}分页列表")
     @GetMapping("/page")
-    public Result<IPage<${entity}VO>> listPaged${entity}s(@Valid ${entity}PageQuery queryParams) {
-        IPage<${entity}VO> result = ${firstCharLowerCaseEntity}Service.listPaged${entity}s(queryParams);
+    public Result<IPage<${entity}VO>> page(@Valid ${entity}PageQuery queryParams) {
+        IPage<${entity}VO> result = ${firstCharLowerCaseEntity}Service.page(queryParams);
         return Result.ofSuccess(result);
     }
 
     @Operation(summary = "新增${table.comment}")
     @PostMapping
     public Result<${entity}VO> save${entity}(@RequestBody @Valid ${entity}Form formData) {
-        ${entity} ${firstCharLowerCaseEntity} = ${firstCharLowerCaseEntity}Service.save${entity}(formData);
+        ${entity} ${firstCharLowerCaseEntity} = ${firstCharLowerCaseEntity}Service.save(formData);
         return Result.ofSuccess(${firstCharLowerCaseEntity}EntityMapper.toVo(${firstCharLowerCaseEntity}));
     }
 
@@ -71,21 +71,21 @@ public class ${table.controllerName} {
     @Operation(summary = "${table.comment}表单数据")
     @GetMapping("/{id}/form")
     public Result<${entity}Form> get${entity}Form(@Parameter(description = "$!{table.comment}ID") @PathVariable Long id) {
-        ${entity}Form formData = ${firstCharLowerCaseEntity}Service.get${entity}FormData(id);
+        ${entity}Form formData = ${firstCharLowerCaseEntity}Service.getForm(id);
         return Result.ofSuccess(formData);
     }
 
     @Operation(summary = "修改${table.comment}")
     @PutMapping(value = "/{id}")
     public Result<${entity}VO> update${entity}(@Parameter(description = "$!{table.comment}ID") @PathVariable Long id, @RequestBody @Valid ${entity}Form formData) {
-        ${entity} ${firstCharLowerCaseEntity} = ${firstCharLowerCaseEntity}Service.update${entity}(id, formData);
+        ${entity} ${firstCharLowerCaseEntity} = ${firstCharLowerCaseEntity}Service.update(id, formData);
         return Result.ofSuccess(${firstCharLowerCaseEntity}EntityMapper.toVo(${firstCharLowerCaseEntity}));
     }
 
     @Operation(summary = "删除${table.comment}")
     @DeleteMapping("/{ids}")
     public Result<Boolean> delete${entity}s(@Parameter(description = "$!{table.comment}ID，多个以英文逗号(,)分割") @PathVariable String ids) {
-        boolean result = ${firstCharLowerCaseEntity}Service.delete${entity}s(ids);
+        boolean result = ${firstCharLowerCaseEntity}Service.delete(ids);
         return Result.ofJudge(result);
     }
 }

@@ -8,7 +8,9 @@ import ${pkg};
 import ${pkg};
    </#list>
 </#if>
-
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import ${package.BO}.${entity}BO;
+import ${package.PageQuery}.${entity}PageQuery;
 /**
  * ${table.comment!} Mapper 接口
  * @author ${author} ${date}
@@ -32,4 +34,13 @@ public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
      */
     ${m.method}
 </#list>
+
+    /**
+     * ${table.comment!} 分页查询
+     *
+     * @param page 分页参数
+     * @param pageQuery 查询参数
+     * @return ${table.comment!}分页结果
+     */
+    Page<${entity}BO> page(Page<${entity}BO> page, ${entity}PageQuery pageQuery);
 }

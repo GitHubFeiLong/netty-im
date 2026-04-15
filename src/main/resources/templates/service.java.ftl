@@ -5,7 +5,7 @@ import ${superServiceClassPackage};
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${package.Form}.${entity}Form;
 import ${package.PageQuery}.${entity}PageQuery;
-import ${package.VO}.${entity}PageVO;
+import ${package.VO}.${entity}VO;
 
 /**
  * ${table.comment!} 服务类接口
@@ -14,18 +14,18 @@ import ${package.VO}.${entity}PageVO;
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     /**
-     * 分页列表
-     * @param queryParams 分页查询参数
+     * 分页查询
+     * @param pageQuery 分页查询参数
      * @return 分页结果
      */
-    IPage<${entity}VO> listPage(${entity}PageQuery queryParams);
+    IPage<${entity}VO> page(${entity}PageQuery pageQuery);
 
     /**
      * 获取表单数据
      * @param id ID
      * @return 表单数据
      */
-     ${entity}Form getFormData(Long id);
+     ${entity}Form getForm(Long id);
 
     /**
      * 新增

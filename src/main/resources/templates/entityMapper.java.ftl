@@ -1,9 +1,12 @@
 package ${package.EntityMapper};
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import ${package.Entity}.${entity};
 import ${package.DTO}.${entity}DTO;
 import ${package.Form}.${entity}Form;
 import ${package.VO}.${entity}VO;
+import ${package.BO}.${entity}BO;
+
 import java.util.Collection;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -58,4 +61,11 @@ public interface ${entity}EntityMapper extends EntityMapper<${entity}, ${entity}
      * @return VO
      */
     ${entity}VO toVo(${entity}DTO dto);
+
+    /**
+    * 分页结果转换
+    * @param bo 源分页信息
+    * @return 目标分页信息
+    */
+    Page<${entity}VO> toVo(Page<${entity}BO> bo);
 }

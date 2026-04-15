@@ -41,4 +41,32 @@ public class ${entity}PageQuery extends BasePageQuery implements Serializable {
     @Schema(description = "${field.comment}")
     private ${field.propertyType} ${field.propertyName};
 </#list>
+
+    @Schema(description = "分页开始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime startTime;
+
+    @Schema(description = "分页结束时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime endTime;
+
+    /**
+     * 获取开始时间
+     *
+     * @return LocalDateTime 当日0点
+     */
+    public LocalDateTime getStartTime() {
+        return startTime == null ? null : startTime.toLocalDate().atStartOfDay();
+    }
+
+    /**
+     * 获取截止时间
+     *
+     * @return LocalDateTime 当日最晚点
+     */
+    public LocalDateTime getEndTime() {
+        return endTime == null ? null : endTime.toLocalDate().atTime(LocalTime.MAX);
+    }
 }

@@ -138,14 +138,14 @@ public class CodeGenerator {
                             .build()
                     );
 
-                    // // BO文件生成
-                    // customFiles.add(new CustomFile.Builder()
-                    //         .fileName("BO.java")
-                    //         .templatePath("/templates/vm/bo.java.vm")
-                    //         .packageName("model.bo")
-                    //         .enableFileOverride()
-                    //         .build()
-                    // );
+                    // BO文件生成
+                    customFiles.add(new CustomFile.Builder()
+                            .fileName("BO.java")
+                            .templatePath("/templates/bo.java.ftl")
+                            .packageName("dto.bo")
+                            .enableFileOverride()
+                            .build()
+                    );
 
                     // 分页查询
                     customFiles.add(new CustomFile.Builder()
@@ -155,16 +155,6 @@ public class CodeGenerator {
                             .enableFileOverride()
                             .build()
                     );
-                    //
-                    // // 分页结果
-                    // customFiles.add(new CustomFile.Builder()
-                    //         .fileName("PageVO.java")
-                    //         .templatePath("/templates/vm/pageVO.java.vm")
-                    //         .packageName("model.vo")
-                    //         .enableFileOverride()
-                    //         .build()
-                    // );
-                    //
                     // 表单，用于新增和修改
                     customFiles.add(new CustomFile.Builder()
                             .fileName("Form.java")
@@ -211,6 +201,7 @@ public class CodeGenerator {
                         // DTO 包
                         pojoPkgs.add("com.feilong.im.entity." + entityName);
                         pojoPkgs.add("com.feilong.im.dto." + entityName + "DTO");
+                        pojoPkgs.add("com.feilong.im.dto.bo." + entityName + "BO");
                         pojoPkgs.add("com.feilong.im.dto.vo." + entityName + "VO");
                         pojoPkgs.add("com.feilong.im.dto.form." + entityName + "Form");
                         pojoPkgs.add("com.feilong.im.dto.page.query." + entityName + "PageQuery");
