@@ -13,6 +13,11 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "im.netty")
 public class ImNettyProperties {
     /**
+     * 是否启用 Netty（默认 true）
+     */
+    private Boolean enable = true;
+
+    /**
      * 服务端地址（默认 0.0.0.0）
      */
     private String host = "127.0.0.1";

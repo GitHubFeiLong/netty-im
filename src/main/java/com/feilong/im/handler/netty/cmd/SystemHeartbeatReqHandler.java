@@ -1,6 +1,6 @@
-package com.feilong.im.handler.cmd;
+package com.feilong.im.handler.netty.cmd;
 
-import com.feilong.im.config.NettyServerHandler;
+import com.feilong.im.handler.netty.NettyServerHandler;
 import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
 import com.feilong.im.message.MessageReq;
 import com.feilong.im.message.MessageResp;

@@ -1,13 +1,13 @@
-package com.feilong.im.handler.cmd.resp;
+package com.feilong.im.handler.netty.cmd.resp;
 
 import lombok.Data;
 
 /**
- * 登出响应
+ * 上线通知
  * @author cfl 2026/03/30
  */
 @Data
-public class SystemOfflineResp {
+public class SystemOnlineResp {
     /**
      * 用户id
      */

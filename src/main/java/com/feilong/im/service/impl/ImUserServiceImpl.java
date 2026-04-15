@@ -1,7 +1,7 @@
 package com.feilong.im.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.feilong.im.config.NettyServerHandler;
+import com.feilong.im.handler.netty.NettyServerHandler;
 import com.feilong.im.constant.RedisKeyConst;
 import com.feilong.im.context.CurrentTimeContext;
 import com.feilong.im.mapper.ImUserMapper;

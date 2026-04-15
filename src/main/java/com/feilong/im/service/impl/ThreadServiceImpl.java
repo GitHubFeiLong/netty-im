@@ -1,7 +1,7 @@
 package com.feilong.im.service.impl;
 
-import com.feilong.im.config.NettyServerHandler;
-import com.feilong.im.config.TraceIdHandler;
+import com.feilong.im.handler.netty.NettyServerHandler;
+import com.feilong.im.handler.netty.TraceIdHandler;
 import com.feilong.im.context.CurrentTimeContext;
 import com.feilong.im.context.CurrentUserContext;
 import com.feilong.im.context.TraceIdContext;

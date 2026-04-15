@@ -1,4 +1,4 @@
-package com.feilong.im.aop;
+package com.feilong.im.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feilong.im.context.TraceIdContext;

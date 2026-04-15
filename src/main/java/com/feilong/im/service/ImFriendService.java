@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.entity.ImFriend;
-import com.feilong.im.entity.ImUser;
-import com.feilong.im.handler.cmd.req.ContactPageReq;
+import com.feilong.im.handler.netty.cmd.req.ContactPageReq;
 
 /**
  * @author cfl 2026/03/31

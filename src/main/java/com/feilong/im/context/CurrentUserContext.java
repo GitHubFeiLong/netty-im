@@ -1,6 +1,6 @@
 package com.feilong.im.context;
 
-import com.feilong.im.config.NettyServerHandler;
+import com.feilong.im.handler.netty.NettyServerHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 /**

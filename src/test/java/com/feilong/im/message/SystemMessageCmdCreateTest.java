@@ -2,7 +2,7 @@ package com.feilong.im.message;
 
 import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
-import com.feilong.im.handler.cmd.req.SystemAuthReq;
+import com.feilong.im.handler.netty.cmd.req.SystemAuthReq;
 import com.feilong.im.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

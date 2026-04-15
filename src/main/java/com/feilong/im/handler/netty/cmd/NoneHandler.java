@@ -1,4 +1,4 @@
-package com.feilong.im.handler.cmd;
+package com.feilong.im.handler.netty.cmd;
 
 import com.feilong.im.message.MessageReq;
 import io.netty.channel.ChannelHandlerContext;

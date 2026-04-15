@@ -1,11 +1,11 @@
-package com.feilong.im.config;
+package com.feilong.im.handler.netty;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.feilong.im.enums.MessageErrorEnum;
 import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
 import com.feilong.im.exception.NettyClientException;
-import com.feilong.im.handler.cmd.resp.SystemOfflineResp;
+import com.feilong.im.handler.netty.cmd.resp.SystemOfflineResp;
 import com.feilong.im.message.MessageReq;
 import com.feilong.im.message.MessageResp;
 import com.feilong.im.service.*;

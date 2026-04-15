@@ -1,5 +1,7 @@
 package com.feilong.im.config;
 
+import com.feilong.im.handler.netty.NettyServerHandler;
+import com.feilong.im.handler.netty.TraceIdHandler;
 import com.feilong.im.properties.ImNettyProperties;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -17,6 +19,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -28,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(prefix = "im.netty", name = "enable", havingValue = "true")
 @RequiredArgsConstructor
 public class NettyServer {
     private final ImNettyProperties imNettyProperties;

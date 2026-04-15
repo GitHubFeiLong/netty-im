@@ -1,6 +1,6 @@
 package com.feilong.im.util;
 
-import com.feilong.im.config.TraceIdHandler;
+import com.feilong.im.handler.netty.TraceIdHandler;
 import com.feilong.im.context.TraceIdContext;
 import io.netty.channel.Channel;
 

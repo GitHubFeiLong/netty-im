@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.feilong.im.entity.ImFriend;
 import com.feilong.im.entity.ImUser;
-import com.feilong.im.handler.cmd.req.ContactPageReq;
+import com.feilong.im.handler.netty.cmd.req.ContactPageReq;
 import org.apache.ibatis.annotations.Param;
 
 /**

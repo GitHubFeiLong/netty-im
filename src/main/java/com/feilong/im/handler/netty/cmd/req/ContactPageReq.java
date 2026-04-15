@@ -1,4 +1,4 @@
-package com.feilong.im.handler.cmd.req;
+package com.feilong.im.handler.netty.cmd.req;
 
 import com.feilong.im.dto.BasePage;
 import lombok.Data;

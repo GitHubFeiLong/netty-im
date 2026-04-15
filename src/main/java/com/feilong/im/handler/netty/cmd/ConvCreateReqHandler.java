@@ -1,16 +1,14 @@
-package com.feilong.im.handler.cmd;
+package com.feilong.im.handler.netty.cmd;
 
 import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.feilong.im.config.NettyServerHandler;
+import com.feilong.im.handler.netty.NettyServerHandler;
 import com.feilong.im.dto.ImConvDTO;
 import com.feilong.im.dto.ImMessageDTO;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.entity.ImMessage;
-import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdConvEnum;
-import com.feilong.im.handler.cmd.req.ConvCreateReq;
-import com.feilong.im.handler.cmd.req.SystemAuthReq;
-import com.feilong.im.handler.cmd.resp.ConvCreateResp;
+import com.feilong.im.handler.netty.cmd.req.ConvCreateReq;
+import com.feilong.im.handler.netty.cmd.resp.ConvCreateResp;
 import com.feilong.im.mapstruct.ImMessageEntityMapper;
 import com.feilong.im.message.MessageReq;
 import com.feilong.im.message.MessageResp;

@@ -1,4 +1,4 @@
-package com.feilong.im.handler.cmd.resp;
+package com.feilong.im.handler.netty.cmd.resp;
 
 import com.feilong.im.dto.ImConvDTO;
 import lombok.Data;

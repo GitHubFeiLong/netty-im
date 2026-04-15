@@ -1,4 +1,4 @@
-package com.feilong.im.config;
+package com.feilong.im.handler.netty;
 
 import com.feilong.im.context.TraceIdContext;
 import io.netty.channel.ChannelDuplexHandler;

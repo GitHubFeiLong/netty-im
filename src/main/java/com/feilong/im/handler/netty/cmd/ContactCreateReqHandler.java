@@ -1,11 +1,11 @@
-package com.feilong.im.handler.cmd;
+package com.feilong.im.handler.netty.cmd;
 
-import com.feilong.im.config.NettyServerHandler;
+import com.feilong.im.handler.netty.NettyServerHandler;
 import com.feilong.im.entity.ImFriend;
 import com.feilong.im.enums.MessageErrorEnum;
 import com.feilong.im.enums.cmd.MessageCmdContactEnum;
 import com.feilong.im.exception.NettyClientException;
-import com.feilong.im.handler.cmd.req.ContactCreateReq;
+import com.feilong.im.handler.netty.cmd.req.ContactCreateReq;
 import com.feilong.im.message.MessageReq;
 import com.feilong.im.message.MessageResp;
 import com.feilong.im.service.ImFriendService;

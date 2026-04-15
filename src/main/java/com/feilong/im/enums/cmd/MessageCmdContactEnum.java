@@ -1,11 +1,10 @@
 package com.feilong.im.enums.cmd;
 
-import com.feilong.im.handler.cmd.CmdHandler;
-import com.feilong.im.handler.cmd.ContactCreateReqHandler;
-import com.feilong.im.handler.cmd.ContactPageReqHandler;
-import com.feilong.im.handler.cmd.NoneHandler;
+import com.feilong.im.handler.netty.cmd.CmdHandler;
+import com.feilong.im.handler.netty.cmd.ContactCreateReqHandler;
+import com.feilong.im.handler.netty.cmd.ContactPageReqHandler;
+import com.feilong.im.handler.netty.cmd.NoneHandler;
 import com.feilong.im.message.MessageReq;
-import com.feilong.im.message.MessageResp;
 import com.feilong.im.util.SpringUtil;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;

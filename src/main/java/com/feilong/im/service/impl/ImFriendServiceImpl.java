@@ -7,7 +7,7 @@ import com.feilong.im.mapper.ImFriendMapper;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.entity.ImFriend;
 import com.feilong.im.entity.ImUser;
-import com.feilong.im.handler.cmd.req.ContactPageReq;
+import com.feilong.im.handler.netty.cmd.req.ContactPageReq;
 import com.feilong.im.mapstruct.ImUserEntityMapper;
 import com.feilong.im.service.ImFriendService;
 import lombok.RequiredArgsConstructor;
