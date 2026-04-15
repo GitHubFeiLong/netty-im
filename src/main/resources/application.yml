@@ -47,3 +47,13 @@ im:
     worker-thread-count: 4
 
 
+api-log:
+  enabled: true
+  print-log-limit:
+    head-params:
+      authorization: true
+      user-agent: true
+      x-forwarded-host: false
+      x-forwarded-proto: false
+      x-forwarded-port: false
+      x-forwarded-for: false
