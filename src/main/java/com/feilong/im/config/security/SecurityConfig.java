@@ -32,10 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * Spring Security配置
- * @author cfl
- * @version 1.0.0
- * @date 2025-04-03
- * @since 1.0.0
+ * @author cfl 2026/4/15
  */
 @Slf4j
 @Configuration

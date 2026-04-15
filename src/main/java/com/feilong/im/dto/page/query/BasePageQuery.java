@@ -33,13 +33,4 @@ public class BasePageQuery {
 
     @Schema(description = "排序字段")
     private List<DatabaseSortItem> sorts;
-
-    /**
-     * 分页起始序号
-     *
-     * @return 起始序号
-     */
-    public Long getStartSerialNumber() {
-        return (long)(this.page - 1) * size + 1;
-    }
 }

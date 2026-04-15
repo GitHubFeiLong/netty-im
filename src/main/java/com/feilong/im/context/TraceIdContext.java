@@ -32,7 +32,7 @@ public class TraceIdContext {
      * 设置TraceId到MDC
      */
     public static void set(String traceId) {
-        if (!StringUtils.hasText(traceId)) {
+        if (traceId == null || traceId.isBlank()) {
             traceId = generateTraceId();
         }
         MDC.put(TRACE_ID_KEY, traceId);

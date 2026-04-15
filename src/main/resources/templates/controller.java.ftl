@@ -48,8 +48,8 @@ public class ${table.controllerName} {
     private final ${entity}EntityMapper ${firstCharLowerCaseEntity}EntityMapper;
 
     @Operation(summary = "${table.comment}分页列表")
-    @GetMapping("/page")
-    public Result<IPage<${entity}VO>> page(@Valid ${entity}PageQuery queryParams) {
+    @PostMapping("/page")
+    public Result<IPage<${entity}VO>> page(@RequestBody @Valid ${entity}PageQuery queryParams) {
         IPage<${entity}VO> result = ${firstCharLowerCaseEntity}Service.page(queryParams);
         return Result.ofSuccess(result);
     }

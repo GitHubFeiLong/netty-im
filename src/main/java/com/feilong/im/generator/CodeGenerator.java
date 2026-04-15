@@ -45,9 +45,6 @@ public class CodeGenerator {
      * 需要生成的表名（留空则生成所有表）
      */
     private static final List<String> TABLE_NAMES = Lists.newArrayList(
-            // "im_user",
-            // "im_friend",
-            // "im_message"
             "sys_app"
     );
 
@@ -180,8 +177,6 @@ public class CodeGenerator {
                         String firstCharLowerCaseEntity = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
                         // 注入自定义参数
                         objectMap.put("firstCharLowerCaseEntity", firstCharLowerCaseEntity);
-                        //
-                        // objectMap.put("projectPackage", projectPackage);
 
                         // 检测需要导入的包
                         boolean needBigDecimal = tableInfo.getFields().stream()

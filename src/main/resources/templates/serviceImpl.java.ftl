@@ -8,16 +8,21 @@ import ${package.Service}.${table.serviceName};
 <#list pojoPkgs as pkg>
 import ${pkg};
 </#list>
+import ${superServiceImplClassPackage};
+import ${package.Mapper}.${entity}Mapper;
+import ${package.EntityMapper}.${entity}EntityMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.feilong.im.exception.ServerException;
-import ${superServiceImplClassPackage};
+import com.feilong.im.util.AssertUtil;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import ${package.Mapper}.${entity}Mapper;
-import ${package.EntityMapper}.${entity}EntityMapper;
+
 
 /**
  * ${table.comment!} 服务接口实现类
