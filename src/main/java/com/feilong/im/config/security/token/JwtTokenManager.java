@@ -1,7 +1,5 @@
 package com.feilong.im.config.security.token;
 
-import cn.hutool.core.lang.generator.UUIDGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feilong.im.config.security.authentication.imuser.ImUserAuthenticationToken;
 import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
 import com.feilong.im.constant.RedisKeyConst;
@@ -14,15 +12,14 @@ import com.feilong.im.properties.SecurityProperties;
 import com.feilong.im.service.SysAuthTokenBlacklistService;
 import com.feilong.im.util.JsonUtil;
 import com.feilong.im.util.StringUtil;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
@@ -31,15 +28,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * JWT Token 管理器
- * <p>
- * 用于生成、解析、校验、刷新 JWT Token
- *
- * @author Ray.Hao
- * @since 2024/11/15
+ * @author cfl 2026/4/15
  */
 @Slf4j
-@ConditionalOnProperty(value = "security.session.type", havingValue = "jwt")
 @Component
+@ConditionalOnProperty(value = "security.session.type", havingValue = "jwt")
 public class JwtTokenManager implements TokenManager {
 
     private final SecurityProperties securityProperties;

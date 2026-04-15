@@ -3,6 +3,7 @@ package com.feilong.im.core;
 import com.feilong.im.exception.BasicException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.*;
  * @author cfl 2026/4/10
  */
 @Data
+@Accessors(chain = true)
 @Schema(description = "统一API响应结果封装")
 public class Result<T> implements Serializable {
 

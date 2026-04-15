@@ -34,7 +34,10 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         // 打印错误日志
-        BasicException basicException = ClientException.of(authException, "请登录认证");
+        BasicException basicException = ClientException.of(authException, "请登录认证")
+                .setCode(String.valueOf(HttpStatus.UNAUTHORIZED.value()))
+                .setStatus(HttpStatus.UNAUTHORIZED.value())
+                ;
 
         Result<BasicException> result =  Result.ofFail(basicException);
         switch (authException) {

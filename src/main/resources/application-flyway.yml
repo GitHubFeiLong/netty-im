@@ -1,0 +1,13 @@
+spring:
+  # Flyway 配置
+  flyway:
+    enabled: true                 # 启用 Flyway（默认 true）
+    baseline-on-migrate: true     # 若数据库非空且无 flyway_schema_history 表，自动创建基线（首次使用时设为 true）
+    baseline-version: 0           # 基线版本（默认 1，首次可设为 0）
+    locations: classpath:db/migration  # 迁移脚本存放路径（默认此路径，可自定义）
+    sql-migration-prefix: V       # 脚本前缀（默认 V，不可改）
+    sql-migration-separator: __   # 版本号与描述的分隔符（默认 __，不可改）
+    sql-migration-suffixes: .sql  # 脚本后缀（默认 .sql，可加 .postgresql 等）
+    validate-on-migrate: true     # 执行迁移前校验脚本（默认 true，防止脚本被篡改）
+    clean-disabled: true          # 禁用 clean 命令（生产环境必须设为 true，防止误删数据）
+    out-of-order: false           # 是否允许乱序执行脚本（默认 false，需严格按顺序）

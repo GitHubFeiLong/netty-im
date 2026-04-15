@@ -1,0 +1,18 @@
+knife4j:
+  # 是否启用增强模式
+  enable: true
+  # 跨域配置（方便前后端分离对接）
+  cors: true
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html     # 文档访问路径
+    tags-sorter: order         # 标签排序方式
+    operations-sorter: order   # 接口排序方式：order 按方法定义顺序（推荐）、method 按 HTTP 方法排序（GET → POST → PUT → DELETE...）、alpha、none 不排序
+  api-docs:
+    path: /v3/api-docs         # OpenAPI JSON路径
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+  default-flat-param-object: true
+  # 可选：只扫描特定包下的 Controller，加快启动速度
+  packages-to-scan: com.feilong.im.controller

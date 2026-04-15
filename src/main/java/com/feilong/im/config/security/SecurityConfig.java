@@ -74,35 +74,14 @@ public class SecurityConfig {
                         // 公开访问路径
                         .requestMatchers(securityProperties.getIgnoreUrls()).permitAll()
                         .requestMatchers(securityProperties.getUnsecuredUrls()).permitAll()
-                        // 放行 actuator 端点
-                        .requestMatchers("/actuator/**").permitAll()
-                        // 放行swagger, knife4j 相关路径
-                        .requestMatchers("/doc.html", "/webjars/**", "/favicon.ico", "/v3/api-docs/swagger-config", "/v3/api-docs").permitAll()
-                        // .requestMatchers("/admin/**").hasRole("ADMIN")  // 需ADMIN角色
-                        // .requestMatchers("/api/**")
-                        // .access((authentication, object) -> accessDecisionManager.decode(authentication, object))
-                        // .access((authentication, object) -> {
-                        //     // 自定义授权逻辑
-                        //     if (authentication != null && authentication.get() != null && authentication.get().isAuthenticated()) {
-                        //         // 检查用户是否有特定权限
-                        //         Collection<? extends GrantedAuthority> authorities = authentication.get().getAuthorities();
-                        //         if (authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-                        //             return new AuthorizationDecision(true); // 允许访问
-                        //         }
-                        //     }
-                        //     return new AuthorizationDecision(false); // 拒绝访问
-                        // })
-                        .anyRequest()
-                        // .access(authorizationManager)
-                        // .anyRequest()
-                        .authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")  // 需ADMIN角色
+                        // 其他 URL 需认证
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         // session设置为无状态
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-                // .addFilterBefore(filterSecurityInterceptor(), AuthorizationFilter.class)
                 // 异常处理
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         // 自定义认证失败处理器
@@ -112,7 +91,6 @@ public class SecurityConfig {
                 )
                 // 验证和解析过滤器
                 .addFilterBefore(new TokenAuthenticationFilter(tokenManager), UsernamePasswordAuthenticationFilter.class)
-
         ;
         return http.build();
     }
