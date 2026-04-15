@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 /**
  * @author cfl 2026/04/08
  */
+@Deprecated
 @Getter
 @Setter
 public abstract class BaseEntity {

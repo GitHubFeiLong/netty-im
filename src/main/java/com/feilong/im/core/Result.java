@@ -1,6 +1,7 @@
 package com.feilong.im.core;
 
 import com.feilong.im.exception.BasicException;
+import com.feilong.im.exception.ClientException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -199,7 +200,7 @@ public class Result<T> implements Serializable {
         if (status) {
             return ofSuccess();
         }
-        return ofFail();
+        return ofFail(ClientException.of("请求失败，请稍后再试"));
     }
 
     //~constructors

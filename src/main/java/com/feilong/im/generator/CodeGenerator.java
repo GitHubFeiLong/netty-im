@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.LikeTable;
+import com.baomidou.mybatisplus.generator.config.po.TableField;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
+import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.model.ClassAnnotationAttributes;
@@ -40,6 +43,15 @@ public class CodeGenerator {
      * 作者名
      */
     private static final String AUTHOR = "cfl";
+
+    /**
+     * 逻辑删除字段名
+     */
+    private static final String LOGIC_DELETE_COLUMN_NAME = "deleted";
+    /**
+     * 乐观锁字段名
+     */
+    private static final String VERSION_COLUMN_NAME = "version";
 
     /**
      * 需要生成的表名（留空则生成所有表）
@@ -85,11 +97,11 @@ public class CodeGenerator {
                         .enableTableFieldAnnotation() // 启用字段注解
                         .enableFileOverride() // 开启覆盖已生成的文件
                         .enableRemoveIsPrefix() // 开启移除is前缀
-                        .versionColumnName("version")
-                        .logicDeleteColumnName("deleted") // 逻辑删除字段名
+                        .versionColumnName(VERSION_COLUMN_NAME) // 乐观锁字段名
+                        .logicDeleteColumnName(LOGIC_DELETE_COLUMN_NAME) // 逻辑删除字段名
                         .addTableFills(
-                                new com.baomidou.mybatisplus.generator.fill.Column("created_time", FieldFill.INSERT),
-                                new com.baomidou.mybatisplus.generator.fill.Column("updated_time", FieldFill.INSERT_UPDATE)
+                                new com.baomidou.mybatisplus.generator.fill.Column("create_time", FieldFill.INSERT),
+                                new com.baomidou.mybatisplus.generator.fill.Column("update_time", FieldFill.INSERT_UPDATE)
                         )
                         // mapper配置
                         .mapperBuilder()
@@ -174,34 +186,57 @@ public class CodeGenerator {
                     consumer.beforeOutputFile((tableInfo, objectMap) -> {
                         // 为每个表生成首字母小写的实体名
                         String entityName = tableInfo.getEntityName();
-                        String firstCharLowerCaseEntity = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+                        if (tableInfo.getComment() == null || tableInfo.getComment().isBlank()) {
+                            tableInfo.setComment(tableInfo.getName());
+                        }
+
+                        Map<String, TableField> tableFieldMap = tableInfo.getTableFieldMap();
+                        if (tableFieldMap.containsKey(LOGIC_DELETE_COLUMN_NAME)) {
+                            TableField tableField = tableFieldMap.get(LOGIC_DELETE_COLUMN_NAME);
+                            String columnType = tableField.getColumnType().getType();
+                            switch (columnType) {
+                                case "Boolean":
+                                    // 首字母大写
+                                    objectMap.put("LOGIC_DELETE_COLUMN_NAME", LOGIC_DELETE_COLUMN_NAME);
+                                    objectMap.put("LOGIC_DELETE_DEFAULT_VALUE", "false");
+                                    break;
+                                case "Long":
+                                    objectMap.put("LOGIC_DELETE_COLUMN_NAME", LOGIC_DELETE_COLUMN_NAME);
+                                    objectMap.put("LOGIC_DELETE_DEFAULT_VALUE", "0L");
+                                    break;
+                                default:
+                            }
+                        }
+
+                        // tableInfo.getTableFieldMap().get("deleted").getColumnType()
+
                         // 注入自定义参数
-                        objectMap.put("firstCharLowerCaseEntity", firstCharLowerCaseEntity);
+                        List<String> importEntityPackages = new ArrayList<>();
+                        if (tableInfo.getFields().stream().anyMatch(field -> "BigDecimal".equals(field.getPropertyType()))) {
+                            importEntityPackages.add("java.math.BigDecimal");
+                        }
+                        if (tableInfo.getFields().stream().anyMatch(field -> "LocalDate".equals(field.getPropertyType()))) {
+                            importEntityPackages.add("java.time.LocalDate");
+                        }
+                        if (tableInfo.getFields().stream().anyMatch(field -> "LocalDateTime".equals(field.getPropertyType()))) {
+                            importEntityPackages.add("java.time.LocalDateTime");
+                        }
+                        if (tableInfo.getFields().stream().anyMatch(field -> "LocalTime".equals(field.getPropertyType()))) {
+                            importEntityPackages.add("java.time.LocalTime");
+                        }
+                        objectMap.put("importEntityPackages", importEntityPackages);
 
-                        // 检测需要导入的包
-                        boolean needBigDecimal = tableInfo.getFields().stream()
-                                .anyMatch(field -> "BigDecimal".equals(field.getPropertyType()));
-                        objectMap.put("needBigDecimal", needBigDecimal);
-                        boolean needLocalDateTime = tableInfo.getFields().stream()
-                                .anyMatch(field -> "LocalDateTime".equals(field.getPropertyType()));
-                        objectMap.put("needLocalDateTime", needLocalDateTime);
-                        boolean needLocalDate = tableInfo.getFields().stream()
-                                .anyMatch(field -> "LocalDate".equals(field.getPropertyType()));
-                        objectMap.put("needLocalDate", needLocalDate);
-                        boolean needLocalTime = tableInfo.getFields().stream()
-                                .anyMatch(field -> "LocalTime".equals(field.getPropertyType()));
-                        objectMap.put("needLocalTime", needLocalTime);
-
+                        // DTO VO PO FORM BO PageQuery 包
                         List<String> pojoPkgs = new ArrayList<>();
-                        // DTO 包
                         pojoPkgs.add("com.feilong.im.entity." + entityName);
                         pojoPkgs.add("com.feilong.im.dto." + entityName + "DTO");
                         pojoPkgs.add("com.feilong.im.dto.bo." + entityName + "BO");
                         pojoPkgs.add("com.feilong.im.dto.vo." + entityName + "VO");
                         pojoPkgs.add("com.feilong.im.dto.form." + entityName + "Form");
                         pojoPkgs.add("com.feilong.im.dto.page.query." + entityName + "PageQuery");
-                        pojoPkgs.add("com.feilong.im.core.Result");
                         objectMap.put("pojoPkgs", pojoPkgs);
+
+                        objectMap.put("importResult", "com.feilong.im.core.Result");
                     });
                 })
                 // 使用 Freemarker 模板引擎

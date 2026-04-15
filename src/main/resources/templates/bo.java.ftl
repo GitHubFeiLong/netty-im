@@ -1,13 +1,13 @@
 package ${package.BO};
 
+<#list importEntityPackages as pkg>
+import ${pkg};
+</#list>
+
 import java.io.Serializable;
 import java.io.Serial;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

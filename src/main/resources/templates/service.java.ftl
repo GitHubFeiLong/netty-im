@@ -14,37 +14,37 @@ import ${package.VO}.${entity}VO;
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     /**
-     * 分页查询
-     * @param pageQuery 分页查询参数
+     * ${table.comment!}分页查询
+     * @param pageQuery ${table.comment!}分页查询参数
      * @return 分页结果
      */
     IPage<${entity}VO> page(${entity}PageQuery pageQuery);
 
     /**
-     * 获取表单数据
-     * @param id ID
-     * @return 表单数据
+     * 获取${table.comment!}表单数据
+     * @param id ${table.comment!}ID
+     * @return ${table.comment!}表单数据
      */
      ${entity}Form getForm(Long id);
 
-    /**
-     * 新增
-     * @param formData 表单对象
-     * @return true-成功，false-失败
-     */
+     /**
+      * 新增${table.comment!}
+      * @param formData ${table.comment!}表单对象
+      * @return true-成功，false-失败
+      */
      ${entity} save(${entity}Form formData);
 
     /**
-     * 修改
-     * @param id ID
-     * @param formData 表单对象
+     * 修改${table.comment!}
+     * @param id ${table.comment!}ID
+     * @param formData ${table.comment!}表单对象
      * @return true-成功，false-失败
      */
     ${entity} update(Long id, ${entity}Form formData);
 
     /**
-     * 删除
-     * @param ids ID，多个以英文逗号(,)分割
+     * 删除${table.comment!}
+     * @param ids ${table.comment!}ID，多个以英文逗号(,)分割
      * @return true-成功，false-失败
      */
     boolean delete(String ids);

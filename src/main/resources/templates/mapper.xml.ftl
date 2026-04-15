@@ -45,26 +45,26 @@
         FROM
         `${table.name}`
         <where>
-            <#list table.fields as field>
-                <#if field.keyFlag>
-                    <if test="pageQuery.${field.propertyName} != null">
-                        AND `${field.name}` = ${r"#{"}pageQuery.${field.propertyName}${r"}"}
-                    </if>
-                </#if>
-            </#list>
-            <#list table.fields as field>
-                <#if !field.keyFlag>
-                    <#if field.propertyType == "String">
-                        <if test="pageQuery.${field.propertyName} != null and pageQuery.${field.propertyName}.trim().length > 0">
-                            AND `${field.name}` LIKE CONCAT('%',  ${r"#{"}pageQuery.${field.propertyName}${r"}"},'%')
-                        </if>
-                    <#else>
-                        <if test="pageQuery.${field.propertyName} != null">
-                            AND `${field.name}` =  ${r"#{"}pageQuery.${field.propertyName}${r"}"}
-                        </if>
-                    </#if>
-                </#if>
-            </#list>
+    <#list table.fields as field>
+        <#if field.keyFlag>
+            <if test="pageQuery.${field.propertyName} != null">
+                AND `${field.name}` = ${r"#{"}pageQuery.${field.propertyName}${r"}"}
+            </if>
+        </#if>
+    </#list>
+<#list table.fields as field>
+    <#if !field.keyFlag>
+        <#if field.propertyType == "String">
+            <if test="pageQuery.${field.propertyName} != null and pageQuery.${field.propertyName}.trim().length > 0">
+                AND `${field.name}` LIKE CONCAT('%',  ${r"#{"}pageQuery.${field.propertyName}${r"}"},'%')
+            </if>
+        <#else>
+            <if test="pageQuery.${field.propertyName} != null">
+                AND `${field.name}` =  ${r"#{"}pageQuery.${field.propertyName}${r"}"}
+            </if>
+        </#if>
+    </#if>
+</#list>
             <if test="pageQuery.startTime != null">
                 AND `created_time` &gt;=  ${r"#{"}pageQuery.startTime${r"}"}
             </if>

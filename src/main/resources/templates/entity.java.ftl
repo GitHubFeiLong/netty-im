@@ -3,7 +3,6 @@ package ${package.Entity};
 <#list importEntityFrameworkPackages as pkg>
 import ${pkg};
 </#list>
-
 <#list importEntityJavaPackages as pkg>
 import ${pkg};
 </#list>

@@ -1,16 +1,17 @@
 package ${package.PageQuery};
 
+<#list importEntityPackages as pkg>
+import ${pkg};
+</#list>
+import ${package.PageQuery}.BasePageQuery;
+import java.time.LocalTime;
+
 import java.io.Serializable;
 import java.io.Serial;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import io.swagger.v3.oas.annotations.media.Schema;
-import ${package.PageQuery}.BasePageQuery;
 
 /**
  * ${table.comment} PageQuery
