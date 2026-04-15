@@ -47,7 +47,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         try {
-            CurrentTimeContext.set();
             if (StrUtil.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(SecurityConstants.BEARER_TOKEN_PREFIX)) {
 
                 // 剥离Bearer前缀获取原始令牌
@@ -76,7 +75,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             // 安全上下文清除保障（防止上下文残留）
             SecurityContextHolder.clearContext();
             CurrentTokenContext.remove();
-            CurrentTimeContext.remove();
         }
     }
 
