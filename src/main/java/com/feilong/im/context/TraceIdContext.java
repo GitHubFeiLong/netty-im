@@ -31,6 +31,14 @@ public class TraceIdContext {
     /**
      * 设置TraceId到MDC
      */
+    public static void set() {
+        MDC.put(TRACE_ID_KEY, generateTraceId());
+    }
+
+    /**
+     * 设置TraceId到MDC
+     * @param traceId TraceId，如果为空则生成新的TraceId
+     */
     public static void set(String traceId) {
         if (traceId == null || traceId.isBlank()) {
             traceId = generateTraceId();

@@ -1,20 +1,14 @@
 package com.feilong.im.config;
 
-import com.feilong.im.filter.CurrentTimeFilter;
-import com.feilong.im.filter.TraceIdFilter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import jakarta.servlet.Filter;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Web MVC 配置
@@ -31,31 +25,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }
-
-    /**
-     * 注册多个过滤器到过滤器链中，并设置各自的优先级
-     * @return FilterRegistrationBean 列表
-     */
-    @Bean
-    public List<FilterRegistrationBean<Filter>> customFilters(){
-        List<FilterRegistrationBean<Filter>> registrations = new ArrayList<>();
-
-        // 1. 日志追踪过滤器（最高优先级）
-        FilterRegistrationBean<Filter> traceIdFilter = new FilterRegistrationBean<>();
-        traceIdFilter.setFilter(new TraceIdFilter());
-        traceIdFilter.setOrder(Integer.MIN_VALUE);
-        traceIdFilter.addUrlPatterns("/*");
-        registrations.add(traceIdFilter);
-
-        // 2. 当前日期时间过滤器（次高优先级）
-        FilterRegistrationBean<Filter> currentDateTimeFilter = new FilterRegistrationBean<>();
-        currentDateTimeFilter.setFilter(new CurrentTimeFilter());
-        currentDateTimeFilter.setOrder(Integer.MIN_VALUE + 1);
-        currentDateTimeFilter.addUrlPatterns("/*");
-        registrations.add(currentDateTimeFilter);
-
-        return registrations;
     }
 
     /**

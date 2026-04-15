@@ -2,6 +2,7 @@ package com.feilong.im.config.security;
 
 import com.feilong.im.config.security.authentication.imuser.ImUserAuthenticationProvider;
 import com.feilong.im.config.security.token.TokenManager;
+import com.feilong.im.filter.RequestContextLifecycleFilter;
 import com.feilong.im.filter.TokenAuthenticationFilter;
 import com.feilong.im.properties.SecurityProperties;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +83,7 @@ public class SecurityConfig {
                 )
                 // 验证和解析过滤器
                 .addFilterBefore(new TokenAuthenticationFilter(tokenManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new RequestContextLifecycleFilter(), TokenAuthenticationFilter.class)
         ;
         return http.build();
     }
