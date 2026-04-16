@@ -1,42 +1,56 @@
 package com.feilong.im.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * 认证token黑名单
- * @author cfl 2026/04/13
+ * 认证token 黑名单
+ * @author cfl 2026/04/16
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("sys_auth_token_blacklist")
-public class SysAuthTokenBlacklist extends BaseEntity implements Serializable {
+public class SysAuthTokenBlacklist implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * tokenId
+     * 认证token ID
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableField("id")
     private String id;
 
     /**
-     * token
+     * token内容
      */
-    @TableField(value = "token")
+    @TableField("token")
     private String token;
 
     /**
      * 删除状态（0-未删除；>0删除时的时间戳）
      */
     @TableLogic
-    @TableField(fill = FieldFill.INSERT)
+    @TableField("deleted")
     private Long deleted;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 最后更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 }
+

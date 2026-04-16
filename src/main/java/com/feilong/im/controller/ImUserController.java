@@ -1,9 +1,5 @@
 package com.feilong.im.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.feilong.im.core.MyJsonView;
-import com.feilong.im.core.ValidationGroups;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.feilong.im.entity.ImUser;
@@ -11,6 +7,8 @@ import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.dto.bo.ImUserBO;
 import com.feilong.im.dto.vo.ImUserVO;
 import com.feilong.im.dto.form.ImUserForm;
+import com.feilong.im.dto.form.ImUserSaveForm;
+import com.feilong.im.dto.form.ImUserUpdateForm;
 import com.feilong.im.dto.page.query.ImUserPageQuery;
 import org.springframework.web.bind.annotation.*;
 import com.feilong.im.service.ImUserService;
@@ -40,17 +38,9 @@ public class ImUserController {
 
     @Operation(summary = "im账户表分页列表")
     @PostMapping("/page")
-    @JsonView(MyJsonView.Simple.class)
     public Result<IPage<ImUserVO>> page(@RequestBody @Valid ImUserPageQuery queryParams) {
         IPage<ImUserVO> result = imUserService.page(queryParams);
         return Result.ofSuccess(result);
-    }
-
-    @Operation(summary = "新增im账户表")
-    @PostMapping
-    public Result<ImUserVO> save(@RequestBody @Validated(ValidationGroups.Create.class) ImUserForm formData) {
-        ImUser imUser = imUserService.save(formData);
-        return Result.ofSuccess(imUserEntityMapper.toVo(imUser));
     }
 
     @Operation(summary = "im账户表详细数据")
@@ -67,9 +57,16 @@ public class ImUserController {
         return Result.ofSuccess(formData);
     }
 
+    @Operation(summary = "新增im账户表")
+    @PostMapping
+    public Result<ImUserVO> save(@RequestBody @Valid ImUserSaveForm formData) {
+        ImUser imUser = imUserService.save(formData);
+        return Result.ofSuccess(imUserEntityMapper.toVo(imUser));
+    }
+
     @Operation(summary = "修改im账户表")
     @PutMapping(value = "/{id}")
-    public Result<ImUserVO> update(@Parameter(description = "im账户表ID") @PathVariable Long id, @RequestBody @Valid ImUserForm formData) {
+    public Result<ImUserVO> update(@Parameter(description = "im账户表ID") @PathVariable Long id, @RequestBody @Valid ImUserUpdateForm formData) {
         ImUser imUser = imUserService.update(id, formData);
         return Result.ofSuccess(imUserEntityMapper.toVo(imUser));
     }

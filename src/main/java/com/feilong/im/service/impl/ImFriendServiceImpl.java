@@ -13,7 +13,11 @@ import com.feilong.im.dto.ImFriendDTO;
 import com.feilong.im.dto.bo.ImFriendBO;
 import com.feilong.im.dto.vo.ImFriendVO;
 import com.feilong.im.dto.form.ImFriendForm;
+import com.feilong.im.dto.form.ImFriendSaveForm;
+import com.feilong.im.dto.form.ImFriendUpdateForm;
 import com.feilong.im.dto.page.query.ImFriendPageQuery;
+import com.feilong.im.service.ImFriendService;
+import com.feilong.im.mapper.ImFriendMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.feilong.im.mapstruct.ImFriendEntityMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -76,12 +80,12 @@ public class ImFriendServiceImpl extends ServiceImpl<ImFriendMapper, ImFriend> i
     /**
      * 新增用户好友表
      *
-     * @param formData 用户好友表表单对象
+     * @param formData 用户好友表Save表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ImFriend save(ImFriendForm formData) {
+    public ImFriend save(ImFriendSaveForm formData) {
         log.debug("新增im_friend数据：{}", formData);
         // 实体转换 form->entity
         ImFriend entity = imFriendEntityMapper.toEntity(formData);
@@ -98,12 +102,12 @@ public class ImFriendServiceImpl extends ServiceImpl<ImFriendMapper, ImFriend> i
      * 修改用户好友表
      *
      * @param id 用户好友表ID
-     * @param formData 用户好友表表单对象
+     * @param formData 用户好友表Update表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ImFriend update(Long id, ImFriendForm formData) {
+    public ImFriend update(Long id, ImFriendUpdateForm formData) {
         log.debug("修改im_friend，ID：{}，表单数据：{}", id, formData);
         ImFriend entity = imFriendEntityMapper.toEntity(formData);
 

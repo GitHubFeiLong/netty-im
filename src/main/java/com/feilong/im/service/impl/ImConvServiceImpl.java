@@ -10,7 +10,11 @@ import com.feilong.im.dto.ImConvDTO;
 import com.feilong.im.dto.bo.ImConvBO;
 import com.feilong.im.dto.vo.ImConvVO;
 import com.feilong.im.dto.form.ImConvForm;
+import com.feilong.im.dto.form.ImConvSaveForm;
+import com.feilong.im.dto.form.ImConvUpdateForm;
 import com.feilong.im.dto.page.query.ImConvPageQuery;
+import com.feilong.im.service.ImConvService;
+import com.feilong.im.mapper.ImConvMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.feilong.im.mapstruct.ImConvEntityMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -77,12 +81,12 @@ public class ImConvServiceImpl extends ServiceImpl<ImConvMapper, ImConv> impleme
     /**
      * 新增im会话表
      *
-     * @param formData im会话表表单对象
+     * @param formData im会话表Save表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ImConv save(ImConvForm formData) {
+    public ImConv save(ImConvSaveForm formData) {
         log.debug("新增im_conv数据：{}", formData);
         // 实体转换 form->entity
         ImConv entity = imConvEntityMapper.toEntity(formData);
@@ -99,12 +103,12 @@ public class ImConvServiceImpl extends ServiceImpl<ImConvMapper, ImConv> impleme
      * 修改im会话表
      *
      * @param id im会话表ID
-     * @param formData im会话表表单对象
+     * @param formData im会话表Update表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ImConv update(Long id, ImConvForm formData) {
+    public ImConv update(Long id, ImConvUpdateForm formData) {
         log.debug("修改im_conv，ID：{}，表单数据：{}", id, formData);
         ImConv entity = imConvEntityMapper.toEntity(formData);
 

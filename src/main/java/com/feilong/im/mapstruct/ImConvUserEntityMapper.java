@@ -1,12 +1,15 @@
 package com.feilong.im.mapstruct;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.feilong.im.entity.ImConvUser;
 import com.feilong.im.dto.ImConvUserDTO;
-import com.feilong.im.dto.form.ImConvUserForm;
-import com.feilong.im.dto.vo.ImConvUserVO;
 import com.feilong.im.dto.bo.ImConvUserBO;
+import com.feilong.im.dto.vo.ImConvUserVO;
+import com.feilong.im.dto.form.ImConvUserForm;
+import com.feilong.im.dto.form.ImConvUserSaveForm;
+import com.feilong.im.dto.form.ImConvUserUpdateForm;
+import com.feilong.im.dto.page.query.ImConvUserPageQuery;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Collection;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -33,6 +36,20 @@ public interface ImConvUserEntityMapper extends EntityMapper<ImConvUser, ImConvU
      * @return 表单对应的实体对象
      */
     ImConvUser toEntity(ImConvUserForm form);
+
+    /**
+     * Save表单转实体
+     * @param saveForm 表单对象
+     * @return 表单对应的实体对象
+     */
+    ImConvUser toEntity(ImConvUserSaveForm saveForm);
+
+    /**
+     * Update表单转实体
+     * @param updateForm 表单对象
+     * @return 表单对应的实体对象
+     */
+    ImConvUser toEntity(ImConvUserUpdateForm updateForm);
 
     /**
      * 实体转VO

@@ -58,7 +58,7 @@ public class CodeGenerator {
      * 需要生成的表名（留空则生成所有表）
      */
     private static final List<String> TABLE_NAMES = List.of(
-            "sys_app"
+            "im_conv"
     );
 
     /**
@@ -99,9 +99,10 @@ public class CodeGenerator {
                 .strategyConfig(builder -> {
                     StrategyConfig.Builder strategyBuilder = builder
                             // 排除不需要生成的表 不能和 addInclude 同时使用
-                            // .addExclude("flyway_schema_history")
+                            // .addExclude("flyway_schema_history", "sys_app")
                             // 设置需要生成的表名
-                            .addInclude(getTables());
+                            .addInclude(getTables())
+                        ;
 
                     // 实体配置
                     var entityBuilder = strategyBuilder.entityBuilder()

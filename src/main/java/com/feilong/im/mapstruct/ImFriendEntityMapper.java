@@ -1,12 +1,15 @@
 package com.feilong.im.mapstruct;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.feilong.im.entity.ImFriend;
 import com.feilong.im.dto.ImFriendDTO;
-import com.feilong.im.dto.form.ImFriendForm;
-import com.feilong.im.dto.vo.ImFriendVO;
 import com.feilong.im.dto.bo.ImFriendBO;
+import com.feilong.im.dto.vo.ImFriendVO;
+import com.feilong.im.dto.form.ImFriendForm;
+import com.feilong.im.dto.form.ImFriendSaveForm;
+import com.feilong.im.dto.form.ImFriendUpdateForm;
+import com.feilong.im.dto.page.query.ImFriendPageQuery;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Collection;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -33,6 +36,20 @@ public interface ImFriendEntityMapper extends EntityMapper<ImFriend, ImFriendDTO
      * @return 表单对应的实体对象
      */
     ImFriend toEntity(ImFriendForm form);
+
+    /**
+     * Save表单转实体
+     * @param saveForm 表单对象
+     * @return 表单对应的实体对象
+     */
+    ImFriend toEntity(ImFriendSaveForm saveForm);
+
+    /**
+     * Update表单转实体
+     * @param updateForm 表单对象
+     * @return 表单对应的实体对象
+     */
+    ImFriend toEntity(ImFriendUpdateForm updateForm);
 
     /**
      * 实体转VO

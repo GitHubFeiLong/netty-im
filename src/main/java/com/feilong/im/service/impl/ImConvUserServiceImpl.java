@@ -9,7 +9,11 @@ import com.feilong.im.dto.ImConvUserDTO;
 import com.feilong.im.dto.bo.ImConvUserBO;
 import com.feilong.im.dto.vo.ImConvUserVO;
 import com.feilong.im.dto.form.ImConvUserForm;
+import com.feilong.im.dto.form.ImConvUserSaveForm;
+import com.feilong.im.dto.form.ImConvUserUpdateForm;
 import com.feilong.im.dto.page.query.ImConvUserPageQuery;
+import com.feilong.im.service.ImConvUserService;
+import com.feilong.im.mapper.ImConvUserMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.feilong.im.mapstruct.ImConvUserEntityMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -75,12 +79,12 @@ public class ImConvUserServiceImpl extends ServiceImpl<ImConvUserMapper, ImConvU
     /**
      * 新增im用户会话表
      *
-     * @param formData im用户会话表表单对象
+     * @param formData im用户会话表Save表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ImConvUser save(ImConvUserForm formData) {
+    public ImConvUser save(ImConvUserSaveForm formData) {
         log.debug("新增im_conv_user数据：{}", formData);
         // 实体转换 form->entity
         ImConvUser entity = imConvUserEntityMapper.toEntity(formData);
@@ -97,12 +101,12 @@ public class ImConvUserServiceImpl extends ServiceImpl<ImConvUserMapper, ImConvU
      * 修改im用户会话表
      *
      * @param id im用户会话表ID
-     * @param formData im用户会话表表单对象
+     * @param formData im用户会话表Update表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ImConvUser update(Long id, ImConvUserForm formData) {
+    public ImConvUser update(Long id, ImConvUserUpdateForm formData) {
         log.debug("修改im_conv_user，ID：{}，表单数据：{}", id, formData);
         ImConvUser entity = imConvUserEntityMapper.toEntity(formData);
 

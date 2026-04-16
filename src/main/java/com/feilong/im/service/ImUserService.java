@@ -1,10 +1,13 @@
 package com.feilong.im.service;
 
+import com.feilong.im.entity.ImUser;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.entity.ImUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.feilong.im.dto.form.ImUserForm;
+import com.feilong.im.dto.form.ImUserSaveForm;
+import com.feilong.im.dto.form.ImUserUpdateForm;
 import com.feilong.im.dto.page.query.ImUserPageQuery;
 import com.feilong.im.dto.vo.ImUserVO;
 
@@ -32,18 +35,18 @@ public interface ImUserService extends IService<ImUser> {
 
      /**
       * 新增im账户表
-      * @param formData im账户表表单对象
+      * @param formData im账户表Save表单对象
       * @return true-成功，false-失败
       */
-     ImUser save(ImUserForm formData);
+     ImUser save(ImUserSaveForm formData);
 
     /**
      * 修改im账户表
      * @param id im账户表ID
-     * @param formData im账户表表单对象
+     * @param formData im账户表Update表单对象
      * @return true-成功，false-失败
      */
-    ImUser update(Long id, ImUserForm formData);
+    ImUser update(Long id, ImUserUpdateForm formData);
 
     /**
      * 删除im账户表

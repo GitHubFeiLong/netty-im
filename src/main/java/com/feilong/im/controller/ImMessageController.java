@@ -7,6 +7,8 @@ import com.feilong.im.dto.ImMessageDTO;
 import com.feilong.im.dto.bo.ImMessageBO;
 import com.feilong.im.dto.vo.ImMessageVO;
 import com.feilong.im.dto.form.ImMessageForm;
+import com.feilong.im.dto.form.ImMessageSaveForm;
+import com.feilong.im.dto.form.ImMessageUpdateForm;
 import com.feilong.im.dto.page.query.ImMessagePageQuery;
 import org.springframework.web.bind.annotation.*;
 import com.feilong.im.service.ImMessageService;
@@ -41,13 +43,6 @@ public class ImMessageController {
         return Result.ofSuccess(result);
     }
 
-    @Operation(summary = "新增im消息表")
-    @PostMapping
-    public Result<ImMessageVO> save(@RequestBody @Valid ImMessageForm formData) {
-        ImMessage imMessage = imMessageService.save(formData);
-        return Result.ofSuccess(imMessageEntityMapper.toVo(imMessage));
-    }
-
     @Operation(summary = "im消息表详细数据")
     @GetMapping("/{id}")
     public Result<ImMessageVO> getVO(@Parameter(description = "im消息表ID") @PathVariable Long id) {
@@ -62,9 +57,16 @@ public class ImMessageController {
         return Result.ofSuccess(formData);
     }
 
+    @Operation(summary = "新增im消息表")
+    @PostMapping
+    public Result<ImMessageVO> save(@RequestBody @Valid ImMessageSaveForm formData) {
+        ImMessage imMessage = imMessageService.save(formData);
+        return Result.ofSuccess(imMessageEntityMapper.toVo(imMessage));
+    }
+
     @Operation(summary = "修改im消息表")
     @PutMapping(value = "/{id}")
-    public Result<ImMessageVO> update(@Parameter(description = "im消息表ID") @PathVariable Long id, @RequestBody @Valid ImMessageForm formData) {
+    public Result<ImMessageVO> update(@Parameter(description = "im消息表ID") @PathVariable Long id, @RequestBody @Valid ImMessageUpdateForm formData) {
         ImMessage imMessage = imMessageService.update(id, formData);
         return Result.ofSuccess(imMessageEntityMapper.toVo(imMessage));
     }

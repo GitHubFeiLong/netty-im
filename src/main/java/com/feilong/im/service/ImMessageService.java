@@ -1,11 +1,15 @@
 package com.feilong.im.service;
 
 import com.feilong.im.entity.ImMessage;
+import com.feilong.im.dto.ImMessageDTO;
+import com.feilong.im.dto.bo.ImMessageBO;
+import com.feilong.im.dto.vo.ImMessageVO;
+import com.feilong.im.dto.form.ImMessageForm;
+import com.feilong.im.dto.form.ImMessageSaveForm;
+import com.feilong.im.dto.form.ImMessageUpdateForm;
+import com.feilong.im.dto.page.query.ImMessagePageQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.feilong.im.dto.form.ImMessageForm;
-import com.feilong.im.dto.page.query.ImMessagePageQuery;
-import com.feilong.im.dto.vo.ImMessageVO;
 
 /**
  * im消息表 服务类接口
@@ -29,18 +33,18 @@ public interface ImMessageService extends IService<ImMessage> {
 
      /**
       * 新增im消息表
-      * @param formData im消息表表单对象
+      * @param formData im消息表Save表单对象
       * @return true-成功，false-失败
       */
-     ImMessage save(ImMessageForm formData);
+     ImMessage save(ImMessageSaveForm formData);
 
     /**
      * 修改im消息表
      * @param id im消息表ID
-     * @param formData im消息表表单对象
+     * @param formData im消息表Update表单对象
      * @return true-成功，false-失败
      */
-    ImMessage update(Long id, ImMessageForm formData);
+    ImMessage update(Long id, ImMessageUpdateForm formData);
 
     /**
      * 删除im消息表

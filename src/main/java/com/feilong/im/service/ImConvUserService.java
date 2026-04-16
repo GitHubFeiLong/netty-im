@@ -1,11 +1,15 @@
 package com.feilong.im.service;
 
 import com.feilong.im.entity.ImConvUser;
+import com.feilong.im.dto.ImConvUserDTO;
+import com.feilong.im.dto.bo.ImConvUserBO;
+import com.feilong.im.dto.vo.ImConvUserVO;
+import com.feilong.im.dto.form.ImConvUserForm;
+import com.feilong.im.dto.form.ImConvUserSaveForm;
+import com.feilong.im.dto.form.ImConvUserUpdateForm;
+import com.feilong.im.dto.page.query.ImConvUserPageQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.feilong.im.dto.form.ImConvUserForm;
-import com.feilong.im.dto.page.query.ImConvUserPageQuery;
-import com.feilong.im.dto.vo.ImConvUserVO;
 
 /**
  * im用户会话表 服务类接口
@@ -29,18 +33,18 @@ public interface ImConvUserService extends IService<ImConvUser> {
 
      /**
       * 新增im用户会话表
-      * @param formData im用户会话表表单对象
+      * @param formData im用户会话表Save表单对象
       * @return true-成功，false-失败
       */
-     ImConvUser save(ImConvUserForm formData);
+     ImConvUser save(ImConvUserSaveForm formData);
 
     /**
      * 修改im用户会话表
      * @param id im用户会话表ID
-     * @param formData im用户会话表表单对象
+     * @param formData im用户会话表Update表单对象
      * @return true-成功，false-失败
      */
-    ImConvUser update(Long id, ImConvUserForm formData);
+    ImConvUser update(Long id, ImConvUserUpdateForm formData);
 
     /**
      * 删除im用户会话表

@@ -7,7 +7,10 @@ import com.feilong.im.constant.RedisKeyConst;
 import com.feilong.im.context.CurrentTimeContext;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.dto.bo.ImUserBO;
+import com.feilong.im.dto.vo.ImUserVO;
 import com.feilong.im.dto.form.ImUserForm;
+import com.feilong.im.dto.form.ImUserSaveForm;
+import com.feilong.im.dto.form.ImUserUpdateForm;
 import com.feilong.im.dto.page.query.ImUserPageQuery;
 import com.feilong.im.dto.vo.ImUserVO;
 import com.feilong.im.entity.ImUser;
@@ -15,6 +18,7 @@ import com.feilong.im.enums.status.ImUserStatusEnum;
 import com.feilong.im.exception.ClientException;
 import com.feilong.im.handler.netty.NettyServerHandler;
 import com.feilong.im.mapper.ImUserMapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.feilong.im.mapstruct.ImUserEntityMapper;
 import com.feilong.im.service.ImUserService;
 import com.feilong.im.util.JsonUtil;
@@ -29,6 +33,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * im账户表 服务接口实现类
@@ -79,12 +87,12 @@ public class ImUserServiceImpl extends ServiceImpl<ImUserMapper, ImUser> impleme
     /**
      * 新增im账户表
      *
-     * @param formData im账户表表单对象
+     * @param formData im账户表Save表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ImUser save(ImUserForm formData) {
+    public ImUser save(ImUserSaveForm formData) {
         log.debug("新增im_user数据：{}", formData);
         // 实体转换 form->entity
         ImUser entity = imUserEntityMapper.toEntity(formData);
@@ -102,12 +110,12 @@ public class ImUserServiceImpl extends ServiceImpl<ImUserMapper, ImUser> impleme
      * 修改im账户表
      *
      * @param id im账户表ID
-     * @param formData im账户表表单对象
+     * @param formData im账户表Update表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ImUser update(Long id, ImUserForm formData) {
+    public ImUser update(Long id, ImUserUpdateForm formData) {
         log.debug("修改im_user，ID：{}，表单数据：{}", id, formData);
         ImUser entity = imUserEntityMapper.toEntity(formData);
 

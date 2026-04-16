@@ -3,11 +3,15 @@ package com.feilong.im.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.entity.ImFriend;
+import com.feilong.im.dto.ImFriendDTO;
+import com.feilong.im.dto.bo.ImFriendBO;
+import com.feilong.im.dto.vo.ImFriendVO;
+import com.feilong.im.dto.form.ImFriendForm;
+import com.feilong.im.dto.form.ImFriendSaveForm;
+import com.feilong.im.dto.form.ImFriendUpdateForm;
+import com.feilong.im.dto.page.query.ImFriendPageQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.feilong.im.dto.form.ImFriendForm;
-import com.feilong.im.dto.page.query.ImFriendPageQuery;
-import com.feilong.im.dto.vo.ImFriendVO;
 import com.feilong.im.handler.netty.cmd.req.ContactPageReq;
 
 /**
@@ -32,18 +36,18 @@ public interface ImFriendService extends IService<ImFriend> {
 
      /**
       * 新增用户好友表
-      * @param formData 用户好友表表单对象
+      * @param formData 用户好友表Save表单对象
       * @return true-成功，false-失败
       */
-     ImFriend save(ImFriendForm formData);
+     ImFriend save(ImFriendSaveForm formData);
 
     /**
      * 修改用户好友表
      * @param id 用户好友表ID
-     * @param formData 用户好友表表单对象
+     * @param formData 用户好友表Update表单对象
      * @return true-成功，false-失败
      */
-    ImFriend update(Long id, ImFriendForm formData);
+    ImFriend update(Long id, ImFriendUpdateForm formData);
 
     /**
      * 删除用户好友表

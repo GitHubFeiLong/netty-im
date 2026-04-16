@@ -1,12 +1,15 @@
 package com.feilong.im.service;
 
-import com.feilong.im.dto.ImConvDTO;
 import com.feilong.im.entity.ImConv;
+import com.feilong.im.dto.ImConvDTO;
+import com.feilong.im.dto.bo.ImConvBO;
+import com.feilong.im.dto.vo.ImConvVO;
+import com.feilong.im.dto.form.ImConvForm;
+import com.feilong.im.dto.form.ImConvSaveForm;
+import com.feilong.im.dto.form.ImConvUpdateForm;
+import com.feilong.im.dto.page.query.ImConvPageQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.feilong.im.dto.form.ImConvForm;
-import com.feilong.im.dto.page.query.ImConvPageQuery;
-import com.feilong.im.dto.vo.ImConvVO;
 
 /**
  * im会话表 服务类接口
@@ -30,18 +33,18 @@ public interface ImConvService extends IService<ImConv> {
 
      /**
       * 新增im会话表
-      * @param formData im会话表表单对象
+      * @param formData im会话表Save表单对象
       * @return true-成功，false-失败
       */
-     ImConv save(ImConvForm formData);
+     ImConv save(ImConvSaveForm formData);
 
     /**
      * 修改im会话表
      * @param id im会话表ID
-     * @param formData im会话表表单对象
+     * @param formData im会话表Update表单对象
      * @return true-成功，false-失败
      */
-    ImConv update(Long id, ImConvForm formData);
+    ImConv update(Long id, ImConvUpdateForm formData);
 
     /**
      * 删除im会话表

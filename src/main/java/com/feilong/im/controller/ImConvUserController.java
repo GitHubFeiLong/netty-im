@@ -7,6 +7,8 @@ import com.feilong.im.dto.ImConvUserDTO;
 import com.feilong.im.dto.bo.ImConvUserBO;
 import com.feilong.im.dto.vo.ImConvUserVO;
 import com.feilong.im.dto.form.ImConvUserForm;
+import com.feilong.im.dto.form.ImConvUserSaveForm;
+import com.feilong.im.dto.form.ImConvUserUpdateForm;
 import com.feilong.im.dto.page.query.ImConvUserPageQuery;
 import org.springframework.web.bind.annotation.*;
 import com.feilong.im.service.ImConvUserService;
@@ -41,13 +43,6 @@ public class ImConvUserController {
         return Result.ofSuccess(result);
     }
 
-    @Operation(summary = "新增im用户会话表")
-    @PostMapping
-    public Result<ImConvUserVO> save(@RequestBody @Valid ImConvUserForm formData) {
-        ImConvUser imConvUser = imConvUserService.save(formData);
-        return Result.ofSuccess(imConvUserEntityMapper.toVo(imConvUser));
-    }
-
     @Operation(summary = "im用户会话表详细数据")
     @GetMapping("/{id}")
     public Result<ImConvUserVO> getVO(@Parameter(description = "im用户会话表ID") @PathVariable Long id) {
@@ -62,9 +57,16 @@ public class ImConvUserController {
         return Result.ofSuccess(formData);
     }
 
+    @Operation(summary = "新增im用户会话表")
+    @PostMapping
+    public Result<ImConvUserVO> save(@RequestBody @Valid ImConvUserSaveForm formData) {
+        ImConvUser imConvUser = imConvUserService.save(formData);
+        return Result.ofSuccess(imConvUserEntityMapper.toVo(imConvUser));
+    }
+
     @Operation(summary = "修改im用户会话表")
     @PutMapping(value = "/{id}")
-    public Result<ImConvUserVO> update(@Parameter(description = "im用户会话表ID") @PathVariable Long id, @RequestBody @Valid ImConvUserForm formData) {
+    public Result<ImConvUserVO> update(@Parameter(description = "im用户会话表ID") @PathVariable Long id, @RequestBody @Valid ImConvUserUpdateForm formData) {
         ImConvUser imConvUser = imConvUserService.update(id, formData);
         return Result.ofSuccess(imConvUserEntityMapper.toVo(imConvUser));
     }

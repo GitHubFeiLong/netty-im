@@ -9,14 +9,14 @@ import lombok.experimental.Accessors;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * im账户表 Form
+ * im账户表 Update Form
  * @see com.feilong.im.entity.ImUser
  * @author cfl 2026/04/16
  */
 @Data
 @Accessors(chain = true)
-@Schema(description = "ImUserForm")
-public class ImUserForm implements Serializable {
+@Schema(description = "ImUserUpdateForm")
+public class ImUserUpdateForm implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
