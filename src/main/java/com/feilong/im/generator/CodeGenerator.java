@@ -58,10 +58,7 @@ public class CodeGenerator {
      * 需要生成的表名（留空则生成所有表）
      */
     private static final List<String> TABLE_NAMES = List.of(
-            "im_conv"
-            ,"im_conv_user"
-            ,"im_message"
-            ,"im_user"
+            "sys_app"
     );
 
     /**
@@ -216,10 +213,28 @@ public class CodeGenerator {
                             .enableFileOverride()
                             .build()
                     );
-                    // 表单，用于新增和修改
+                    // 表单
                     customFiles.add(new CustomFile.Builder()
                             .fileName("Form.java")
                             .templatePath("/templates/form.java.ftl")
+                            .packageName("dto.form")
+                            .enableFileOverride()
+                            .build()
+                    );
+
+                    // 表单，用于新增
+                    customFiles.add(new CustomFile.Builder()
+                            .fileName("SaveForm.java")
+                            .templatePath("/templates/formSave.java.ftl")
+                            .packageName("dto.form")
+                            .enableFileOverride()
+                            .build()
+                    );
+
+                    // 表单，用于修改
+                    customFiles.add(new CustomFile.Builder()
+                            .fileName("UpdateForm.java")
+                            .templatePath("/templates/formUpdate.java.ftl")
                             .packageName("dto.form")
                             .enableFileOverride()
                             .build()
@@ -283,6 +298,8 @@ public class CodeGenerator {
                         pojoPkgs.add("com.feilong.im.dto.bo." + entityName + "BO");
                         pojoPkgs.add("com.feilong.im.dto.vo." + entityName + "VO");
                         pojoPkgs.add("com.feilong.im.dto.form." + entityName + "Form");
+                        pojoPkgs.add("com.feilong.im.dto.form." + entityName + "SaveForm");
+                        pojoPkgs.add("com.feilong.im.dto.form." + entityName + "UpdateForm");
                         pojoPkgs.add("com.feilong.im.dto.page.query." + entityName + "PageQuery");
                         objectMap.put("pojoPkgs", pojoPkgs);
 

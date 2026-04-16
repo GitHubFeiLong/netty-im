@@ -1,12 +1,10 @@
 package ${package.EntityMapper};
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import ${package.Entity}.${entity};
-import ${package.DTO}.${entity}DTO;
-import ${package.Form}.${entity}Form;
-import ${package.VO}.${entity}VO;
-import ${package.BO}.${entity}BO;
+<#list pojoPkgs as pkg>
+import ${pkg};
+</#list>
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Collection;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -33,6 +31,20 @@ public interface ${entity}EntityMapper extends EntityMapper<${entity}, ${entity}
      * @return 表单对应的实体对象
      */
     ${entity} toEntity(${entity}Form form);
+
+    /**
+     * Save表单转实体
+     * @param saveForm 表单对象
+     * @return 表单对应的实体对象
+     */
+    ${entity} toEntity(${entity}SaveForm saveForm);
+
+    /**
+     * Update表单转实体
+     * @param updateForm 表单对象
+     * @return 表单对应的实体对象
+     */
+    ${entity} toEntity(${entity}UpdateForm updateForm);
 
     /**
      * 实体转VO

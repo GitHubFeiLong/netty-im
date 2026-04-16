@@ -1,13 +1,12 @@
 package ${package.ServiceImpl};
 
-import ${package.Entity}.${entity};
-import ${package.Mapper}.${table.mapperName};
-<#if generateService>
-import ${package.Service}.${table.serviceName};
-</#if>
 <#list pojoPkgs as pkg>
 import ${pkg};
 </#list>
+<#if generateService>
+import ${package.Service}.${table.serviceName};
+</#if>
+import ${package.Mapper}.${table.mapperName};
 import ${superServiceImplClassPackage};
 import ${package.EntityMapper}.${entity}EntityMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -69,12 +68,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     /**
      * 新增${table.comment!}
      *
-     * @param formData ${table.comment!}表单对象
+     * @param formData ${table.comment!}Save表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ${entity} save(${entity}Form formData) {
+    public ${entity} save(${entity}SaveForm formData) {
         log.debug("新增${table.name}数据：{}", formData);
         // 实体转换 form->entity
         ${entity} entity = ${entity?uncap_first}EntityMapper.toEntity(formData);
@@ -94,12 +93,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
      * 修改${table.comment!}
      *
      * @param id ${table.comment!}ID
-     * @param formData ${table.comment!}表单对象
+     * @param formData ${table.comment!}Update表单对象
      * @return true-成功，false-失败
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ${entity} update(Long id, ${entity}Form formData) {
+    public ${entity} update(Long id, ${entity}UpdateForm formData) {
         log.debug("修改${table.name}，ID：{}，表单数据：{}", id, formData);
         ${entity} entity = ${entity?uncap_first}EntityMapper.toEntity(formData);
 

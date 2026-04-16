@@ -56,13 +56,6 @@ public class ${table.controllerName} {
         return Result.ofSuccess(result);
     }
 
-    @Operation(summary = "新增${table.comment!}")
-    @PostMapping
-    public Result<${entity}VO> save(@RequestBody @Valid ${entity}Form formData) {
-        ${entity} ${entity?uncap_first} = ${entity?uncap_first}Service.save(formData);
-        return Result.ofSuccess(${entity?uncap_first}EntityMapper.toVo(${entity?uncap_first}));
-    }
-
     @Operation(summary = "${table.comment!}详细数据")
     @GetMapping("/{id}")
     public Result<${entity}VO> getVO(@Parameter(description = "${table.comment!}ID") @PathVariable Long id) {
@@ -77,9 +70,16 @@ public class ${table.controllerName} {
         return Result.ofSuccess(formData);
     }
 
+    @Operation(summary = "新增${table.comment!}")
+    @PostMapping
+    public Result<${entity}VO> save(@RequestBody @Valid ${entity}SaveForm formData) {
+        ${entity} ${entity?uncap_first} = ${entity?uncap_first}Service.save(formData);
+        return Result.ofSuccess(${entity?uncap_first}EntityMapper.toVo(${entity?uncap_first}));
+    }
+
     @Operation(summary = "修改${table.comment!}")
     @PutMapping(value = "/{id}")
-    public Result<${entity}VO> update(@Parameter(description = "${table.comment!}ID") @PathVariable Long id, @RequestBody @Valid ${entity}Form formData) {
+    public Result<${entity}VO> update(@Parameter(description = "${table.comment!}ID") @PathVariable Long id, @RequestBody @Valid ${entity}UpdateForm formData) {
         ${entity} ${entity?uncap_first} = ${entity?uncap_first}Service.update(id, formData);
         return Result.ofSuccess(${entity?uncap_first}EntityMapper.toVo(${entity?uncap_first}));
     }

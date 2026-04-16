@@ -1,11 +1,10 @@
 package ${package.Service};
 
-import ${package.Entity}.${entity};
+<#list pojoPkgs as pkg>
+import ${pkg};
+</#list>
 import ${superServiceClassPackage};
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import ${package.Form}.${entity}Form;
-import ${package.PageQuery}.${entity}PageQuery;
-import ${package.VO}.${entity}VO;
 
 /**
  * ${table.comment!} 服务类接口
@@ -29,18 +28,18 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
      /**
       * 新增${table.comment!}
-      * @param formData ${table.comment!}表单对象
+      * @param formData ${table.comment!}Save表单对象
       * @return true-成功，false-失败
       */
-     ${entity} save(${entity}Form formData);
+     ${entity} save(${entity}SaveForm formData);
 
     /**
      * 修改${table.comment!}
      * @param id ${table.comment!}ID
-     * @param formData ${table.comment!}表单对象
+     * @param formData ${table.comment!}Update表单对象
      * @return true-成功，false-失败
      */
-    ${entity} update(Long id, ${entity}Form formData);
+    ${entity} update(Long id, ${entity}UpdateForm formData);
 
     /**
      * 删除${table.comment!}
