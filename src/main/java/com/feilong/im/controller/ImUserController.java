@@ -1,5 +1,9 @@
 package com.feilong.im.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.feilong.im.core.MyJsonView;
+import com.feilong.im.core.ValidationGroups;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.feilong.im.entity.ImUser;
@@ -36,6 +40,7 @@ public class ImUserController {
 
     @Operation(summary = "im账户表分页列表")
     @PostMapping("/page")
+    @JsonView(MyJsonView.Simple.class)
     public Result<IPage<ImUserVO>> page(@RequestBody @Valid ImUserPageQuery queryParams) {
         IPage<ImUserVO> result = imUserService.page(queryParams);
         return Result.ofSuccess(result);
@@ -43,7 +48,7 @@ public class ImUserController {
 
     @Operation(summary = "新增im账户表")
     @PostMapping
-    public Result<ImUserVO> save(@RequestBody @Valid ImUserForm formData) {
+    public Result<ImUserVO> save(@RequestBody @Validated(ValidationGroups.Create.class) ImUserForm formData) {
         ImUser imUser = imUserService.save(formData);
         return Result.ofSuccess(imUserEntityMapper.toVo(imUser));
     }

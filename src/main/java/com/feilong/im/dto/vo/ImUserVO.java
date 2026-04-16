@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import java.io.Serializable;
 import java.io.Serial;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.feilong.im.core.MyJsonView;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,6 +40,7 @@ public class ImUserVO implements Serializable {
      * 密码
      */
     @Schema(description = "密码")
+    @JsonView(MyJsonView.Detail.class)
     private String password;
 
     /**
