@@ -3,6 +3,7 @@ package com.feilong.im.service;
 import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
 import com.feilong.im.config.security.token.AuthenticationToken;
 import com.feilong.im.dto.ImUserDTO;
+import com.feilong.im.dto.form.SysLoginForm;
 import com.feilong.im.dto.req.ImLoginReq;
 import com.feilong.im.dto.req.ImSignUpReq;
 import jakarta.validation.Valid;
@@ -31,4 +32,11 @@ public interface LoginRegisterService {
      * @return 退出结果
      */
     Boolean logout();
+
+    /**
+     * 系统用户登录
+     * @param req 登录参数
+     * @return 登录结果
+     */
+    AuthenticationToken sysLogin(@Valid SysLoginForm req);
 }

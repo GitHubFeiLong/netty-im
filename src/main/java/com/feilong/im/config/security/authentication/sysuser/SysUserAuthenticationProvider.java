@@ -1,7 +1,7 @@
-package com.feilong.im.config.security.authentication.imuser;
+package com.feilong.im.config.security.authentication.sysuser;
 
-import com.feilong.im.entity.ImUser;
-import com.feilong.im.service.ImUserService;
+import com.feilong.im.entity.SysUser;
+import com.feilong.im.service.SysUserService;
 import com.feilong.im.util.AssertUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,21 +10,24 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * IM用户认证供应者
- * @author cfl 2026/04/10
+ * 系统用户认证供应者
+ * @author cfl 2026/04/16
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ImUserAuthenticationProvider implements AuthenticationProvider {
+public class SysUserAuthenticationProvider implements AuthenticationProvider {
 
-    private final ImUserService imUserService;
+    private final SysUserService sysUserService;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -43,21 +46,21 @@ public class ImUserAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // 比较是否匹配
-        if (authentication instanceof ImUserAuthenticationToken token) {
-            ImUser imUser = imUserService.lambdaQuery().eq(ImUser::getUsername, token.getPrincipal()).one();
+        if (authentication instanceof SysUserAuthenticationToken token) {
+            SysUser sysUser = sysUserService.lambdaQuery().eq(SysUser::getUsername, token.getPrincipal()).one();
 
-            AssertUtil.isNotNull(imUser, () -> new UsernameNotFoundException("用户不存在"));
+            AssertUtil.isNotNull(sysUser, () -> new UsernameNotFoundException("用户不存在"));
             // 比较密码
-            AssertUtil.isTrue(passwordEncoder.matches((String) token.getCredentials(), imUser.getPassword()), () -> new BadCredentialsException("密码错误"));
+            AssertUtil.isTrue(passwordEncoder.matches((String) token.getCredentials(), sysUser.getPassword()), () -> new BadCredentialsException("密码错误"));
 
             // 构建用户信息
             // 已认证
-            ImUserDetails imUserDetails = new ImUserDetails();
-            imUserDetails.setId(imUser.getId());
-            imUserDetails.setUsername(imUser.getUsername());
-            imUserDetails.setNickname(imUser.getNickname());
+            SysUserDetails userDetails = new SysUserDetails();
+            userDetails.setId(sysUser.getId());
+            userDetails.setUsername(sysUser.getUsername());
+            List<SimpleGrantedAuthority> authorities = Arrays.stream(sysUser.getRoles().split(",")).map(SimpleGrantedAuthority::new).toList();
 
-            return new ImUserAuthenticationToken(imUserDetails, null);
+            return new SysUserAuthenticationToken(userDetails, authorities);
         }
         throw new RuntimeException("认证方式错误");
     }
@@ -84,6 +87,6 @@ public class ImUserAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public boolean supports(Class<?> authentication) {
-        return ImUserAuthenticationToken.class.isAssignableFrom(authentication);
+        return SysUserAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

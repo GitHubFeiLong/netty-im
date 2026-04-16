@@ -5,6 +5,7 @@ import com.feilong.im.config.security.token.AuthenticationToken;
 import com.feilong.im.core.MyJsonView;
 import com.feilong.im.core.Result;
 import com.feilong.im.dto.ImUserDTO;
+import com.feilong.im.dto.form.SysLoginForm;
 import com.feilong.im.dto.req.ImLoginReq;
 import com.feilong.im.dto.req.ImSignUpReq;
 import com.feilong.im.service.LoginRegisterService;
@@ -41,6 +42,12 @@ public class LoginRegisterController {
     @JsonView(MyJsonView.Simple.class)
     public Result<ImUserDTO> imSignUp(@Valid @RequestBody ImSignUpReq req) {
         return Result.ofSuccess(loginRegisterService.imSignUp(req));
+    }
+
+    @PostMapping("/sys/login")
+    @Operation(summary = "SYS登录")
+    public Result<AuthenticationToken> sysLogin(@Valid @RequestBody SysLoginForm req) {
+        return Result.ofSuccess(loginRegisterService.sysLogin(req));
     }
 
     @PostMapping("/logout")

@@ -8,6 +8,7 @@ import com.feilong.im.context.CurrentTokenContext;
 import com.feilong.im.context.CurrentUser;
 import com.feilong.im.context.CurrentUserContext;
 import com.feilong.im.dto.ImUserDTO;
+import com.feilong.im.dto.form.SysLoginForm;
 import com.feilong.im.dto.req.ImLoginReq;
 import com.feilong.im.dto.req.ImSignUpReq;
 import com.feilong.im.entity.ImUser;
@@ -94,6 +95,18 @@ public class LoginRegisterServiceImpl implements LoginRegisterService {
         tokenManager.invalidateToken(CurrentTokenContext.get());
 
         // 删除token
+        return null;
+    }
+
+    /**
+     * 系统用户登录
+     *
+     * @param req 登录参数
+     * @return 登录结果
+     */
+    @Override
+    public AuthenticationToken sysLogin(SysLoginForm req) {
+
         return null;
     }
 }

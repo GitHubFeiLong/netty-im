@@ -1,4 +1,4 @@
-package com.feilong.im.config.security.authentication.imuser;
+package com.feilong.im.config.security.authentication.sysuser;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -6,10 +6,10 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
- * IM用户认证Token
- * @author cfl 2026/04/10
+ * 系统用户认证Token
+ * @author cfl 2026/04/16
  */
-public class ImUserAuthenticationToken extends AbstractAuthenticationToken {
+public class SysUserAuthenticationToken extends AbstractAuthenticationToken {
 
     /**
      * 认证信息 (用户信息)
@@ -26,24 +26,22 @@ public class ImUserAuthenticationToken extends AbstractAuthenticationToken {
      * @param principal 用户名
      * @param credentials 密码
      */
-    public ImUserAuthenticationToken(Object principal, Object credentials) {
+    public SysUserAuthenticationToken(Object principal, Object credentials) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
-        setAuthenticated(false);
     }
 
     /**
      * 已认证
      * @param principal 用户名
-     * @param authorities 权限
+     * @param authorities 角色权限列表
      */
-    public ImUserAuthenticationToken(ImUserDetails principal, Collection<? extends GrantedAuthority> authorities) {
+    public SysUserAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
         this.credentials = null;
-        // 认证通过
-        super.setAuthenticated(true);
+        setAuthenticated(true);
     }
 
     /**
@@ -55,7 +53,7 @@ public class ImUserAuthenticationToken extends AbstractAuthenticationToken {
      */
     @Override
     public Object getCredentials() {
-        return credentials;
+        return null;
     }
 
     /**
@@ -73,6 +71,6 @@ public class ImUserAuthenticationToken extends AbstractAuthenticationToken {
      */
     @Override
     public Object getPrincipal() {
-        return principal;
+        return null;
     }
 }
