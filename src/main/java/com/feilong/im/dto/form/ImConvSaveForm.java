@@ -22,12 +22,6 @@ public class ImConvSaveForm implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 会话ID
-     */
-    @Schema(description = "会话ID")
-    private Long id;
-
-    /**
      * 会话类型（1-单聊，2-群聊）
      */
     @Schema(description = "会话类型（1-单聊，2-群聊）")
@@ -50,22 +44,4 @@ public class ImConvSaveForm implements Serializable {
      */
     @Schema(description = "群聊时：关联group_id（群聊必填，单聊为空）")
     private Long groupId;
-
-    /**
-     * 最后一条消息ID
-     */
-    @Schema(description = "最后一条消息ID")
-    private Long lastMsgId;
-
-    /**
-     * 创建时间
-     */
-    @Schema(description = "创建时间")
-    private LocalDateTime createTime;
-
-    /**
-     * 最后更新时间
-     */
-    @Schema(description = "最后更新时间")
-    private LocalDateTime updateTime;
 }

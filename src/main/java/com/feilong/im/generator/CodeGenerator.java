@@ -61,7 +61,7 @@ public class CodeGenerator {
      * 需要生成的表名（留空则生成所有表）
      */
     private static final List<String> TABLE_NAMES = List.of(
-            "sys_app"
+            "sys_user"
     );
 
     /**
@@ -394,10 +394,12 @@ public class CodeGenerator {
 
         log.warn("本次需要生成的表如下：\n{}", String.join("\n", getTables()));
 
+        log.error("注意:生成代码前,请将代码提交备份!!!");
         // 格式化输出文件覆盖配置（对齐显示）
         log.info("文件覆盖配置 FILE_OVERRIDE_MAP:\n{}", printAlignedMap(FILE_OVERRIDE_MAP));
 
         Scanner scanner = new Scanner(System.in);
+        log.error("注意:生成代码前,请将代码提交备份!!!");
         log.info("请输入是否需要覆盖已生成的文件(y/n)：");
         String input = scanner.next();
         boolean isRun = "y".equals(input) || "Y".equals(input);
