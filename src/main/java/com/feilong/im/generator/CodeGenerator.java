@@ -57,7 +57,7 @@ public class CodeGenerator {
      * 需要生成的表名（留空则生成所有表）
      */
     private static final List<String> TABLE_NAMES = Lists.newArrayList(
-            "sys_app"
+            "im_friend"
     );
 
     public static void main(String[] args) {
@@ -89,13 +89,13 @@ public class CodeGenerator {
                         // 实体配置
                         .entityBuilder()
                         .javaTemplate("/templates/entity.java")
+                        .enableFileOverride() // 开启覆盖已生成的文件
                         .idType(IdType.AUTO)
                         .naming(NamingStrategy.underline_to_camel) // 数据库表字段映射到实体的命名策略，默认下划线转驼峰
                         .enableSerialAnnotation() // 启用 java.io.Serial注解
                         .enableLombok(new ClassAnnotationAttributes("@Data", "lombok.Data"))
                         .enableChainModel()  // 启用链式模型
                         .enableTableFieldAnnotation() // 启用字段注解
-                        .enableFileOverride() // 开启覆盖已生成的文件
                         .enableRemoveIsPrefix() // 开启移除is前缀
                         .versionColumnName(VERSION_COLUMN_NAME) // 乐观锁字段名
                         .logicDeleteColumnName(LOGIC_DELETE_COLUMN_NAME) // 逻辑删除字段名
@@ -112,12 +112,14 @@ public class CodeGenerator {
                         .enableBaseResultMap()// 启用 BaseResultMap
                         // service 配置
                         .serviceBuilder()
-                        .formatServiceFileName("%sService")
                         .serviceTemplate("/templates/service.java") // 设置 Service 模板
                         .serviceImplTemplate("/templates/serviceImpl.java") // 设置 ServiceImpl 模板
+                        .formatServiceFileName("%sService")
+                        .enableFileOverride() // 开启覆盖已生成的文件
                         // controller 配置
                         .controllerBuilder()
                         .template("/templates/controller.java")
+                        .enableFileOverride() // 开启覆盖已生成的文件
                         .formatFileName("%sController")
                         .enableHyphenStyle()
                         .enableRestStyle()
