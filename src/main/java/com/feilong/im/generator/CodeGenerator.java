@@ -19,12 +19,14 @@ import com.feilong.im.entity.BaseEntity;
 import com.google.common.collect.Lists;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
 /**
  * @author cfl 2026/04/14
  */
+@Slf4j
 public class CodeGenerator {
     /**
      * 数据库配置
@@ -76,6 +78,10 @@ public class CodeGenerator {
      * @param args 参数
      */
     public static void main(String[] args) {
+        if (!beforeGenerator()) {
+            return;
+        }
+
         FastAutoGenerator.create(DATA_SOURCE_URL, DATA_SOURCE_USERNAME, DATA_SOURCE_PASSWORD)
                 // 全局配置
                 .globalConfig(builder -> builder
@@ -314,6 +320,25 @@ public class CodeGenerator {
 
         System.out.println("Done!");
         System.exit(0);
+    }
+
+    private static boolean beforeGenerator() {
+        log.info("即将执行代码生成,相关参数将打印");
+        log.warn("注意:生成代码前,请将代码提交备份!!!");
+        log.warn("注意:生成代码前,请将代码提交备份!!!");
+        log.warn("注意:生成代码前,请将代码提交备份!!!");
+        log.info("表TABLE_NAMES:{}", TABLE_NAMES);
+        log.info("文件覆盖,FILE_OVERRIDE_MAP:{}", FILE_OVERRIDE_MAP);
+        Scanner scanner = new Scanner(System.in);
+        log.info("请输入是否需要覆盖已生成的文件(y/n)：");
+        String input = scanner.next();
+        boolean isRun = "y".equals(input) || "Y".equals(input);
+        if (isRun) {
+            log.info("即将开始执行代码生成");
+        } else {
+            log.info("已取消代码生成");
+        }
+        return isRun;
     }
 
     /**
