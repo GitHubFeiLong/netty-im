@@ -4,7 +4,8 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
-import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
+import com.baomidou.mybatisplus.generator.config.StrategyConfig;
+import com.baomidou.mybatisplus.generator.config.builder.*;
 import com.baomidou.mybatisplus.generator.config.po.LikeTable;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
@@ -12,12 +13,12 @@ import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.baomidou.mybatisplus.generator.fill.Column;
 import com.baomidou.mybatisplus.generator.model.ClassAnnotationAttributes;
 import com.feilong.im.entity.BaseEntity;
 import com.google.common.collect.Lists;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import net.sf.jsqlparser.schema.Column;
 
 import java.util.*;
 
@@ -56,11 +57,21 @@ public class CodeGenerator {
     /**
      * 需要生成的表名（留空则生成所有表）
      */
-    private static final List<String> TABLE_NAMES = Lists.newArrayList(
+    private static final List<String> TABLE_NAMES = List.of(
             "im_conv"
             ,"im_conv_user"
             ,"im_message"
             ,"im_user"
+    );
+
+    /**
+     * 文件覆盖配置
+     */
+    private static final Map<String, Boolean> FILE_OVERRIDE_MAP = Map.of(
+            "entity", true,
+            "mapper", true,
+            "service", true,
+            "controller", true
     );
 
     /**
@@ -88,50 +99,76 @@ public class CodeGenerator {
                         .pathInfo(Collections.singletonMap(OutputFile.xml, XML_OUTPUT_DIR))
                 )
                 // 策略配置
-                .strategyConfig(builder -> builder
+                .strategyConfig(builder -> {
+                    StrategyConfig.Builder strategyBuilder = builder
+                            // 排除不需要生成的表 不能和 addInclude 同时使用
+                            // .addExclude("flyway_schema_history")
+                            // 设置需要生成的表名
+                            .addInclude(getTables());
 
-                        // 设置需要生成的表名
-                        .addInclude(getTables())
-                        // 排除不需要生成的表 不能和 addInclude 同时使用
-                        // .addExclude("flyway_schema_history")
-                        // 实体配置
-                        .entityBuilder()
-                        .javaTemplate("/templates/entity.java")
-                        .enableFileOverride() // 开启覆盖已生成的文件
-                        .idType(IdType.AUTO)
-                        .naming(NamingStrategy.underline_to_camel) // 数据库表字段映射到实体的命名策略，默认下划线转驼峰
-                        .enableSerialAnnotation() // 启用 java.io.Serial注解
-                        .enableLombok(new ClassAnnotationAttributes("@Data", "lombok.Data"))
-                        .enableChainModel()  // 启用链式模型
-                        .enableTableFieldAnnotation() // 启用字段注解
-                        .enableRemoveIsPrefix() // 开启移除is前缀
-                        .versionColumnName(VERSION_COLUMN_NAME) // 乐观锁字段名
-                        .logicDeleteColumnName(LOGIC_DELETE_COLUMN_NAME) // 逻辑删除字段名
-                        .addTableFills(
-                                new com.baomidou.mybatisplus.generator.fill.Column("create_time", FieldFill.INSERT),
-                                new com.baomidou.mybatisplus.generator.fill.Column("update_time", FieldFill.INSERT_UPDATE)
-                        )
-                        // mapper配置
-                        .mapperBuilder()
-                        .mapperTemplate("/templates/mapper.java")
-                        .mapperXmlTemplate("/templates/mapper.xml")
-                        .enableFileOverride() // 开启覆盖已生成的文件(小心数据丢失)
-                        .enableBaseColumnList()  // 启用 BaseColumnList
-                        .enableBaseResultMap()// 启用 BaseResultMap
-                        // service 配置
-                        .serviceBuilder()
-                        .serviceTemplate("/templates/service.java") // 设置 Service 模板
-                        .serviceImplTemplate("/templates/serviceImpl.java") // 设置 ServiceImpl 模板
-                        .formatServiceFileName("%sService")
-                        .enableFileOverride() // 开启覆盖已生成的文件
-                        // controller 配置
-                        .controllerBuilder()
-                        .template("/templates/controller.java")
-                        .enableFileOverride() // 开启覆盖已生成的文件
-                        .formatFileName("%sController")
-                        .enableHyphenStyle()
-                        .enableRestStyle()
-                )
+                    // 实体配置
+                    var entityBuilder = strategyBuilder.entityBuilder()
+                            .javaTemplate("/templates/entity.java")
+                            .idType(IdType.AUTO)
+                            // 数据库表字段映射到实体的命名策略，默认下划线转驼峰
+                            .naming(NamingStrategy.underline_to_camel)
+                            // 启用 java.io.Serial注解
+                            .enableSerialAnnotation()
+                            // 启用 lombok
+                            .enableLombok(new ClassAnnotationAttributes("@Data", "lombok.Data"))
+                            // 启用链式模型 @Accessors(chain = true)
+                            .enableChainModel()
+                            // 启用字段注解
+                            .enableTableFieldAnnotation()
+                            // 开启移除is前缀
+                            .enableRemoveIsPrefix()
+                            // 乐观锁字段名
+                            .versionColumnName(VERSION_COLUMN_NAME)
+                            // 逻辑删除字段名
+                            .logicDeleteColumnName(LOGIC_DELETE_COLUMN_NAME)
+                            // 审计字段
+                            .addTableFills(
+                                    new Column("create_time", FieldFill.INSERT),
+                                    new Column("update_time", FieldFill.INSERT_UPDATE)
+                            );
+                    if (FILE_OVERRIDE_MAP.get("entity")) {
+                        entityBuilder.enableFileOverride();
+                    }
+
+                    // mapper配置
+                    Mapper.Builder mapperBuilder = strategyBuilder.mapperBuilder()
+                            .mapperTemplate("/templates/mapper.java")
+                            .mapperXmlTemplate("/templates/mapper.xml")
+                            // 开启覆盖已生成的文件(小心数据丢失)
+                            .enableFileOverride()
+                            // 启用 BaseColumnList
+                            .enableBaseColumnList()
+                            // 启用 BaseResultMap
+                            .enableBaseResultMap();
+                    if (FILE_OVERRIDE_MAP.get("mapper")) {
+                        mapperBuilder.enableFileOverride();
+                    }
+
+                    // service 配置
+                    Service.Builder serviceBuilder = strategyBuilder.serviceBuilder()
+                            .serviceTemplate("/templates/service.java") // 设置 Service 模板
+                            .serviceImplTemplate("/templates/serviceImpl.java") // 设置 ServiceImpl 模板
+                            .formatServiceFileName("%sService");
+                    if (FILE_OVERRIDE_MAP.get("service")) {
+                        serviceBuilder.enableFileOverride();
+                    }
+
+                    // controller 配置
+                    Controller.Builder controllerBuilder = strategyBuilder.controllerBuilder()
+                            .template("/templates/controller.java")
+                            .enableFileOverride() // 开启覆盖已生成的文件
+                            .formatFileName("%sController")
+                            .enableHyphenStyle()
+                            .enableRestStyle();
+                    if (FILE_OVERRIDE_MAP.get("controller")) {
+                        controllerBuilder.enableFileOverride();
+                    }
+                })
                 // 注入配置(设置扩展类的模板路径和包路径)
                 .injectionConfig(consumer -> {
 
@@ -141,10 +178,15 @@ public class CodeGenerator {
                     // DTO文件生成
                     customFiles.add(new CustomFile
                             .Builder()
-                            .fileName("DTO.java") // 创建的DTO文件后缀，例如sys_dept实体创建的是SysDeptDTO.java,其中DTO.java就是这个属性控制
-                            .templatePath("/templates/dto.java.ftl") //指定生成模板路径
-                            .packageName("dto") //包名,自3.5.10开始,可通过在package里面获取自定义包全路径,低版本下无法获取,示例:${package.DTO}
-                            .enableFileOverride() // 开启覆盖已生成的文件
+                            // 创建的DTO文件后缀，例如sys_dept实体创建的是SysDeptDTO.java,其中DTO.java就是这个属性控制
+                            // 可通过在package里面获取自定义包全路径,低版本下无法获取,示例:${package.DTO}
+                            .fileName("DTO.java")
+                            //指定生成模板路径
+                            .templatePath("/templates/dto.java.ftl")
+                            //包名，在全局配置的包目录下
+                            .packageName("dto")
+                            // 开启覆盖已生成的文件
+                            .enableFileOverride()
                             .build()
                     );
 
@@ -217,8 +259,6 @@ public class CodeGenerator {
                                 default:
                             }
                         }
-
-                        // tableInfo.getTableFieldMap().get("deleted").getColumnType()
 
                         // 注入自定义参数
                         List<String> importEntityPackages = new ArrayList<>();
