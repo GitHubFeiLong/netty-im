@@ -1,7 +1,10 @@
 package com.feilong.im.config.security.token;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.feilong.im.config.security.authentication.imuser.ImUserAuthenticationToken;
 import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
+import com.feilong.im.config.security.authentication.sysuser.SysUserAuthenticationToken;
+import com.feilong.im.config.security.authentication.sysuser.SysUserDetails;
 import com.feilong.im.constant.RedisKeyConst;
 import com.feilong.im.constant.SecurityConstants;
 import com.feilong.im.context.CurrentTimeContext;
@@ -19,12 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * JWT Token 管理器
@@ -95,15 +101,26 @@ public class JwtTokenManager implements TokenManager {
     @Override
     public Authentication parseToken(String token) {
         Claims claims = parseTokenToClaims(token);
-
         String jwtId = claims.getId();
-
+        // 判断用户类型
         Object jwtUserType = claims.get(SecurityConstants.JWT_KEY_JWT_USER_TYPE);
 
+        // IM 用户类型
         if (Objects.equals(jwtUserType, SecurityConstants.JWT_VALUE_JWT_USER_TYPE_IM_USER)) {
             ImUserDetails imUserDetails = JsonUtil.toObject(claims.get(SecurityConstants.JWT_KEY_USER_DETAIL).toString(), ImUserDetails.class);
             imUserDetails.setTokenId(jwtId);
             return new ImUserAuthenticationToken(imUserDetails,null);
+        }
+
+        // SYS 用户类型
+        if (Objects.equals(jwtUserType, SecurityConstants.JWT_VALUE_JWT_USER_TYPE_SYS_USER)) {
+            SysUserDetails sysUserDetails = JsonUtil.toObject(claims.get(SecurityConstants.JWT_KEY_USER_DETAIL).toString(), SysUserDetails.class);
+            sysUserDetails.setTokenId(jwtId);
+            if (CollectionUtil.isNotEmpty(sysUserDetails.getRoles())) {
+                List<SimpleGrantedAuthority> authorities = sysUserDetails.getRoles().stream().map(role -> new SimpleGrantedAuthority(SecurityConstants.ROLE_PREFIX + role)).toList();
+                return new SysUserAuthenticationToken(sysUserDetails, authorities);
+            }
+            return new SysUserAuthenticationToken(sysUserDetails, List.of());
         }
 
         throw new RuntimeException("认证方式错误");
@@ -251,9 +268,19 @@ public class JwtTokenManager implements TokenManager {
     private String generateToken(Authentication authentication, int ttl) {
         Map<String, Object> payload = new HashMap<>();
         Object principal = authentication.getPrincipal();
-        if (principal instanceof ImUserDetails imUserDetails) {
-            payload.put(SecurityConstants.JWT_KEY_USER_DETAIL, JsonUtil.toJsonString(imUserDetails));
+        String tokenId = UUID.randomUUID().toString().replace("-", "");
+
+        String subject = principal.toString();
+        if (principal instanceof ImUserDetails userDetails) {
+            subject = SecurityConstants.JWT_VALUE_JWT_USER_TYPE_IM_USER + "_" + userDetails.getId();
+            userDetails.setTokenId(tokenId);
+            payload.put(SecurityConstants.JWT_KEY_USER_DETAIL, JsonUtil.toJsonString(userDetails));
             payload.put(SecurityConstants.JWT_KEY_JWT_USER_TYPE, SecurityConstants.JWT_VALUE_JWT_USER_TYPE_IM_USER);
+        } else if (principal instanceof SysUserDetails userDetails) {
+            subject = SecurityConstants.JWT_VALUE_JWT_USER_TYPE_SYS_USER + "_" + userDetails.getId();
+            userDetails.setTokenId(tokenId);
+            payload.put(SecurityConstants.JWT_KEY_USER_DETAIL, JsonUtil.toJsonString(userDetails));
+            payload.put(SecurityConstants.JWT_KEY_JWT_USER_TYPE, SecurityConstants.JWT_VALUE_JWT_USER_TYPE_SYS_USER);
         }
 
         // 过期时间
@@ -267,8 +294,8 @@ public class JwtTokenManager implements TokenManager {
 
         return Jwts.builder()
                 .claims(payload)
-                .subject(authentication.getName())
-                .id(UUID.randomUUID().toString().replace("-", ""))
+                .subject(subject)
+                .id(tokenId)
                 .issuedAt(CurrentTimeContext.getDate())
                 .expiration(expiration)
                 .signWith(secretKey)

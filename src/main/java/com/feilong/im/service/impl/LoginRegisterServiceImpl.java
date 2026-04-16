@@ -2,6 +2,7 @@ package com.feilong.im.service.impl;
 
 import com.feilong.im.config.security.authentication.imuser.ImUserAuthenticationToken;
 import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
+import com.feilong.im.config.security.authentication.sysuser.SysUserAuthenticationToken;
 import com.feilong.im.config.security.token.AuthenticationToken;
 import com.feilong.im.config.security.token.TokenManager;
 import com.feilong.im.context.CurrentTokenContext;
@@ -49,13 +50,10 @@ public class LoginRegisterServiceImpl implements LoginRegisterService {
     public AuthenticationToken imLogin(ImLoginReq req) {
         log.info("IM登录");
         // 1. 创建用于IM认证的令牌（未认证）
-        ImUserAuthenticationToken authenticationToken = new ImUserAuthenticationToken(req.getUsername().trim(), req.getPassword().trim());
-
+        Authentication authenticationToken = new ImUserAuthenticationToken(req.getUsername().trim(), req.getPassword().trim());
         // 2. 执行认证（认证中）
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
         // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
-
         return tokenManager.generateToken(authentication);
     }
 
@@ -90,10 +88,7 @@ public class LoginRegisterServiceImpl implements LoginRegisterService {
     @Override
     public Boolean logout() {
         log.info("退出登录");
-        // 将token解析出来
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         tokenManager.invalidateToken(CurrentTokenContext.get());
-
         // 删除token
         return null;
     }
@@ -106,7 +101,12 @@ public class LoginRegisterServiceImpl implements LoginRegisterService {
      */
     @Override
     public AuthenticationToken sysLogin(SysLoginForm req) {
-
-        return null;
+        log.info("SYS登录");
+        // 1. 创建用于SYS认证的令牌（未认证）
+        Authentication authenticationToken = new SysUserAuthenticationToken(req.getUsername().trim(), req.getPassword().trim());
+        // 2. 执行认证（认证中）
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
+        return tokenManager.generateToken(authentication);
     }
 }

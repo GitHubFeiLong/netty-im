@@ -42,4 +42,9 @@ public interface SecurityConstants {
      * JWT 载荷字段 jwtUserType 的值，表示 IM 用户
      */
     String JWT_VALUE_JWT_USER_TYPE_IM_USER = "imUser";
+
+    /**
+     * JWT 载荷字段 jwtUserType 的值，表示 SYS 用户
+     */
+    String JWT_VALUE_JWT_USER_TYPE_SYS_USER = "sysUser";
 }

@@ -58,7 +58,8 @@ public class SysUserAuthenticationProvider implements AuthenticationProvider {
             SysUserDetails userDetails = new SysUserDetails();
             userDetails.setId(sysUser.getId());
             userDetails.setUsername(sysUser.getUsername());
-            List<SimpleGrantedAuthority> authorities = Arrays.stream(sysUser.getRoles().split(",")).map(SimpleGrantedAuthority::new).toList();
+            userDetails.setRoles(Arrays.stream(sysUser.getRoles().split(",")).toList());
+            List<SimpleGrantedAuthority> authorities = userDetails.getRoles().stream().map(SimpleGrantedAuthority::new).toList();
 
             return new SysUserAuthenticationToken(userDetails, authorities);
         }

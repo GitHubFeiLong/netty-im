@@ -1,6 +1,7 @@
 package com.feilong.im.config.security;
 
 import com.feilong.im.config.security.authentication.imuser.ImUserAuthenticationProvider;
+import com.feilong.im.config.security.authentication.sysuser.SysUserAuthenticationProvider;
 import com.feilong.im.config.security.token.TokenManager;
 import com.feilong.im.filter.RequestContextLifecycleFilter;
 import com.feilong.im.filter.TokenAuthenticationFilter;
@@ -116,8 +117,10 @@ public class SecurityConfig {
      * @return AuthenticationManager 认证管理器
      */
     @Bean
-    public AuthenticationManager authenticationManager(DaoAuthenticationProvider daoAuthenticationProvider, ImUserAuthenticationProvider imUserAuthenticationProvider) {
-        return new ProviderManager(daoAuthenticationProvider, imUserAuthenticationProvider);
+    public AuthenticationManager authenticationManager(DaoAuthenticationProvider daoAuthenticationProvider,
+                                                       ImUserAuthenticationProvider imUserAuthenticationProvider,
+                                                       SysUserAuthenticationProvider sysUserAuthenticationProvider) {
+        return new ProviderManager(daoAuthenticationProvider, imUserAuthenticationProvider, sysUserAuthenticationProvider);
     }
 
 

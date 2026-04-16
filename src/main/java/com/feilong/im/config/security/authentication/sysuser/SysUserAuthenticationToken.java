@@ -53,7 +53,7 @@ public class SysUserAuthenticationToken extends AbstractAuthenticationToken {
      */
     @Override
     public Object getCredentials() {
-        return null;
+        return credentials;
     }
 
     /**
@@ -71,6 +71,6 @@ public class SysUserAuthenticationToken extends AbstractAuthenticationToken {
      */
     @Override
     public Object getPrincipal() {
-        return null;
+        return principal;
     }
 }
