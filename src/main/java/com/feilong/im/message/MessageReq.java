@@ -5,11 +5,13 @@ import com.feilong.im.constant.CommonConst;
 import com.feilong.im.context.CurrentTimeContext;
 import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.IMessageCmdEnum;
+import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
 import com.google.common.base.Strings;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -44,6 +46,20 @@ public class MessageReq {
      * 时间戳
      */
     private LocalDateTime timestamp;
+
+    /**
+     * 创建消息请求
+     * @param typeEnum 消息类型
+     * @param cmd 子命令
+     * @return 消息请求
+     */
+    public static MessageReq create(MessageTypeEnum typeEnum, MessageCmdSystemEnum cmd) {
+        return new MessageReq()
+                .setReqId(UUID.randomUUID().toString().replace("-", ""))
+                .setType(typeEnum)
+                .setCmd(cmd.name())
+                .setTimestamp(LocalDateTime.now());
+    }
 
     /**
      * 获取解析后的子命令枚举
