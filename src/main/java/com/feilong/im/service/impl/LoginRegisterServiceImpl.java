@@ -89,8 +89,7 @@ public class LoginRegisterServiceImpl implements LoginRegisterService {
     public Boolean logout() {
         log.info("退出登录");
         tokenManager.invalidateToken(CurrentTokenContext.get());
-        // 删除token
-        return null;
+        return true;
     }
 
     /**
