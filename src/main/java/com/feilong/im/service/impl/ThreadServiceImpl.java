@@ -3,7 +3,7 @@ package com.feilong.im.service.impl;
 import com.feilong.im.handler.netty.NettyServerHandler;
 import com.feilong.im.handler.netty.TraceIdHandler;
 import com.feilong.im.context.CurrentTimeContext;
-import com.feilong.im.context.CurrentUserContext;
+import com.feilong.im.context.NettyCurrentUserContext;
 import com.feilong.im.context.TraceIdContext;
 import com.feilong.im.enums.MessageTypeEnum;
 import com.feilong.im.enums.cmd.MessageCmdSystemEnum;
@@ -49,7 +49,7 @@ public class ThreadServiceImpl implements ThreadService {
                 TraceIdContext.set(traceId);
                 // 设置当前请求时间
                 CurrentTimeContext.set();
-                CurrentUserContext.set(ctx);
+                NettyCurrentUserContext.set(ctx);
                 runnable.run();
             } catch (NettyClientException e) {
                 log.warn("客户端异常", e);
@@ -61,7 +61,7 @@ public class ThreadServiceImpl implements ThreadService {
                 NettyServerHandler.exceptionCaughtStatic(ctx, e);
             } finally {
                 // 清除当前用户上下文
-                CurrentUserContext.remove();
+                NettyCurrentUserContext.remove();
                 // 清除 channel 属性
                 traceIdHandler.handlerRemoved(ctx);
                 // 清理时间

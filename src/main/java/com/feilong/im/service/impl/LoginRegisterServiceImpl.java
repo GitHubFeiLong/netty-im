@@ -1,13 +1,10 @@
 package com.feilong.im.service.impl;
 
 import com.feilong.im.config.security.authentication.imuser.ImUserAuthenticationToken;
-import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
 import com.feilong.im.config.security.authentication.sysuser.SysUserAuthenticationToken;
 import com.feilong.im.config.security.token.AuthenticationToken;
 import com.feilong.im.config.security.token.TokenManager;
 import com.feilong.im.context.CurrentTokenContext;
-import com.feilong.im.context.CurrentUser;
-import com.feilong.im.context.CurrentUserContext;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.dto.form.SysLoginForm;
 import com.feilong.im.dto.req.ImLoginReq;
@@ -20,9 +17,7 @@ import com.feilong.im.service.LoginRegisterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

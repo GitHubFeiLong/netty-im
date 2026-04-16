@@ -2,12 +2,13 @@ package com.feilong.im.context;
 
 import com.feilong.im.handler.netty.NettyServerHandler;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.Data;
 
 /**
- * 当前用户上下文
+ * Netty当前用户上下文
  * @author cfl 2026/04/08
  */
-public class CurrentUserContext {
+public class NettyCurrentUserContext {
     private static final InheritableThreadLocal<CurrentUser> THREAD_LOCAL = new InheritableThreadLocal<>();
 
     public static void set(CurrentUser currentUser) {
@@ -27,5 +28,22 @@ public class CurrentUserContext {
 
     public static void remove() {
         THREAD_LOCAL.remove();
+    }
+
+    /**
+     * 当前用户信息
+     * @author cfl 2026/04/08
+     */
+    @Data
+    public static class CurrentUser {
+        /**
+         * JWT ID
+         */
+        private String jwtId;
+
+        /**
+         * 用户ID
+         */
+        private Long userId;
     }
 }
