@@ -9,14 +9,13 @@ import lombok.Getter;
 @Getter
 public enum AuthTokenStatusEnum {
     /**
-     * 有效
-     */
-    VALID("0"),
-
-    /**
      * 无效
      */
-    INVALID("1");
+    INVALID("0"),
+    /**
+     * 有效
+     */
+    VALID("1");
 
     private final String id;
 

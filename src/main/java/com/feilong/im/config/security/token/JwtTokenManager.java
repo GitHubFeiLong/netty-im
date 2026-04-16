@@ -41,9 +41,9 @@ import java.util.stream.Collectors;
 @ConditionalOnProperty(value = "security.session.type", havingValue = "jwt")
 public class JwtTokenManager implements TokenManager {
 
+    private final SecretKey secretKey;
     private final SecurityProperties securityProperties;
     private final StringRedisTemplate stringRedisTemplate;
-    private final SecretKey secretKey;
     private final SysAuthTokenBlacklistService sysAuthTokenBlacklistService;
 
     public JwtTokenManager(SecurityProperties securityProperties, StringRedisTemplate stringRedisTemplate, SysAuthTokenBlacklistService sysAuthTokenBlacklistService) {
@@ -77,19 +77,22 @@ public class JwtTokenManager implements TokenManager {
     }
 
     /**
-     *
-     * @param token
-     * @return
+     * 解析令牌
+     * @param token JWT Token
+     * @return Claims
      */
     public Claims parseTokenToClaims(String token) {
         if (token.startsWith(SecurityConstants.BEARER_TOKEN_PREFIX)) {
             token = token.substring(SecurityConstants.BEARER_TOKEN_PREFIX.length());
         }
         return Jwts.parser()
-                .verifyWith(secretKey)  // 设置验证密钥
+                // 设置验证密钥
+                .verifyWith(secretKey)
                 .build()
-                .parseSignedClaims(token) // 解析并验证
-                .getPayload();            // 获取载荷
+                // 解析并验证
+                .parseSignedClaims(token)
+                // 获取载荷
+                .getPayload();
     }
 
     /**
@@ -162,7 +165,7 @@ public class JwtTokenManager implements TokenManager {
                 throw ClientException.of("登录失效，请重新登录", claims.getId());
             }
 
-            boolean exists = sysAuthTokenBlacklistService.lambdaQuery().eq(SysAuthTokenBlacklist::getId, claims.getId()).exists();
+            boolean exists = sysAuthTokenBlacklistService.lambdaQuery().select(SysAuthTokenBlacklist::getId).eq(SysAuthTokenBlacklist::getId, claims.getId()).exists();
 
             AuthTokenStatusEnum authTokenStatusEnum = exists ? AuthTokenStatusEnum.INVALID : AuthTokenStatusEnum.VALID;
             // 设置缓存
