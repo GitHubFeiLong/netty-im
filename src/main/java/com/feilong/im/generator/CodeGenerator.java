@@ -22,6 +22,7 @@ import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author cfl 2026/04/14
@@ -60,28 +61,43 @@ public class CodeGenerator {
      * 需要生成的表名（留空则生成所有表）
      */
     private static final List<String> TABLE_NAMES = List.of(
-            "im_conv"
+            "sys_app"
     );
 
     /**
      * 文件覆盖配置
      */
-    private static final Map<String, Boolean> FILE_OVERRIDE_MAP = Map.of(
-            "entity", true,
-            "mapper", true,
-            "service", true,
-            "controller", true
-    );
+
+    private static final Map<String, Boolean> FILE_OVERRIDE_MAP;
+
+    static {
+        Map<String, Boolean> map = new LinkedHashMap<>();
+        map.put("entity", true);
+        map.put("mapper", true);
+        map.put("service", true);
+        map.put("controller", true);
+        map.put("dto", true);
+        map.put("vo", true);
+        map.put("bo", true);
+        map.put("pageQuery", true);
+        map.put("form", true);
+        map.put("formSave", true);
+        map.put("formUpdate", true);
+        map.put("entityMapper", true);
+        FILE_OVERRIDE_MAP = Collections.unmodifiableMap(map);
+    }
 
     /**
      * 执行前，必须要先提交备份代码，保证代码覆盖也会有备份进行恢复！！！
      * @param args 参数
      */
     public static void main(String[] args) {
+        // 执行前
         if (!beforeGenerator()) {
             return;
         }
 
+        // 开始执行
         FastAutoGenerator.create(DATA_SOURCE_URL, DATA_SOURCE_USERNAME, DATA_SOURCE_PASSWORD)
                 // 全局配置
                 .globalConfig(builder -> builder
@@ -135,7 +151,7 @@ public class CodeGenerator {
                                     new Column("create_time", FieldFill.INSERT),
                                     new Column("update_time", FieldFill.INSERT_UPDATE)
                             );
-                    if (FILE_OVERRIDE_MAP.get("entity")) {
+                    if (FILE_OVERRIDE_MAP.getOrDefault("entity", false)) {
                         entityBuilder.enableFileOverride();
                     }
 
@@ -149,7 +165,7 @@ public class CodeGenerator {
                             .enableBaseColumnList()
                             // 启用 BaseResultMap
                             .enableBaseResultMap();
-                    if (FILE_OVERRIDE_MAP.get("mapper")) {
+                    if (FILE_OVERRIDE_MAP.getOrDefault("mapper", false)) {
                         mapperBuilder.enableFileOverride();
                     }
 
@@ -158,7 +174,7 @@ public class CodeGenerator {
                             .serviceTemplate("/templates/service.java") // 设置 Service 模板
                             .serviceImplTemplate("/templates/serviceImpl.java") // 设置 ServiceImpl 模板
                             .formatServiceFileName("%sService");
-                    if (FILE_OVERRIDE_MAP.get("service")) {
+                    if (FILE_OVERRIDE_MAP.getOrDefault("service", false)) {
                         serviceBuilder.enableFileOverride();
                     }
 
@@ -169,92 +185,14 @@ public class CodeGenerator {
                             .formatFileName("%sController")
                             .enableHyphenStyle()
                             .enableRestStyle();
-                    if (FILE_OVERRIDE_MAP.get("controller")) {
+                    if (FILE_OVERRIDE_MAP.getOrDefault("controller", false)) {
                         controllerBuilder.enableFileOverride();
                     }
                 })
                 // 注入配置(设置扩展类的模板路径和包路径)
                 .injectionConfig(consumer -> {
 
-                    // 自定义文件
-                    List<CustomFile> customFiles = new ArrayList<>();
-
-                    // DTO文件生成
-                    customFiles.add(new CustomFile
-                            .Builder()
-                            // 创建的DTO文件后缀，例如sys_dept实体创建的是SysDeptDTO.java,其中DTO.java就是这个属性控制
-                            // 可通过在package里面获取自定义包全路径,低版本下无法获取,示例:${package.DTO}
-                            .fileName("DTO.java")
-                            //指定生成模板路径
-                            .templatePath("/templates/dto.java.ftl")
-                            //包名，在全局配置的包目录下
-                            .packageName("dto")
-                            // 开启覆盖已生成的文件
-                            .enableFileOverride()
-                            .build()
-                    );
-
-                    // VO文件生成
-                    customFiles.add(new CustomFile.Builder()
-                            .fileName("VO.java")
-                            .templatePath("/templates/vo.java.ftl")
-                            .packageName("dto.vo")
-                            .enableFileOverride()
-                            .build()
-                    );
-
-                    // BO文件生成
-                    customFiles.add(new CustomFile.Builder()
-                            .fileName("BO.java")
-                            .templatePath("/templates/bo.java.ftl")
-                            .packageName("dto.bo")
-                            .enableFileOverride()
-                            .build()
-                    );
-
-                    // 分页查询
-                    customFiles.add(new CustomFile.Builder()
-                            .fileName("PageQuery.java")
-                            .templatePath("/templates/pageQuery.java.ftl")
-                            .packageName("dto.page.query")
-                            .enableFileOverride()
-                            .build()
-                    );
-                    // 表单
-                    customFiles.add(new CustomFile.Builder()
-                            .fileName("Form.java")
-                            .templatePath("/templates/form.java.ftl")
-                            .packageName("dto.form")
-                            .enableFileOverride()
-                            .build()
-                    );
-
-                    // 表单，用于新增
-                    customFiles.add(new CustomFile.Builder()
-                            .fileName("SaveForm.java")
-                            .templatePath("/templates/formSave.java.ftl")
-                            .packageName("dto.form")
-                            .enableFileOverride()
-                            .build()
-                    );
-
-                    // 表单，用于修改
-                    customFiles.add(new CustomFile.Builder()
-                            .fileName("UpdateForm.java")
-                            .templatePath("/templates/formUpdate.java.ftl")
-                            .packageName("dto.form")
-                            .enableFileOverride()
-                            .build()
-                    );
-
-                    // mapstruct接口文件
-                    customFiles.add(new CustomFile.Builder()
-                            .fileName("EntityMapper.java")
-                            .templatePath("/templates/entityMapper.java.ftl")
-                            .packageName("mapstruct")
-                            .enableFileOverride()
-                            .build()
-                    );
+                    List<CustomFile> customFiles = getCustomFiles();
 
                     consumer.customFile(customFiles);
                     consumer.beforeOutputFile((tableInfo, objectMap) -> {
@@ -322,13 +260,144 @@ public class CodeGenerator {
         System.exit(0);
     }
 
+    /**
+     * 添加自定义代码模板
+     * @return 自定义文件集合
+     */
+    private static List<CustomFile> getCustomFiles() {
+        log.info("添加自定义模板文件: DTO、VO、BO、PageQuery、Form、SaveForm、UpdateForm、EntityMapper");
+        // 自定义文件
+        List<CustomFile> customFiles = new ArrayList<>();
+
+        // DTO文件生成
+        CustomFile.Builder dtoFileBuilder = new CustomFile
+                .Builder()
+                // 创建的DTO文件后缀，例如sys_dept实体创建的是SysDeptDTO.java,其中DTO.java就是这个属性控制
+                // 可通过在package里面获取自定义包全路径,低版本下无法获取,示例:${package.DTO}
+                .fileName("DTO.java")
+                //指定生成模板路径
+                .templatePath("/templates/dto.java.ftl")
+                //包名，在全局配置的包目录下
+                .packageName("dto")
+                ;
+        if (FILE_OVERRIDE_MAP.getOrDefault("dto", false)) {
+            dtoFileBuilder.enableFileOverride();
+        }
+        CustomFile dtoFile = dtoFileBuilder.build();
+        customFiles.add(dtoFile);
+        log.info("DTO文件配置：{}", dtoFile);
+
+
+        // VO文件生成
+        CustomFile.Builder voFileBuilder = new CustomFile
+                .Builder()
+                .fileName("VO.java")
+                .templatePath("/templates/vo.java.ftl")
+                .packageName("dto.vo")
+                ;
+        if (FILE_OVERRIDE_MAP.getOrDefault("vo", false)) {
+            voFileBuilder.enableFileOverride();
+        }
+        CustomFile voFile = voFileBuilder.build();
+        customFiles.add(voFile);
+        log.info("VO文件配置：{}", voFile);
+
+
+        // BO文件生成
+        CustomFile.Builder boFileBuilder = new CustomFile.Builder()
+                .fileName("BO.java")
+                .templatePath("/templates/bo.java.ftl")
+                .packageName("dto.bo");
+        if (FILE_OVERRIDE_MAP.getOrDefault("bo", false)) {
+            boFileBuilder.enableFileOverride();
+        }
+        CustomFile boFile = boFileBuilder.build();
+        customFiles.add(boFile);
+        log.info("BO文件配置：{}", boFile);
+
+
+        // PageQuery文件生成
+        CustomFile.Builder pageQueryFileBuilder = new CustomFile.Builder()
+                .fileName("PageQuery.java")
+                .templatePath("/templates/pageQuery.java.ftl")
+                .packageName("dto.page.query");
+        if (FILE_OVERRIDE_MAP.getOrDefault("pageQuery", false)) {
+            pageQueryFileBuilder.enableFileOverride();
+        }
+        CustomFile pageQueryFile = pageQueryFileBuilder.build();
+        customFiles.add(pageQueryFile);
+        log.info("PageQuery文件配置：{}", pageQueryFile);
+
+
+        // 表单
+        CustomFile.Builder formFileBuilder = new CustomFile.Builder()
+                .fileName("Form.java")
+                .templatePath("/templates/form.java.ftl")
+                .packageName("dto.form");
+        if (FILE_OVERRIDE_MAP.getOrDefault("form", false)) {
+            formFileBuilder.enableFileOverride();
+        }
+        CustomFile formFile = formFileBuilder.build();
+        customFiles.add(formFile);
+        log.info("Form文件配置：{}", formFile);
+
+
+        // 表单，用于新增
+        CustomFile.Builder saveFormFileBuilder = new CustomFile.Builder()
+                .fileName("SaveForm.java")
+                .templatePath("/templates/formSave.java.ftl")
+                .packageName("dto.form");
+        if (FILE_OVERRIDE_MAP.getOrDefault("saveForm", false)) {
+            saveFormFileBuilder.enableFileOverride();
+        }
+        CustomFile saveFormFile = saveFormFileBuilder.build();
+        customFiles.add(saveFormFile);
+        log.info("SaveForm文件配置：{}", saveFormFile);
+
+
+        // 表单，用于修改
+        CustomFile.Builder updateFormFileBuilder = new CustomFile.Builder()
+                .fileName("UpdateForm.java")
+                .templatePath("/templates/formUpdate.java.ftl")
+                .packageName("dto.form");
+        if (FILE_OVERRIDE_MAP.getOrDefault("updateForm", false)) {
+            updateFormFileBuilder.enableFileOverride();
+        }
+        CustomFile updateFormFile = updateFormFileBuilder.build();
+        customFiles.add(updateFormFile);
+        log.info("UpdateForm文件配置：{}", updateFormFile);
+
+
+        // mapstruct接口文件
+        CustomFile.Builder entityMapperFileBuilder = new CustomFile.Builder()
+                .fileName("EntityMapper.java")
+                .templatePath("/templates/entityMapper.java.ftl")
+                .packageName("mapstruct");
+        if (FILE_OVERRIDE_MAP.getOrDefault("entityMapper", false)) {
+            entityMapperFileBuilder.enableFileOverride();
+        }
+        CustomFile entityMapperFile = entityMapperFileBuilder.build();
+        customFiles.add(entityMapperFile);
+        log.info("EntityMapper文件配置：{}", entityMapperFile);
+
+        return customFiles;
+    }
+
+    /**
+     * 执行前打印注意事项,和确认是否需要真的执行
+     * @return true-执行，false-取消
+     */
     private static boolean beforeGenerator() {
         log.info("即将执行代码生成,相关参数将打印");
-        log.warn("注意:生成代码前,请将代码提交备份!!!");
-        log.warn("注意:生成代码前,请将代码提交备份!!!");
-        log.warn("注意:生成代码前,请将代码提交备份!!!");
-        log.info("表TABLE_NAMES:{}", TABLE_NAMES);
-        log.info("文件覆盖,FILE_OVERRIDE_MAP:{}", FILE_OVERRIDE_MAP);
+        log.error("注意:生成代码前,请将代码提交备份!!!");
+        log.error("注意:生成代码前,请将代码提交备份!!!");
+        log.error("注意:生成代码前,请将代码提交备份!!!");
+
+        log.warn("本次需要生成的表如下：\n{}", String.join("\n", getTables()));
+
+        // 格式化输出文件覆盖配置（对齐显示）
+        log.info("文件覆盖配置 FILE_OVERRIDE_MAP:\n{}", printAlignedMap(FILE_OVERRIDE_MAP));
+
         Scanner scanner = new Scanner(System.in);
         log.info("请输入是否需要覆盖已生成的文件(y/n)：");
         String input = scanner.next();
@@ -347,8 +416,35 @@ public class CodeGenerator {
      */
     private static String[] getTables() {
         if (TABLE_NAMES.isEmpty()) {
-            return new String[0];  // 空数组表示生成所有表
+            // 空数组表示生成所有表
+            return new String[0];
         }
-        return TABLE_NAMES.toArray(new String[0]);
+        return TABLE_NAMES.stream().filter(f -> !f.isBlank()).distinct().toArray(String[]::new);
+    }
+
+    /**
+     * 格式化打印 Map，键值对对齐显示
+     * @param map 要打印的 Map
+     */
+    private static String printAlignedMap(Map<String, Boolean> map) {
+        if (map == null || map.isEmpty()) {
+            log.info("  (empty)");
+            return "";
+        }
+
+        // 计算最长键的长度
+        int maxKeyLength = map.keySet().stream()
+                .mapToInt(String::length)
+                .max()
+                .orElse(0);
+
+        // 格式化输出，左对齐
+        String format = "  %-" + maxKeyLength + "s = %s";
+        StringBuilder sb = new StringBuilder();
+        map.forEach((key, value) ->
+            sb.append(String.format(format, key, value)).append("\n")
+        );
+
+        return sb.toString();
     }
 }
