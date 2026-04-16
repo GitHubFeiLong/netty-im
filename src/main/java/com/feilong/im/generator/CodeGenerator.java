@@ -67,7 +67,6 @@ public class CodeGenerator {
     /**
      * 文件覆盖配置
      */
-
     private static final Map<String, Boolean> FILE_OVERRIDE_MAP;
 
     static {
