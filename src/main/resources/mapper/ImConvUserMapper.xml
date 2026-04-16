@@ -1,5 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.feilong.im.dao.ImConvUserMapper">
+<mapper namespace="com.feilong.im.mapper.ImConvUserMapper">
 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.feilong.im.entity.ImConvUser">
+        <id column="id" property="id" />
+        <result column="conv_id" property="convId" />
+        <result column="user_id" property="userId" />
+        <result column="unread_count" property="unreadCount" />
+        <result column="last_read_id" property="lastReadId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, conv_id, user_id, unread_count, last_read_id, create_time, update_time
+    </sql>
+
+    <!-- im用户会话表分页列表 -->
+    <select id="page" resultType="com.feilong.im.dto.bo.ImConvUserBO">
+        <!-- 使用bind标签调用Java静态方法并将结果存储到变量 -->
+        <bind name="safeSorts" value="@com.feilong.im.util.MyBatisUtil@getSafeSorts(pageQuery)"/>
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `im_conv_user`
+        <where>
+            <if test="pageQuery.id != null">
+                AND `id` = #{pageQuery.id}
+            </if>
+            <if test="pageQuery.convId != null">
+                AND `conv_id` =  #{pageQuery.convId}
+            </if>
+            <if test="pageQuery.userId != null">
+                AND `user_id` =  #{pageQuery.userId}
+            </if>
+            <if test="pageQuery.unreadCount != null">
+                AND `unread_count` =  #{pageQuery.unreadCount}
+            </if>
+            <if test="pageQuery.lastReadId != null">
+                AND `last_read_id` =  #{pageQuery.lastReadId}
+            </if>
+            <if test="pageQuery.createTime != null">
+                AND `create_time` =  #{pageQuery.createTime}
+            </if>
+            <if test="pageQuery.updateTime != null">
+                AND `update_time` =  #{pageQuery.updateTime}
+            </if>
+            <if test="pageQuery.startTime != null">
+                AND `created_time` &gt;=  #{pageQuery.startTime}
+            </if>
+            <if test="pageQuery.endTime != null">
+                AND `created_time` &lt;= #{pageQuery.endTime}
+            </if>
+        </where>
+        <if test="safeSorts != null and safeSorts.size() > 0">
+            ORDER BY
+            <foreach item="sort" index="index" collection="safeSorts" separator=",">
+                ${sort.field} ${sort.order}
+            </foreach>
+        </if>
+    </select>
 </mapper>

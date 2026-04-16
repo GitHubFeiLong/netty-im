@@ -1,29 +1,23 @@
 package com.feilong.im.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
  * im会话表
- * </p>
- *
- * @author author
- * @since 2026-03-18
+ * @author cfl 2026/04/16
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 @TableName("im_conv")
+@Accessors(chain = true)
 public class ImConv implements Serializable {
 
     @Serial
@@ -39,7 +33,7 @@ public class ImConv implements Serializable {
      * 会话类型（1-单聊，2-群聊）
      */
     @TableField("type")
-    private Integer type;
+    private Byte type;
 
     /**
      * 单聊时：用户1 ID（与user2_id组合唯一，需满足user1_id < user2_id）
@@ -68,12 +62,13 @@ public class ImConv implements Serializable {
     /**
      * 创建时间
      */
-    @TableField("create_time")
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 最后更新时间
      */
-    @TableField("update_time")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }
+

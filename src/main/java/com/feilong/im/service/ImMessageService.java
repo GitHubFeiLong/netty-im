@@ -1,17 +1,53 @@
 package com.feilong.im.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.feilong.im.entity.ImMessage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.feilong.im.dto.form.ImMessageForm;
+import com.feilong.im.dto.page.query.ImMessagePageQuery;
+import com.feilong.im.dto.vo.ImMessageVO;
 
 /**
- * <p>
- * im消息表 服务类
- * </p>
- *
- * @author author
- * @since 2026-02-25
+ * im消息表 服务类接口
+ * @author cfl 2026/04/16
  */
 public interface ImMessageService extends IService<ImMessage> {
+
+    /**
+     * im消息表分页查询
+     * @param pageQuery im消息表分页查询参数
+     * @return 分页结果
+     */
+    IPage<ImMessageVO> page(ImMessagePageQuery pageQuery);
+
+    /**
+     * 获取im消息表表单数据
+     * @param id im消息表ID
+     * @return im消息表表单数据
+     */
+     ImMessageForm getForm(Long id);
+
+     /**
+      * 新增im消息表
+      * @param formData im消息表表单对象
+      * @return true-成功，false-失败
+      */
+     ImMessage save(ImMessageForm formData);
+
+    /**
+     * 修改im消息表
+     * @param id im消息表ID
+     * @param formData im消息表表单对象
+     * @return true-成功，false-失败
+     */
+    ImMessage update(Long id, ImMessageForm formData);
+
+    /**
+     * 删除im消息表
+     * @param ids im消息表ID，多个以英文逗号(,)分割
+     * @return true-成功，false-失败
+     */
+    boolean delete(String ids);
 
     /**
      * 获取未读消息数量
@@ -20,5 +56,4 @@ public interface ImMessageService extends IService<ImMessage> {
      * @return 未读消息数量
      */
     int countUnreadMessage(Long convId, Long receiverId);
-
 }

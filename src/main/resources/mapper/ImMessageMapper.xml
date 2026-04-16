@@ -1,5 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.feilong.im.dao.ImMessageMapper">
+<mapper namespace="com.feilong.im.mapper.ImMessageMapper">
 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.feilong.im.entity.ImMessage">
+        <id column="id" property="id" />
+        <result column="conv_id" property="convId" />
+        <result column="sender_id" property="senderId" />
+        <result column="receiver_type" property="receiverType" />
+        <result column="receiver_id" property="receiverId" />
+        <result column="msg_type" property="msgType" />
+        <result column="content" property="content" />
+        <result column="send_time" property="sendTime" />
+        <result column="status" property="status" />
+        <result column="extra" property="extra" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, conv_id, sender_id, receiver_type, receiver_id, msg_type, content, send_time, status, extra, update_time
+    </sql>
+
+    <!-- im消息表分页列表 -->
+    <select id="page" resultType="com.feilong.im.dto.bo.ImMessageBO">
+        <!-- 使用bind标签调用Java静态方法并将结果存储到变量 -->
+        <bind name="safeSorts" value="@com.feilong.im.util.MyBatisUtil@getSafeSorts(pageQuery)"/>
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `im_message`
+        <where>
+            <if test="pageQuery.id != null">
+                AND `id` = #{pageQuery.id}
+            </if>
+            <if test="pageQuery.convId != null">
+                AND `conv_id` =  #{pageQuery.convId}
+            </if>
+            <if test="pageQuery.senderId != null">
+                AND `sender_id` =  #{pageQuery.senderId}
+            </if>
+            <if test="pageQuery.receiverType != null">
+                AND `receiver_type` =  #{pageQuery.receiverType}
+            </if>
+            <if test="pageQuery.receiverId != null">
+                AND `receiver_id` =  #{pageQuery.receiverId}
+            </if>
+            <if test="pageQuery.msgType != null and pageQuery.msgType.trim().length > 0">
+                AND `msg_type` LIKE CONCAT('%',  #{pageQuery.msgType},'%')
+            </if>
+            <if test="pageQuery.content != null and pageQuery.content.trim().length > 0">
+                AND `content` LIKE CONCAT('%',  #{pageQuery.content},'%')
+            </if>
+            <if test="pageQuery.sendTime != null">
+                AND `send_time` =  #{pageQuery.sendTime}
+            </if>
+            <if test="pageQuery.status != null">
+                AND `status` =  #{pageQuery.status}
+            </if>
+            <if test="pageQuery.extra != null and pageQuery.extra.trim().length > 0">
+                AND `extra` LIKE CONCAT('%',  #{pageQuery.extra},'%')
+            </if>
+            <if test="pageQuery.updateTime != null">
+                AND `update_time` =  #{pageQuery.updateTime}
+            </if>
+            <if test="pageQuery.startTime != null">
+                AND `created_time` &gt;=  #{pageQuery.startTime}
+            </if>
+            <if test="pageQuery.endTime != null">
+                AND `created_time` &lt;= #{pageQuery.endTime}
+            </if>
+        </where>
+        <if test="safeSorts != null and safeSorts.size() > 0">
+            ORDER BY
+            <foreach item="sort" index="index" collection="safeSorts" separator=",">
+                ${sort.field} ${sort.order}
+            </foreach>
+        </if>
+    </select>
 </mapper>

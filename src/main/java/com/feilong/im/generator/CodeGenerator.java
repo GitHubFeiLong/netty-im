@@ -57,9 +57,16 @@ public class CodeGenerator {
      * 需要生成的表名（留空则生成所有表）
      */
     private static final List<String> TABLE_NAMES = Lists.newArrayList(
-            "im_friend"
+            "im_conv"
+            ,"im_conv_user"
+            ,"im_message"
+            ,"im_user"
     );
 
+    /**
+     * 执行前，必须要先提交备份代码，保证代码覆盖也会有备份进行恢复！！！
+     * @param args 参数
+     */
     public static void main(String[] args) {
         FastAutoGenerator.create(DATA_SOURCE_URL, DATA_SOURCE_USERNAME, DATA_SOURCE_PASSWORD)
                 // 全局配置
@@ -82,6 +89,7 @@ public class CodeGenerator {
                 )
                 // 策略配置
                 .strategyConfig(builder -> builder
+
                         // 设置需要生成的表名
                         .addInclude(getTables())
                         // 排除不需要生成的表 不能和 addInclude 同时使用

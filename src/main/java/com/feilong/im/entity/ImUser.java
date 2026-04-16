@@ -1,27 +1,26 @@
 package com.feilong.im.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
  * im账户表
- * </p>
- *
- * @author author
- * @since 2026-03-18
+ * @author cfl 2026/04/16
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 @TableName("im_user")
-public class ImUser extends BaseEntity implements Serializable {
+@Accessors(chain = true)
+public class ImUser implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -43,6 +42,7 @@ public class ImUser extends BaseEntity implements Serializable {
      */
     @TableField("password")
     private String password;
+
     /**
      * 昵称
      */
@@ -59,18 +59,32 @@ public class ImUser extends BaseEntity implements Serializable {
      * 用户状态（0-离线，1-在线，2-忙碌，3-隐身），默认0
      */
     @TableField("status")
-    private Integer status;
+    private Byte status;
 
     /**
-     * 乐观锁，版本号
+     * 版本号
      */
     @Version
+    @TableField("version")
     private Integer version;
 
     /**
      * 删除状态（0-未删除；>0删除时的时间戳）
      */
     @TableLogic
-    @TableField(fill = FieldFill.INSERT)
+    @TableField("deleted")
     private Long deleted;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 最后更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 }
+

@@ -13,13 +13,13 @@ public enum ImConvTypeEnum {
     /**
      * 单聊
      */
-    SINGLE(1, "单聊"),
+    SINGLE((byte)1, "单聊"),
     /**
      * 群聊
      */
-    GROUP(2, "群聊"),
+    GROUP((byte)2, "群聊"),
 
     ;
-    private final Integer id;
+    private final Byte id;
     private final String name;
 }

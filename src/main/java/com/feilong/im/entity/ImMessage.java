@@ -1,27 +1,21 @@
 package com.feilong.im.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.io.Serial;
-import java.time.LocalDateTime;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * <p>
  * im消息表
- * </p>
- *
- * @author author
- * @since 2026-03-18
+ * @author cfl 2026/04/16
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("im_message")
 public class ImMessage implements Serializable {
@@ -48,7 +42,7 @@ public class ImMessage implements Serializable {
      * 接收者类型（1-用户，2-群），非空
      */
     @TableField("receiver_type")
-    private Integer receiverType;
+    private Byte receiverType;
 
     /**
      * 接收者ID（用户ID或群ID，与receiver_type对应）
@@ -78,7 +72,7 @@ public class ImMessage implements Serializable {
      * 消息状态（0-发送中，1-已送达服务器，2-已送达接收方，3-已读），默认0
      */
     @TableField("status")
-    private Integer status;
+    private Byte status;
 
     /**
      * 扩展字段（如语音时长、文件大小、@用户列表）
@@ -89,8 +83,7 @@ public class ImMessage implements Serializable {
     /**
      * 修改时间
      */
-    @TableField("update_time")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
-
 }
+

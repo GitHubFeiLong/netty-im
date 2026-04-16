@@ -1,22 +1,57 @@
 package com.feilong.im.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.feilong.im.dto.ImUserDTO;
-import com.feilong.im.dto.req.ImSignUpReq;
 import com.feilong.im.entity.ImUser;
-import jakarta.validation.Valid;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.feilong.im.dto.form.ImUserForm;
+import com.feilong.im.dto.page.query.ImUserPageQuery;
+import com.feilong.im.dto.vo.ImUserVO;
 
 import java.util.List;
 
 /**
- * <p>
- * im账户表 服务类
- * </p>
- *
- * @author author
- * @since 2026-02-25
+ * im账户表 服务类接口
+ * @author cfl 2026/04/16
  */
 public interface ImUserService extends IService<ImUser> {
+
+    /**
+     * im账户表分页查询
+     * @param pageQuery im账户表分页查询参数
+     * @return 分页结果
+     */
+    IPage<ImUserVO> page(ImUserPageQuery pageQuery);
+
+    /**
+     * 获取im账户表表单数据
+     * @param id im账户表ID
+     * @return im账户表表单数据
+     */
+     ImUserForm getForm(Long id);
+
+     /**
+      * 新增im账户表
+      * @param formData im账户表表单对象
+      * @return true-成功，false-失败
+      */
+     ImUser save(ImUserForm formData);
+
+    /**
+     * 修改im账户表
+     * @param id im账户表ID
+     * @param formData im账户表表单对象
+     * @return true-成功，false-失败
+     */
+    ImUser update(Long id, ImUserForm formData);
+
+    /**
+     * 删除im账户表
+     * @param ids im账户表ID，多个以英文逗号(,)分割
+     * @return true-成功，false-失败
+     */
+    boolean delete(String ids);
+
     /**
      * 获取缓存中的用户信息
      * @param userId 用户ID

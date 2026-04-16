@@ -1,32 +1,28 @@
 package com.feilong.im.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * @author cfl 2026/03/31
+ * 用户好友表
+ * @author cfl 2026/04/16
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 @TableName("im_friend")
-public class ImFriend extends BaseEntity implements Serializable {
+@Accessors(chain = true)
+public class ImFriend implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 会话ID
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
@@ -42,5 +38,16 @@ public class ImFriend extends BaseEntity implements Serializable {
     @TableField("friend_id")
     private Long friendId;
 
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
 }
+

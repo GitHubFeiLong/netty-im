@@ -1,15 +1,56 @@
 package com.feilong.im.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.entity.ImFriend;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.feilong.im.dto.form.ImFriendForm;
+import com.feilong.im.dto.page.query.ImFriendPageQuery;
+import com.feilong.im.dto.vo.ImFriendVO;
 import com.feilong.im.handler.netty.cmd.req.ContactPageReq;
 
 /**
- * @author cfl 2026/03/31
+ * 用户好友表 服务类接口
+ * @author cfl 2026/04/16
  */
 public interface ImFriendService extends IService<ImFriend> {
+
+    /**
+     * 用户好友表分页查询
+     * @param pageQuery 用户好友表分页查询参数
+     * @return 分页结果
+     */
+    IPage<ImFriendVO> page(ImFriendPageQuery pageQuery);
+
+    /**
+     * 获取用户好友表表单数据
+     * @param id 用户好友表ID
+     * @return 用户好友表表单数据
+     */
+     ImFriendForm getForm(Long id);
+
+     /**
+      * 新增用户好友表
+      * @param formData 用户好友表表单对象
+      * @return true-成功，false-失败
+      */
+     ImFriend save(ImFriendForm formData);
+
+    /**
+     * 修改用户好友表
+     * @param id 用户好友表ID
+     * @param formData 用户好友表表单对象
+     * @return true-成功，false-失败
+     */
+    ImFriend update(Long id, ImFriendForm formData);
+
+    /**
+     * 删除用户好友表
+     * @param ids 用户好友表ID，多个以英文逗号(,)分割
+     * @return true-成功，false-失败
+     */
+    boolean delete(String ids);
 
     /**
      * 查询用户联系人列表

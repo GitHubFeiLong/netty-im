@@ -1,42 +1,138 @@
 package com.feilong.im.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.feilong.im.constant.RedisKeyConst;
-import com.feilong.im.mapper.ImConvMapper;
-import com.feilong.im.dto.ImConvDTO;
 import com.feilong.im.entity.ImConv;
 import com.feilong.im.enums.type.ImConvTypeEnum;
-import com.feilong.im.mapstruct.ImConvEntityMapper;
+import com.feilong.im.mapper.ImConvMapper;
 import com.feilong.im.service.ImConvService;
+import com.feilong.im.entity.ImConv;
+import com.feilong.im.dto.ImConvDTO;
+import com.feilong.im.dto.bo.ImConvBO;
+import com.feilong.im.dto.vo.ImConvVO;
+import com.feilong.im.dto.form.ImConvForm;
+import com.feilong.im.dto.page.query.ImConvPageQuery;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.feilong.im.mapstruct.ImConvEntityMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.feilong.im.exception.ClientException;
+import com.feilong.im.util.AssertUtil;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import com.feilong.im.util.JsonUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * <p>
- * im会话表 服务实现类
- * </p>
- *
- * @author author
- * @since 2026-02-25
+ * im会话表 服务接口实现类
+ * @author cfl 2026/04/16
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImConvServiceImpl extends ServiceImpl<ImConvMapper, ImConv> implements ImConvService {
 
-
+    private final ImConvMapper imConvMapper;
     private final ImConvEntityMapper imConvEntityMapper;
     private final StringRedisTemplate stringRedisTemplate;
-    // private final ImUserMapper imUserMapper;
-    // private final ImGroupMapper imGroupMapper;
-    // private final ImConvMapper imConvMapper;
-    // private final ImUserEntityMapper imUserEntityMapper;
-    // private final ImGroupEntityMapper imGroupEntityMapper;
+
+    /**
+     * im会话表分页查询
+     *
+     * @param pageQuery im会话表分页查询参数
+     * @return 分页结果
+     */
+    @Override
+    public IPage<ImConvVO> page(ImConvPageQuery pageQuery) {
+        log.debug("分页查询im_conv，查询参数：{}", pageQuery);
+        // 参数构建
+        Page<ImConvBO> page = new Page<>(pageQuery.getPage(), pageQuery.getSize());
+
+        // 查询数据
+        Page<ImConvBO> boPage = imConvMapper.page(page, pageQuery);
+
+        // 实体转换
+        return imConvEntityMapper.toVo(boPage);
+    }
+
+    /**
+     * 获取im会话表表单数据
+     *
+     * @param id im会话表ID
+     * @return im会话表表单数据
+     */
+    @Override
+    public ImConvForm getForm(Long id) {
+        log.debug("获取im_conv表单数据：{}", id);
+        ImConv entity = this.getById(id);
+        return imConvEntityMapper.toForm(entity);
+    }
+
+    /**
+     * 新增im会话表
+     *
+     * @param formData im会话表表单对象
+     * @return true-成功，false-失败
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ImConv save(ImConvForm formData) {
+        log.debug("新增im_conv数据：{}", formData);
+        // 实体转换 form->entity
+        ImConv entity = imConvEntityMapper.toEntity(formData);
+        boolean flag = this.save(entity);
+        if (flag) {
+            log.debug("新增im_conv数据成功：{}", entity);
+            return entity;
+        }
+        log.warn("新增im_conv数据失败");
+        throw ClientException.of("保存数据失败，请稍后再试").setServerMessage("保存表im_conv失败");
+    }
+
+    /**
+     * 修改im会话表
+     *
+     * @param id im会话表ID
+     * @param formData im会话表表单对象
+     * @return true-成功，false-失败
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ImConv update(Long id, ImConvForm formData) {
+        log.debug("修改im_conv，ID：{}，表单数据：{}", id, formData);
+        ImConv entity = imConvEntityMapper.toEntity(formData);
+
+        boolean flag = this.updateById(entity);
+        if (flag) {
+            log.debug("修改im_conv成功：{}", entity);
+            return entity;
+        }
+        log.warn("修改im_conv数据失败");
+        throw ClientException.of("保存数据失败，请稍后再试").setServerMessage("修改表im_conv失败");
+    }
+
+    /**
+     * 删除im会话表
+     *
+     * @param ids im会话表ID，多个以英文逗号(,)分割
+     * @return true-成功，false-失败
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean delete(String ids) {
+        log.debug("删除im_conv数据：{}", ids);
+        // 逻辑删除
+        List<Long> idList = Arrays.stream(ids.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+        return this.removeByIds(idList);
+    }
 
     /**
      * 获取缓存中的用户信息
