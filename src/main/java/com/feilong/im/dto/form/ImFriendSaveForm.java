@@ -1,12 +1,12 @@
 package com.feilong.im.dto.form;
 
-import java.time.LocalDateTime;
-
-import java.io.Serializable;
-import java.io.Serial;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 用户好友表 Save Form
@@ -21,30 +21,10 @@ public class ImFriendSaveForm implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "")
-    private Long id;
-
-    /**
-     * 用户ID
-     */
-    @Schema(description = "用户ID")
-    private Long userId;
-
     /**
      * 好友ID
      */
-    @Schema(description = "好友ID")
+    @Schema(description = "好友ID", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull
     private Long friendId;
-
-    /**
-     * 更新时间
-     */
-    @Schema(description = "更新时间")
-    private LocalDateTime updateTime;
-
-    /**
-     * 创建时间
-     */
-    @Schema(description = "创建时间")
-    private LocalDateTime createTime;
 }

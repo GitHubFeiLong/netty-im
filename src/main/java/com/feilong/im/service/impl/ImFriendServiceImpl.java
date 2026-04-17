@@ -6,6 +6,7 @@ import com.feilong.im.entity.ImFriend;
 import com.feilong.im.entity.ImUser;
 import com.feilong.im.handler.netty.cmd.req.ContactPageReq;
 import com.feilong.im.mapper.ImFriendMapper;
+import com.feilong.im.mapper.ImUserMapper;
 import com.feilong.im.mapstruct.ImUserEntityMapper;
 import com.feilong.im.service.ImFriendService;
 import com.feilong.im.entity.ImFriend;
@@ -26,7 +27,10 @@ import com.feilong.im.exception.ClientException;
 import com.feilong.im.util.AssertUtil;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.feilong.im.util.CurrentUserUtil;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +48,7 @@ public class ImFriendServiceImpl extends ServiceImpl<ImFriendMapper, ImFriend> i
     private final ImFriendMapper imFriendMapper;
     private final ImFriendEntityMapper imFriendEntityMapper;
     private final ImUserEntityMapper imUserEntityMapper;
+    private final ImUserMapper imUserMapper;
 
     /**
      * 用户好友表分页查询
@@ -87,8 +92,16 @@ public class ImFriendServiceImpl extends ServiceImpl<ImFriendMapper, ImFriend> i
     @Transactional(rollbackFor = Exception.class)
     public ImFriend save(ImFriendSaveForm formData) {
         log.debug("新增im_friend数据：{}", formData);
+        // 获取当前用户ID
+        Long currentUserId = CurrentUserUtil.getCurrentUserId();
+        AssertUtil.isNotEquals(currentUserId, formData.getFriendId(), "不能添加自己为好友");
+
+        // 校验被添加的用户是否存在
+        ImUser imUser = Optional.ofNullable(imUserMapper.selectById(formData.getFriendId())).orElseThrow(() -> ClientException.of("用户不存在"));
+
         // 实体转换 form->entity
         ImFriend entity = imFriendEntityMapper.toEntity(formData);
+        entity.setUserId(currentUserId);
         boolean flag = this.save(entity);
         if (flag) {
             log.debug("新增im_friend数据成功：{}", entity);
