@@ -34,6 +34,7 @@ public class CurrentUserUtil {
      *
      * @return ImUserDetails
      * @throws ClientException 如果不是 IM 用户或未认证
+     * @throws InsufficientAuthenticationException 如果未认证
      */
     public static ImUserDetails getCurrentImUser() {
         Authentication authentication = getAuthentication();
@@ -50,7 +51,8 @@ public class CurrentUserUtil {
      * 获取当前系统用户详情
      *
      * @return SysUserDetails
-     * @throws ClientException 如果不是系统用户或未认证
+     * @throws ClientException 用户不是系统用户
+     * @throws InsufficientAuthenticationException 如果未认证
      */
     public static SysUserDetails getCurrentSysUser() {
         Authentication authentication = getAuthentication();
@@ -68,7 +70,7 @@ public class CurrentUserUtil {
      * 支持 IM 用户和系统用户
      *
      * @return 用户 ID
-     * @throws ClientException 如果未认证
+     * @throws InsufficientAuthenticationException 如果未认证
      */
     public static Long getCurrentUserId() {
         Authentication authentication = getAuthentication();
@@ -80,14 +82,14 @@ public class CurrentUserUtil {
             return sysUserDetails.getId();
         }
 
-        throw ClientException.of("无法获取用户ID");
+        throw new InsufficientAuthenticationException("无法获取用户ID");
     }
 
     /**
      * 获取当前用户名
      *
      * @return 用户名
-     * @throws ClientException 如果未认证
+     * @throws InsufficientAuthenticationException 如果未认证
      */
     public static String getCurrentUsername() {
         Authentication authentication = getAuthentication();
@@ -99,14 +101,14 @@ public class CurrentUserUtil {
             return sysUserDetails.getUsername();
         }
 
-        throw ClientException.of("无法获取用户名");
+        throw new InsufficientAuthenticationException("无法获取用户名");
     }
 
     /**
      * 获取当前用户的 Token ID
      *
      * @return Token ID
-     * @throws ClientException 如果未认证
+     * @throws InsufficientAuthenticationException 如果未认证
      */
     public static String getCurrentTokenId() {
         Authentication authentication = getAuthentication();
@@ -118,7 +120,7 @@ public class CurrentUserUtil {
             return sysUserDetails.getTokenId();
         }
 
-        throw ClientException.of("无法获取Token ID");
+        throw new InsufficientAuthenticationException("无法获取Token ID");
     }
 
     /**

@@ -13,7 +13,7 @@ import lombok.Data;
 public class ImLoginReq {
 
     @Schema(description="用户名", example="admin", requiredMode=Schema.RequiredMode.REQUIRED)
-    @Size(min = 3, max = 20, message = "用户名长度必须在3-20个字符之间")
+    @Size(min = 2, max = 20, message = "用户名长度必须在3-20个字符之间")
     private String username;
 
     @Schema(description="密码", example = "123456", requiredMode = Schema.RequiredMode.REQUIRED)

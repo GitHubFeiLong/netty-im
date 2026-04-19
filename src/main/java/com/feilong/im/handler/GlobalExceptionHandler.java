@@ -58,7 +58,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result<BasicException> authenticationExceptionDispose(ExpiredJwtException exception){
+        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
         ClientException e = ClientException.of(exception, "登录失效，请重新登录");
+        e.setCode(String.valueOf(httpStatus.value()));
+        e.setStatus(httpStatus.value());
         printErrorMessage(e);
         return Result.ofFail(e);
     }
@@ -71,8 +74,12 @@ public class GlobalExceptionHandler {
      * @return 响应对象
      */
     @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result<BasicException> authenticationExceptionDispose(AuthenticationException exception){
+        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
         ClientException e = ClientException.of(exception, "用户名或密码错误");
+        e.setCode(String.valueOf(httpStatus.value()));
+        e.setStatus(httpStatus.value());
         printErrorMessage(e);
         return Result.ofFail(e);
     }
@@ -130,7 +137,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Throwable> throwableDispose(Throwable exception){
         ServerException e = ServerException.of(exception, "未知的异常：%s", exception.getMessage());
-        response.setStatus(e.getStatus());
         printErrorMessage(e);
         return Result.ofFail(e);
     }

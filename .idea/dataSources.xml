@@ -45,7 +45,7 @@
       <jdbc-url>jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="3e911dc3-473f-4c2b-a35b-795aaa1e2916">
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="a09ba8e7-b1bc-411f-b87c-76bf69984533">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
@@ -53,7 +53,7 @@
       <jdbc-url>jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="a09ba8e7-b1bc-411f-b87c-76bf69984533">
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="bc4af3d2-fe41-4653-b1d4-9114d4ff649c">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

@@ -97,16 +97,27 @@ public class ImFriendServiceImpl extends ServiceImpl<ImFriendMapper, ImFriend> i
         AssertUtil.isNotEquals(currentUserId, formData.getFriendId(), "不能添加自己为好友");
 
         // 校验被添加的用户是否存在
-        ImUser imUser = Optional.ofNullable(imUserMapper.selectById(formData.getFriendId())).orElseThrow(() -> ClientException.of("用户不存在"));
+        Optional.ofNullable(imUserMapper.selectById(formData.getFriendId())).orElseThrow(() -> ClientException.of("需要添加的用户不存在"));
 
         // 实体转换 form->entity
-        ImFriend entity = imFriendEntityMapper.toEntity(formData);
-        entity.setUserId(currentUserId);
-        boolean flag = this.save(entity);
-        if (flag) {
-            log.debug("新增im_friend数据成功：{}", entity);
-            return entity;
+        ImFriend imFriend1 = imFriendEntityMapper.toEntity(formData);
+        imFriend1.setUserId(currentUserId);
+        boolean saveData1 = this.save(imFriend1);
+
+        if (saveData1) {
+            log.debug("新增im_friend数据1成功：{}", imFriend1);
         }
+
+        ImFriend imFriend2 = new ImFriend();
+        imFriend2.setUserId(formData.getFriendId());
+        imFriend2.setFriendId(currentUserId);
+        boolean saveData2 = this.save(imFriend2);
+
+        if (saveData2) {
+            log.debug("新增im_friend数据2成功：{}", imFriend2);
+            return imFriend1;
+        }
+
         log.warn("新增im_friend数据失败");
         throw ClientException.of("保存数据失败，请稍后再试").setServerMessage("保存表im_friend失败");
     }
