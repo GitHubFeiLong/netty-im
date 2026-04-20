@@ -40,18 +40,6 @@ public class ImFriendPageQuery extends BasePageQuery implements Serializable {
     @Schema(description = "好友ID")
     private Long friendId;
 
-    /**
-     * 更新时间
-     */
-    @Schema(description = "更新时间")
-    private LocalDateTime updateTime;
-
-    /**
-     * 创建时间
-     */
-    @Schema(description = "创建时间")
-    private LocalDateTime createTime;
-
     @Schema(description = "分页开始时间")
     private LocalDateTime startTime;
 

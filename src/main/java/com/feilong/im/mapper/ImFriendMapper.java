@@ -30,5 +30,5 @@ public interface ImFriendMapper extends BaseMapper<ImFriend> {
      * @param pageReq 分页参数
      * @return
      */
-    Page<ImUser> listPage(Page page, @Param("imUserId") Long imUserId, ContactPageReq pageReq);
+    Page<ImUser> listPage(Page<ImUser> page, @Param("imUserId") Long imUserId, ContactPageReq pageReq);
 }

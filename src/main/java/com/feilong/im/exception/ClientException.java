@@ -5,6 +5,7 @@ import com.feilong.im.util.StringUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 @ToString(callSuper = true)
 @Data
 @Slf4j
+@Accessors(chain=true)
 public class ClientException extends BasicException {
 
     @Serial
@@ -41,15 +43,7 @@ public class ClientException extends BasicException {
     }
 
     public static ClientException of(String clientMessage) {
-        return ClientException.of(null, clientMessage);
-    }
-
-    public static ClientException of(String clientMessageFormat, Object... args) {
-        return ClientException.of(null, clientMessageFormat, args);
-    }
-
-    public static ClientException of(Throwable cause, String clientMessage) {
-        ClientException clientException = new ClientException(cause);
+        ClientException clientException = new ClientException();
         clientException.setStatus(HTTP_STATUS.value());
         clientException.setCode(String.valueOf(HTTP_STATUS.value()));
         clientException.setClientMessage(clientMessage);
@@ -57,8 +51,8 @@ public class ClientException extends BasicException {
         return clientException;
     }
 
-    public static ClientException of(Throwable cause, String clientMessageFormat, Object... args) {
-        ClientException clientException = new ClientException(cause);
+    public static ClientException of(String clientMessageFormat, Object... args) {
+        ClientException clientException = new ClientException();
         clientException.setStatus(HTTP_STATUS.value());
         clientException.setCode(String.valueOf(HTTP_STATUS.value()));
         clientException.setClientMessage(String.format(clientMessageFormat, args));
@@ -66,5 +60,39 @@ public class ClientException extends BasicException {
         return clientException;
     }
 
+    public static ClientException of(Throwable cause, String clientMessage) {
+        ClientException exception = new ClientException(cause);
+        exception.setStatus(HTTP_STATUS.value());
+        exception.setCode(String.valueOf(HTTP_STATUS.value()));
+        exception.setClientMessage(clientMessage);
+        exception.setServerMessage(HTTP_STATUS.getReasonPhrase());
+        return exception;
+    }
 
+    public static ClientException of(Throwable cause, String clientMessageFormat, Object... args) {
+        ClientException exception = new ClientException(cause);
+        exception.setStatus(HTTP_STATUS.value());
+        exception.setCode(String.valueOf(HTTP_STATUS.value()));
+        exception.setClientMessage(String.format(clientMessageFormat, args));
+        exception.setServerMessage(HTTP_STATUS.getReasonPhrase());
+        return exception;
+    }
+
+    public static ClientException of(HttpStatus status) {
+        ClientException exception = new ClientException();
+        exception.setStatus(status.value());
+        exception.setCode(String.valueOf(status.value()));
+        exception.setClientMessage("权限不足");
+        exception.setServerMessage("权限不足");
+        return exception;
+    }
+
+    public static ClientException of(HttpStatus status, String clientMessageFormat, Object... args) {
+        ClientException exception = new ClientException();
+        exception.setStatus(status.value());
+        exception.setCode(String.valueOf(status.value()));
+        exception.setClientMessage(String.format(clientMessageFormat, args));
+        exception.setServerMessage(status.getReasonPhrase());
+        return exception;
+    }
 }

@@ -31,6 +31,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.feilong.im.util.CurrentUserUtil;
+import com.feilong.im.util.SpringSecurityUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorityAuthorizationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +66,11 @@ public class ImFriendServiceImpl extends ServiceImpl<ImFriendMapper, ImFriend> i
         log.debug("分页查询im_friend，查询参数：{}", pageQuery);
         // 参数构建
         Page<ImFriendBO> page = new Page<>(pageQuery.getPage(), pageQuery.getSize());
+
+        if (!SpringSecurityUtil.isAdmin()) {
+            // 非管理员，只能看自己的好友列表
+            AssertUtil.isEquals(CurrentUserUtil.getCurrentUserId(), pageQuery.getUserId(), () -> ClientException.of(HttpStatus.FORBIDDEN));
+        }
 
         // 查询数据
         Page<ImFriendBO> boPage = imFriendMapper.page(page, pageQuery);
@@ -99,27 +109,37 @@ public class ImFriendServiceImpl extends ServiceImpl<ImFriendMapper, ImFriend> i
         // 校验被添加的用户是否存在
         Optional.ofNullable(imUserMapper.selectById(formData.getFriendId())).orElseThrow(() -> ClientException.of("需要添加的用户不存在"));
 
-        // 实体转换 form->entity
-        ImFriend imFriend1 = imFriendEntityMapper.toEntity(formData);
-        imFriend1.setUserId(currentUserId);
-        boolean saveData1 = this.save(imFriend1);
+        // 查询数据是否已存在
+        ImFriend imFriend1 = lambdaQuery().eq(ImFriend::getUserId, currentUserId).eq(ImFriend::getFriendId, formData.getFriendId()).one();
+        boolean exists = imFriend1 != null;
+        if (!exists) {
+            log.debug("用户好友表数据不存在，开始新增数据");
+            // 实体转换 form->entity
+            imFriend1 = imFriendEntityMapper.toEntity(formData);
+            imFriend1.setUserId(currentUserId);
+            boolean saveData1 = this.save(imFriend1);
 
-        if (saveData1) {
-            log.debug("新增im_friend数据1成功：{}", imFriend1);
+            if (saveData1) {
+                log.debug("新增im_friend数据1成功：{}", imFriend1);
+            }
+        }
+        // 查询数据是否已存在
+        exists = lambdaQuery().eq(ImFriend::getUserId, formData.getFriendId()).eq(ImFriend::getFriendId, currentUserId).exists();
+        if (!exists) {
+            log.debug("用户好友表数据不存在，开始新增数据");
+            ImFriend imFriend2 = new ImFriend();
+            imFriend2.setUserId(formData.getFriendId());
+            imFriend2.setFriendId(currentUserId);
+            boolean saveData2 = this.save(imFriend2);
+
+            if (saveData2) {
+                log.debug("新增im_friend数据2成功：{}", imFriend2);
+                return imFriend1;
+            }
         }
 
-        ImFriend imFriend2 = new ImFriend();
-        imFriend2.setUserId(formData.getFriendId());
-        imFriend2.setFriendId(currentUserId);
-        boolean saveData2 = this.save(imFriend2);
-
-        if (saveData2) {
-            log.debug("新增im_friend数据2成功：{}", imFriend2);
-            return imFriend1;
-        }
-
-        log.warn("新增im_friend数据失败");
-        throw ClientException.of("保存数据失败，请稍后再试").setServerMessage("保存表im_friend失败");
+        log.warn("新增im_friend数据失败，数据已存在");
+        return imFriend1;
     }
 
     /**
@@ -170,10 +190,10 @@ public class ImFriendServiceImpl extends ServiceImpl<ImFriendMapper, ImFriend> i
      */
     @Override
     public Page<ImUserDTO> listPage(Long imUserId, ContactPageReq req) {
-        Page page = new Page(req.getPageNum(), req.getPageSize());
+        Page<ImUser> page = new Page<>(req.getPageNum(), req.getPageSize());
         Page<ImUser> imUserPage = imFriendMapper.listPage(page, imUserId, req);
-        Page<ImUserDTO> imUserDTOPage = PageDTO.of(imUserPage.getCurrent(), imUserPage.getSize(), imUserPage.getTotal(), true);
-        imUserDTOPage.setRecords(imUserEntityMapper.toDto(imUserPage.getRecords()));
-        return imUserDTOPage;
+        Page<ImUserDTO> imUserDtoPage = PageDTO.of(imUserPage.getCurrent(), imUserPage.getSize(), imUserPage.getTotal(), true);
+        imUserDtoPage.setRecords(imUserEntityMapper.toDto(imUserPage.getRecords()));
+        return imUserDtoPage;
     }
 }
