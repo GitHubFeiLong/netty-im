@@ -81,6 +81,15 @@ public class SecurityProperties {
          * Redis令牌配置项
          */
         private RedisTokenConfig redisToken;
+
+        public Integer getAccessTokenTimeToLive() {
+            return accessTokenTimeToLive > 0 ? accessTokenTimeToLive : Integer.MAX_VALUE;
+        }
+
+        public Integer getRefreshTokenTimeToLive() {
+            return refreshTokenTimeToLive > 0 ? refreshTokenTimeToLive : Integer.MAX_VALUE;
+
+        }
     }
 
     /**

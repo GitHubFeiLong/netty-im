@@ -73,7 +73,7 @@ public class SysUserForm implements Serializable {
      * 性别(1-男 2-女 0-保密)
      */
     @Schema(description = "性别(1-男 2-女 0-保密)")
-    private Boolean gender;
+    private Integer gender;
 
     /**
      * 过期时间，不填永久有效

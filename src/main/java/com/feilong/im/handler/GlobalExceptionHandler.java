@@ -17,7 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.validation.BindException;
@@ -65,19 +71,66 @@ public class GlobalExceptionHandler {
         printErrorMessage(e);
         return Result.ofFail(e);
     }
+
     /**
-     * 认证异常，直接抛出
-     * <p>只有抛出后，才能执行spring security 自定义配置的异常处理器进行处理</p>
-     * @see AccessDeniedHandler
-     * @see AuthenticationEntryPoint
-     * @param exception 自定义异常对象
+     * 用户访问带有权限注解的方法但权限不足时，会抛出此异常
+     * AuthorizationDeniedException 只会在以下情况触发：
+     * <ul>
+     *     <li>URL 通过了 Spring Security 的 URL 级别检查</li>
+     *     <li>但方法级别的 @PreAuthorize / @Secured 等注解验证失败</li>
+     * </ul>
+     * @param exception 权限不足异常
      * @return 响应对象
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Result<BasicException> authorizationDeniedExceptionDispose(AuthorizationDeniedException exception){
+        HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+        ClientException e = ClientException.of(exception, "权限不足");
+        e.setCode(String.valueOf(httpStatus.value()));
+        e.setStatus(httpStatus.value());
+        printErrorMessage(e);
+        return Result.ofFail(e);
+    }
+
+
+    /**
+     * 处理认证异常（AuthenticationException）
+     *
+     * <p><b>触发场景：</b></p>
+     * <ul>
+     *   <li>Controller 方法内手动抛出 AuthenticationException 及其子类异常</li>
+     *   <li>例如：在登录接口中调用 authenticationManager.authenticate() 时认证失败</li>
+     * </ul>
+     *
+     * <p><b>与 AuthenticationEntryPointImpl 的区别：</b></p>
+     * <ul>
+     *   <li>AuthenticationEntryPointImpl：处理 Security 过滤器链中的认证失败（如 Token 无效）</li>
+     *   <li>本方法：处理 Controller 方法执行过程中抛出的认证异常</li>
+     * </ul>
+     *
+     * <p><b>HTTP 响应码：</b>401 UNAUTHORIZED（未授权）</p>
+     *
+     * @param exception 认证异常对象，包含具体的认证失败原因
+     * @return 统一的错误响应结果，包含错误码、错误消息和状态码
+     *
+     * @see org.springframework.security.core.AuthenticationException
+     * @see com.feilong.im.config.security.AuthenticationEntryPointImpl
      */
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result<BasicException> authenticationExceptionDispose(AuthenticationException exception){
         HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
-        ClientException e = ClientException.of(exception, "用户名或密码错误");
+        // 根据具体异常类型返回更精确的消息
+        String message = switch (exception) {
+            case UsernameNotFoundException ignored -> "用户名或密码错误";
+            case BadCredentialsException ignored -> "用户名或密码错误";
+            case AccountExpiredException ignored -> "账户已过期";
+            case DisabledException ignored -> "账户未激活";
+            case LockedException ignored -> "账户已锁定";
+            default -> "认证失败：" + exception.getMessage();
+        };
+        ClientException e = ClientException.of(exception, message);
         e.setCode(String.valueOf(httpStatus.value()));
         e.setStatus(httpStatus.value());
         printErrorMessage(e);

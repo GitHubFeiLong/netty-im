@@ -67,6 +67,7 @@ public class SecurityConfig {
                         // 公开访问路径
                         .requestMatchers(securityProperties.getIgnoreUrls()).permitAll()
                         .requestMatchers(securityProperties.getUnsecuredUrls()).permitAll()
+                        // 如果 URL 在白名单中（如 /im*/**），即使添加了 @PreAuthorize 也不会生效
                         .requestMatchers("/admin/**").hasRole("ADMIN")  // 需ADMIN角色
                         // 其他 URL 需认证
                         .anyRequest().authenticated()
