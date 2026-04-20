@@ -69,6 +69,7 @@ public class SysUserController {
     @Operation(summary = "新增系统用户")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @JsonView(MyJsonView.Simple.class)
     public Result<SysUserVO> save(@RequestBody @Valid SysUserSaveForm formData) {
         SysUser sysUser = sysUserService.save(formData);
         return Result.ofSuccess(sysUserEntityMapper.toVo(sysUser));
@@ -76,6 +77,7 @@ public class SysUserController {
 
     @Operation(summary = "修改系统用户")
     @PutMapping(value = "/{id}")
+    @JsonView(MyJsonView.Simple.class)
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public Result<SysUserVO> update(@Parameter(description = "系统用户ID") @PathVariable Long id, @RequestBody @Valid SysUserUpdateForm formData) {
         SysUser sysUser = sysUserService.update(id, formData);
