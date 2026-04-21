@@ -2,6 +2,7 @@ package com.feilong.im.service;
 
 import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
 import com.feilong.im.config.security.token.AuthenticationToken;
+import com.feilong.im.dto.AuthenticationTokenDTO;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.dto.form.SysLoginForm;
 import com.feilong.im.dto.req.ImLoginReq;
@@ -18,7 +19,7 @@ public interface LoginRegisterService {
      * @param req 登录参数
      * @return 登录结果
      */
-    AuthenticationToken imLogin(@Valid ImLoginReq req);
+    AuthenticationTokenDTO imLogin(@Valid ImLoginReq req);
 
     /**
      * IM注册
@@ -38,5 +39,11 @@ public interface LoginRegisterService {
      * @param req 登录参数
      * @return 登录结果
      */
-    AuthenticationToken sysLogin(@Valid SysLoginForm req);
+    AuthenticationTokenDTO sysLogin(@Valid SysLoginForm req);
+
+    /**
+     * 刷新TOKEN
+     * @return 刷新结果
+     */
+    AuthenticationTokenDTO refresh();
 }

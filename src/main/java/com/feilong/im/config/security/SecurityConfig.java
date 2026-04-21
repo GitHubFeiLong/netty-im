@@ -28,6 +28,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 
 /**
@@ -57,8 +60,20 @@ public class SecurityConfig {
         http
                 // 禁用CSRF，因为不使用session
                 .csrf(AbstractHttpConfigurer::disable)
-                //允许跨域请求
-                .cors(Customizer.withDefaults())
+                // 允许跨域请求
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfiguration = new CorsConfiguration();
+                    // 使用 allowedOriginPatterns（推荐开发环境）,这会匹配所有域名，同时满足 Spring 的安全校验。
+                    corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+                    // 明确指定前端地址，推荐生产环境
+                    // corsConfiguration.setAllowedOrigins(List.of("http://localhost:3005"));
+
+                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedHeaders(List.of("*"));
+                    // 允许携带 Cookie/Token
+                    corsConfiguration.setAllowCredentials(true);
+                    return corsConfiguration;
+                }))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .rememberMe(AbstractHttpConfigurer::disable)

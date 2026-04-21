@@ -5,7 +5,7 @@ import com.feilong.im.handler.netty.cmd.ContactCreateReqHandler;
 import com.feilong.im.handler.netty.cmd.ContactPageReqHandler;
 import com.feilong.im.handler.netty.cmd.NoneHandler;
 import com.feilong.im.message.MessageReq;
-import com.feilong.im.util.SpringUtil;
+import com.feilong.im.util.SpringBeanUtil;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 
@@ -18,7 +18,7 @@ public enum MessageCmdContactEnum implements IMessageCmdEnum {
     /**
      * 拉取联系人列表请求
      */
-    PAGE_REQ("拉取联系人列表请求", SpringUtil.getBean(ContactPageReqHandler.class)),
+    PAGE_REQ("拉取联系人列表请求", SpringBeanUtil.getBean(ContactPageReqHandler.class)),
     /**
      * 拉取联系人列表响应
      */
@@ -26,7 +26,7 @@ public enum MessageCmdContactEnum implements IMessageCmdEnum {
     /**
      * 创建联系人请求
      */
-    CREATE_REQ("创建联系人请求", SpringUtil.getBean(ContactCreateReqHandler.class)),
+    CREATE_REQ("创建联系人请求", SpringBeanUtil.getBean(ContactCreateReqHandler.class)),
     /**
      * 创建联系人响应
      */
@@ -57,7 +57,7 @@ public enum MessageCmdContactEnum implements IMessageCmdEnum {
 
     MessageCmdContactEnum(String name) {
         this.name = name;
-        this.cmdHandler = SpringUtil.getBean(NoneHandler.class);
+        this.cmdHandler = SpringBeanUtil.getBean(NoneHandler.class);
     }
 
     MessageCmdContactEnum(String name, CmdHandler cmdHandler) {

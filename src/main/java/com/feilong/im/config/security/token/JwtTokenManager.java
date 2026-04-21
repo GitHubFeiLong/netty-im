@@ -178,11 +178,6 @@ public class JwtTokenManager implements TokenManager {
         return true;
     }
 
-    @Override
-    public boolean validateRefreshToken(String refreshToken) {
-        return this.validateToken(refreshToken);
-    }
-
     /**
      * 将令牌加入黑名单
      *
@@ -231,44 +226,14 @@ public class JwtTokenManager implements TokenManager {
     }
 
     /**
-     * 刷新令牌
-     *
-     * @param refreshToken 刷新令牌
-     * @return 令牌响应对象
-     */
-    @Override
-    public AuthenticationToken refreshToken(String refreshToken) {
-
-        // boolean isValid = validateToken(refreshToken);
-        // if (!isValid) {
-        //     throw new BusinessException(ResultCode.REFRESH_TOKEN_INVALID);
-        // }
-        //
-        // Authentication authentication = parseToken(refreshToken);
-        // int accessTokenTimeToLive = securityProperties.getSession().getAccessTokenTimeToLive();
-        // int refreshTokenTimeToLive = securityProperties.getSession().getRefreshTokenTimeToLive();
-        // String newAccessToken = generateToken(authentication, accessTokenTimeToLive);
-        // refreshToken = generateToken(authentication, refreshTokenTimeToLive);
-        //
-        // return AuthenticationToken.builder()
-        //         .accessToken(newAccessToken)
-        //         .refreshToken(refreshToken)
-        //         .tokenType(CommonConst.TOKEN_MODEL_BEARER)
-        //         .accessExpires(CurrentDateTimeUtil.get().plusSeconds(accessTokenTimeToLive))
-        //         .refreshExpires(CurrentDateTimeUtil.get().plusSeconds(refreshTokenTimeToLive))
-        //         .build();
-
-        return null;
-    }
-
-    /**
      * 生成 JWT Token
      *
      * @param authentication 认证信息
-     * @param ttl           过期时间, 小于0”永久“，大于0指定时间
+     * @param ttl           过期时间 ，单位秒, 小于0”永久“，大于0指定时间
      * @return JWT Token
      */
-    private String generateToken(Authentication authentication, int ttl) {
+    @Override
+    public String generateToken(Authentication authentication, int ttl) {
         Map<String, Object> payload = new HashMap<>();
         Object principal = authentication.getPrincipal();
         String tokenId = UUID.randomUUID().toString().replace("-", "");
@@ -290,16 +255,16 @@ public class JwtTokenManager implements TokenManager {
         Date expiration;
         if (ttl <= 0) {
             // 表示永不过期
-            expiration = new Date(CurrentTimeContext.getTimestamp() + 36500L * 24 * 60 * 60 * 1000);
+            expiration = new Date(System.currentTimeMillis() + 36500L * 24 * 60 * 60 * 1000);
         } else {
-            expiration = new Date(CurrentTimeContext.getTimestamp() + ttl * 1000L);
+            expiration = new Date(System.currentTimeMillis() + ttl * 1000L);
         }
 
         return Jwts.builder()
                 .claims(payload)
                 .subject(subject)
                 .id(tokenId)
-                .issuedAt(CurrentTimeContext.getDate())
+                .issuedAt(new Date())
                 .expiration(expiration)
                 .signWith(secretKey)
                 .compact();

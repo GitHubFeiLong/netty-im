@@ -5,7 +5,7 @@ import com.feilong.im.handler.netty.cmd.NoneHandler;
 import com.feilong.im.handler.netty.cmd.SystemAuthReqHandler;
 import com.feilong.im.handler.netty.cmd.SystemHeartbeatReqHandler;
 import com.feilong.im.message.MessageReq;
-import com.feilong.im.util.SpringUtil;
+import com.feilong.im.util.SpringBeanUtil;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 
@@ -19,7 +19,7 @@ public enum MessageCmdSystemEnum implements IMessageCmdEnum {
      * 客户端→服务端
      * 连接后发起身份认证（首次必发）
      */
-    AUTH_REQ("认证请求", SpringUtil.getBean(SystemAuthReqHandler.class)),
+    AUTH_REQ("认证请求", SpringBeanUtil.getBean(SystemAuthReqHandler.class)),
 
     /**
      * 服务端→客户端
@@ -41,7 +41,7 @@ public enum MessageCmdSystemEnum implements IMessageCmdEnum {
      * 客户端→服务端
      * 心跳包（维持连接，防断开）
      */
-    HEARTBEAT_REQ("心跳请求", SpringUtil.getBean(SystemHeartbeatReqHandler.class)),
+    HEARTBEAT_REQ("心跳请求", SpringBeanUtil.getBean(SystemHeartbeatReqHandler.class)),
     /**
      * 服务端→客户端	心跳响应（确认存活）
      */
@@ -65,7 +65,7 @@ public enum MessageCmdSystemEnum implements IMessageCmdEnum {
 
     MessageCmdSystemEnum(String name) {
         this.name = name;
-        this.cmdHandler = SpringUtil.getBean(NoneHandler.class);
+        this.cmdHandler = SpringBeanUtil.getBean(NoneHandler.class);
     }
 
     MessageCmdSystemEnum(String name, CmdHandler cmdHandler) {

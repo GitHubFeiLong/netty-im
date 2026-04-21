@@ -1,10 +1,13 @@
 package com.feilong.im.dto;
 
+import com.feilong.im.dto.page.query.BasePageQuery;
 import lombok.Data;
 
 /**
+ * @see BasePageQuery
  * @author cfl 2026/04/07
  */
+@Deprecated
 @Data
 public class BasePage {
 

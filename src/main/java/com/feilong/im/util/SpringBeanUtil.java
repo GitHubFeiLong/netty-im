@@ -1,9 +1,12 @@
 package com.feilong.im.util;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -12,14 +15,16 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class SpringUtil implements ApplicationContextAware {
+@RequiredArgsConstructor
+public class SpringBeanUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        SpringUtil.applicationContext = applicationContext;
+        SpringBeanUtil.applicationContext = applicationContext;
     }
+
 
     /**
      * 根据类型获取 Spring Bean

@@ -9,11 +9,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * 类描述：
- * 打印应用信息日志
- * @author msi
- * @version 1.0
- * @date 2021/12/4 14:12
+ * 打印应用启动信息日志
+ * @author cfl 2026/4/21
  */
 @Slf4j
 public class LogApplicationStartupUtil {

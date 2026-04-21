@@ -22,6 +22,15 @@ public interface TokenManager {
     AuthenticationToken generateToken(Authentication authentication);
 
     /**
+     * 生成 JWT Token
+     *
+     * @param authentication 认证信息
+     * @param ttl           过期时间 ，单位秒, 小于0”永久“，大于0指定时间
+     * @return JWT Token
+     */
+    String generateToken(Authentication authentication, int ttl);
+
+    /**
      * 解析 Token 获取认证信息
      *
      * @param token  Token
@@ -36,22 +45,6 @@ public interface TokenManager {
      * @return 是否有效
      */
     boolean validateToken(String token);
-
-    /**
-     * 校验 刷新 Token 是否有效
-     *
-     * @param refreshToken JWT Token
-     * @return 是否有效
-     */
-    boolean validateRefreshToken(String refreshToken);
-
-    /**
-     *  刷新 Token
-     *
-     * @param token 刷新令牌
-     * @return 认证 Token 响应
-     */
-    AuthenticationToken refreshToken(String token);
 
     /**
      * 令 Token 失效

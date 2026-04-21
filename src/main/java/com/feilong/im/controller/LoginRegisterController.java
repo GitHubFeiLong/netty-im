@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.feilong.im.config.security.token.AuthenticationToken;
 import com.feilong.im.core.MyJsonView;
 import com.feilong.im.core.Result;
+import com.feilong.im.dto.AuthenticationTokenDTO;
 import com.feilong.im.dto.ImUserDTO;
 import com.feilong.im.dto.form.SysLoginForm;
 import com.feilong.im.dto.req.ImLoginReq;
@@ -31,12 +32,6 @@ public class LoginRegisterController {
 
     private final LoginRegisterService loginRegisterService;
 
-    @PostMapping("/im/login")
-    @Operation(summary = "IM登录")
-    public Result<AuthenticationToken> imLogin(@Valid @RequestBody ImLoginReq req) {
-        return Result.ofSuccess(loginRegisterService.imLogin(req));
-    }
-
     @PostMapping("/im/sign-up")
     @Operation(summary = "IM注册")
     @JsonView(MyJsonView.Simple.class)
@@ -44,10 +39,22 @@ public class LoginRegisterController {
         return Result.ofSuccess(loginRegisterService.imSignUp(req));
     }
 
+    @PostMapping("/im/login")
+    @Operation(summary = "IM登录")
+    public Result<AuthenticationTokenDTO> imLogin(@Valid @RequestBody ImLoginReq req) {
+        return Result.ofSuccess(loginRegisterService.imLogin(req));
+    }
+
     @PostMapping("/sys/login")
     @Operation(summary = "SYS登录")
-    public Result<AuthenticationToken> sysLogin(@Valid @RequestBody SysLoginForm req) {
+    public Result<AuthenticationTokenDTO> sysLogin(@Valid @RequestBody SysLoginForm req) {
         return Result.ofSuccess(loginRegisterService.sysLogin(req));
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "刷新TOKEN")
+    public Result<AuthenticationTokenDTO> refresh() {
+        return Result.ofSuccess(loginRegisterService.refresh());
     }
 
     @PostMapping("/logout")

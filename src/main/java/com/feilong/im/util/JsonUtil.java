@@ -35,7 +35,7 @@ public class JsonUtil {
         if (objectMapper == null) {
             synchronized (JsonUtil.class) {
                 if (objectMapper == null) {
-                    objectMapper = SpringUtil.getBean(ObjectMapper.class);
+                    objectMapper = SpringBeanUtil.getBean(ObjectMapper.class);
                     if (objectMapper == null) {
                         objectMapper = new JacksonConfig().objectMapper();
                     }
