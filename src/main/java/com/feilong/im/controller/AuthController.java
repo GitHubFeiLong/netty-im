@@ -6,8 +6,8 @@ import com.feilong.im.core.Result;
 import com.feilong.im.dto.AuthenticationTokenDTO;
 import com.feilong.im.dto.AuthenticationUserDetailsDTO;
 import com.feilong.im.dto.ImUserDTO;
-import com.feilong.im.dto.form.SysLoginForm;
-import com.feilong.im.dto.req.ImLoginReq;
+import com.feilong.im.dto.form.ImSignInForm;
+import com.feilong.im.dto.form.SysSignInForm;
 import com.feilong.im.dto.req.ImSignUpReq;
 import com.feilong.im.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,13 +38,13 @@ public class AuthController {
 
     @PostMapping("/im/sign-in")
     @Operation(summary = "IM登录")
-    public Result<AuthenticationTokenDTO> imSignIn(@Valid @RequestBody ImLoginReq req) {
+    public Result<AuthenticationTokenDTO> imSignIn(@Valid @RequestBody ImSignInForm req) {
         return Result.ofSuccess(loginRegisterService.imSignIn(req));
     }
 
     @PostMapping("/sys/sign-in")
     @Operation(summary = "SYS登录")
-    public Result<AuthenticationTokenDTO> sysSignIn(@Valid @RequestBody SysLoginForm req) {
+    public Result<AuthenticationTokenDTO> sysSignIn(@Valid @RequestBody SysSignInForm req) {
         return Result.ofSuccess(loginRegisterService.sysSignIn(req));
     }
 

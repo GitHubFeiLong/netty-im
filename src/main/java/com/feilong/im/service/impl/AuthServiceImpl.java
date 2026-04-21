@@ -6,13 +6,14 @@ import com.feilong.im.config.security.authentication.sysuser.SysUserAuthenticati
 import com.feilong.im.config.security.authentication.sysuser.SysUserDetails;
 import com.feilong.im.config.security.token.AuthenticationToken;
 import com.feilong.im.config.security.token.TokenManager;
+import com.feilong.im.constant.SecurityConstants;
 import com.feilong.im.context.CurrentTimeContext;
 import com.feilong.im.context.CurrentTokenContext;
 import com.feilong.im.dto.AuthenticationTokenDTO;
 import com.feilong.im.dto.AuthenticationUserDetailsDTO;
 import com.feilong.im.dto.ImUserDTO;
-import com.feilong.im.dto.form.SysLoginForm;
-import com.feilong.im.dto.req.ImLoginReq;
+import com.feilong.im.dto.form.ImSignInForm;
+import com.feilong.im.dto.form.SysSignInForm;
 import com.feilong.im.dto.req.ImSignUpReq;
 import com.feilong.im.entity.ImUser;
 import com.feilong.im.enums.status.ImUserStatusEnum;
@@ -34,8 +35,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 /**
  * @author cfl 2026/04/13
@@ -52,30 +53,6 @@ public class AuthServiceImpl implements AuthService {
     private final ImUserEntityMapper imUserEntityMapper;
     private final HttpServletRequest request;
     private final HttpServletResponse response;
-
-    /**
-     * IM登录
-     *
-     * @param req 登录参数
-     * @return 登录结果
-     */
-    @Override
-    public AuthenticationTokenDTO imSignIn(ImLoginReq req) {
-        log.info("IM登录");
-        // 1. 创建用于IM认证的令牌（未认证）
-        Authentication authenticationToken = new ImUserAuthenticationToken(req.getUsername().trim(), req.getPassword().trim());
-        // 2. 执行认证（认证中）
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
-        AuthenticationToken token = tokenManager.generateToken(authentication);
-
-        setRefreshCookie(token.getRefreshToken(), token.getRefreshExpires());
-        return AuthenticationTokenDTO.builder()
-                .tokenType(token.getTokenType())
-                .accessToken(token.getAccessToken())
-                .accessExpires(token.getAccessExpires())
-                .build();
-    }
 
     /**
      * IM注册
@@ -101,15 +78,35 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 退出登录，将token置为无效
+     * IM登录
      *
-     * @return 退出结果
+     * @param req 登录参数
+     * @return 登录结果
      */
     @Override
-    public Boolean signOut() {
-        log.info("退出登录");
-        tokenManager.invalidateToken(CurrentTokenContext.get());
-        return true;
+    public AuthenticationTokenDTO imSignIn(ImSignInForm req) {
+        log.info("IM登录");
+        // 1. 创建用于IM认证的令牌（未认证）
+        Authentication authenticationToken = new ImUserAuthenticationToken(req.getUsername().trim(), req.getPassword().trim());
+        // 2. 执行认证（认证中）
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
+        AuthenticationToken token = tokenManager.generateToken(authentication);
+
+        // 记住我
+        if (req.getRememberMe() != null && req.getRememberMe()) {
+            // 7天有效期
+            String refreshToken = tokenManager.generateToken(authentication, SecurityConstants.JWT_REFRESH_TOKEN_TTL);
+            token.setRefreshToken(refreshToken);
+            token.setRefreshExpires(LocalDateTime.now().plusDays(7));
+        }
+
+        setRefreshCookie(token.getRefreshToken(), token.getRefreshExpires());
+        return AuthenticationTokenDTO.builder()
+                .tokenType(token.getTokenType())
+                .accessToken(token.getAccessToken())
+                .accessExpires(token.getAccessExpires())
+                .build();
     }
 
     /**
@@ -119,7 +116,7 @@ public class AuthServiceImpl implements AuthService {
      * @return 登录结果
      */
     @Override
-    public AuthenticationTokenDTO sysSignIn(SysLoginForm req) {
+    public AuthenticationTokenDTO sysSignIn(SysSignInForm req) {
         log.info("SYS登录");
         // 1. 创建用于SYS认证的令牌（未认证）
         Authentication authenticationToken = new SysUserAuthenticationToken(req.getUsername().trim(), req.getPassword().trim());
@@ -131,7 +128,7 @@ public class AuthServiceImpl implements AuthService {
         // 记住我
         if (req.getRememberMe() != null && req.getRememberMe()) {
             // 7天有效期
-            String refreshToken = tokenManager.generateToken(authentication, 7 * 24 * 60 * 60);
+            String refreshToken = tokenManager.generateToken(authentication, SecurityConstants.JWT_REFRESH_TOKEN_TTL);
             token.setRefreshToken(refreshToken);
             token.setRefreshExpires(LocalDateTime.now().plusDays(7));
         }
@@ -213,6 +210,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
+     * 退出登录，将token置为无效
+     *
+     * @return 退出结果
+     */
+    @Override
+    public Boolean signOut() {
+        log.info("退出登录");
+        tokenManager.invalidateToken(CurrentTokenContext.get());
+        return true;
+    }
+
+    /**
      * 设置 RefreshToken Cookie
      *
      * @param refreshToken RefreshToken
@@ -227,8 +236,9 @@ public class AuthServiceImpl implements AuthService {
         refreshCookie.setSecure(SpringEnvUtil.isProd());
         // 只允许刷新接口使用
         refreshCookie.setPath("/**/auth/refresh");
-        // 过期时间
-        refreshCookie.setMaxAge((int)(refreshExpires.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - CurrentTimeContext.getTimestamp()));
+        // 过期时间 单位秒(浏览器显示 Cookie 过期时间使用的是 UTC 时间,所以会小8个小时)
+        int maxAge = (int) Duration.between(CurrentTimeContext.get(), refreshExpires).getSeconds();
+        refreshCookie.setMaxAge(maxAge);
         // 防 CSRF
         refreshCookie.setAttribute("SameSite", "Strict");
 

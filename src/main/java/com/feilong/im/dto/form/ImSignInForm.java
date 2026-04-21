@@ -6,15 +6,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * 系统用户登录表单
- * @author cfl 2026/04/16
+ * @author cfl 2026/04/13
  */
 @Data
-@Schema(description = "系统用户登录表单")
-public class SysLoginForm {
+@Schema(description = "IM登录请求")
+public class ImSignInForm {
 
     @Schema(description="用户名", example="admin", requiredMode=Schema.RequiredMode.REQUIRED)
-    @Size(min = 3, max = 20, message = "用户名长度必须在3-20个字符之间")
+    @Size(min = 2, max = 20, message = "用户名长度必须在3-20个字符之间")
     private String username;
 
     @Schema(description="密码", example = "123456", requiredMode = Schema.RequiredMode.REQUIRED)

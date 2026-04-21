@@ -13,10 +13,10 @@ security:
   # 安全白名单路径，仅跳过 AuthorizationFilter 过滤器，还是会走 Spring Security 的其他过滤器(CSRF、CORS等)
   ignore-urls:
     - ${server.error.path:${error.path:/error}}
-    - /**/auth/sign-in                   # 登录
-    - /**/auth/sign-up                   # 注册
-    - /**/auth/sign-out                  # 退出
-    - /**/auth//user-details             # 获取登录用户信息
+    - /**/sign-in                # 登录
+    - /**/sign-up                # 注册
+    - /**/sign-out                  # 退出
+    - /**/user-details             # 获取登录用户信息
     - /auth/token/refresh-token  # 刷新令牌接口
     - /ws/**                # WebSocket接口
     - /mails/**

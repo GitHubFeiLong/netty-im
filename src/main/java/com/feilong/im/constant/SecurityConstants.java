@@ -29,6 +29,11 @@ public interface SecurityConstants {
     String ROLE_PREFIX = "ROLE_";
 
     /**
+     * JWT 刷新 Token 过期时间，7天
+     */
+    Integer JWT_REFRESH_TOKEN_TTL = 7 * 24 * 60 * 60;
+
+    /**
      * JWT 载荷字段 用户详情json的key
      */
     String JWT_KEY_USER_DETAIL = "jwtUserDetail";

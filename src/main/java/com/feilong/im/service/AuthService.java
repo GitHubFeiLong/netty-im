@@ -3,8 +3,8 @@ package com.feilong.im.service;
 import com.feilong.im.dto.AuthenticationTokenDTO;
 import com.feilong.im.dto.AuthenticationUserDetailsDTO;
 import com.feilong.im.dto.ImUserDTO;
-import com.feilong.im.dto.form.SysLoginForm;
-import com.feilong.im.dto.req.ImLoginReq;
+import com.feilong.im.dto.form.ImSignInForm;
+import com.feilong.im.dto.form.SysSignInForm;
 import com.feilong.im.dto.req.ImSignUpReq;
 import jakarta.validation.Valid;
 
@@ -14,13 +14,6 @@ import jakarta.validation.Valid;
 public interface AuthService {
 
     /**
-     * IM登录
-     * @param req 登录参数
-     * @return 登录结果
-     */
-    AuthenticationTokenDTO imSignIn(@Valid ImLoginReq req);
-
-    /**
      * IM注册
      * @param req 注册参数
      * @return 注册结果
@@ -28,17 +21,18 @@ public interface AuthService {
     ImUserDTO imSignUp(@Valid ImSignUpReq req);
 
     /**
-     * 退出登录，将token置为无效
-     * @return 退出结果
+     * IM登录
+     * @param req 登录参数
+     * @return 登录结果
      */
-    Boolean signOut();
+    AuthenticationTokenDTO imSignIn(@Valid ImSignInForm req);
 
     /**
      * 系统用户登录
      * @param req 登录参数
      * @return 登录结果
      */
-    AuthenticationTokenDTO sysSignIn(@Valid SysLoginForm req);
+    AuthenticationTokenDTO sysSignIn(@Valid SysSignInForm req);
 
     /**
      * 获取当前登录用户信息
@@ -51,6 +45,12 @@ public interface AuthService {
      * @return 刷新结果
      */
     AuthenticationTokenDTO refresh();
+
+    /**
+     * 退出登录，将token置为无效
+     * @return 退出结果
+     */
+    Boolean signOut();
 
 
 }
