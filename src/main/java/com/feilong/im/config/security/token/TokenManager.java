@@ -1,15 +1,11 @@
 package com.feilong.im.config.security.token;
 
-
 import org.springframework.security.core.Authentication;
 
 /**
- *  Token 管理器
- *  <p>
- *  用于生成、解析、校验、刷新 Token
- *
- * @author Ray.Hao
- * @since 2.16.0
+ * Token 管理器
+ * 用于生成、解析、校验、刷新 Token
+ * @author cfl 2026/4/21
  */
 public interface TokenManager {
 

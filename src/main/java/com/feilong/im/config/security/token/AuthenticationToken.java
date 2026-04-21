@@ -8,9 +8,7 @@ import java.time.LocalDateTime;
 
 /**
  * 认证令牌响应对象
- *
- * @author Ray.Hao
- * @since 0.0.1
+ * @author cfl 2026/4/21
  */
 @Schema(description = "认证令牌响应对象")
 @Data
