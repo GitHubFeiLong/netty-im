@@ -2,8 +2,10 @@ module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
-      2,
-      'always',
+      0,
+      'never',
+      // 2,
+      // 'always',
       [
         'feat', // 新功能(feature)
         'fix', // 修补bug
