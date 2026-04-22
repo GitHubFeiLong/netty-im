@@ -4,7 +4,13 @@ import { Form, FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElCheckbox, ElLink } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
-import { loginApi, getTestRoleApi, getAdminRoleApi, userDetailsApi } from '@/api/login'
+import {
+  loginApi,
+  getTestRoleApi,
+  getAdminRoleApi,
+  userDetailsApi,
+  refreshTokenApi
+} from '@/api/login'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
@@ -280,6 +286,8 @@ const signIn = async () => {
         }
       } finally {
         loading.value = false
+        let a = await refreshTokenApi()
+        console.log('refreshTokenApi', a)
       }
     }
   })

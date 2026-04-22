@@ -235,12 +235,13 @@ public class AuthServiceImpl implements AuthService {
         // 仅 HTTPS（生产环境必须）
         refreshCookie.setSecure(SpringEnvUtil.isProd());
         // 只允许刷新接口使用
-        refreshCookie.setPath("/**/auth/refresh");
+        refreshCookie.setPath("/im/auth/refresh");
         // 过期时间 单位秒(浏览器显示 Cookie 过期时间使用的是 UTC 时间,所以会小8个小时)
         int maxAge = (int) Duration.between(CurrentTimeContext.get(), refreshExpires).getSeconds();
         refreshCookie.setMaxAge(maxAge);
         // 防 CSRF
-        refreshCookie.setAttribute("SameSite", "Strict");
+        // refreshCookie.setAttribute("SameSite", "Strict");
+        refreshCookie.setAttribute("SameSite", "None");
 
         response.addCookie(refreshCookie);
     }

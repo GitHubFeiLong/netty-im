@@ -13,6 +13,10 @@ export const userDetailsApi = (): Promise<IResponse<UserDetails>> => {
   return request.get({ url: '/im/auth/user-details' })
 }
 
+export const refreshTokenApi = (): Promise<IResponse<UserDetails>> => {
+  return request.post({ url: '/im/auth/refresh' })
+}
+
 export const loginOutApi = (): Promise<IResponse> => {
   return request.get({ url: '/mock/user/loginOut' })
 }
