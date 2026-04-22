@@ -10,6 +10,8 @@ export const PATH_URL = import.meta.env.VITE_API_BASE_PATH
 const abortControllerMap: Map<string, AbortController> = new Map()
 
 const axiosInstance: AxiosInstance = axios.create({
+  // 允许携带cookie
+  withCredentials: true,
   timeout: REQUEST_TIMEOUT,
   baseURL: PATH_URL
 })

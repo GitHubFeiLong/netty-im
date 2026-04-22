@@ -228,20 +228,21 @@ public class AuthServiceImpl implements AuthService {
      * @param refreshExpires 过期时间
      */
     private void setRefreshCookie(String refreshToken, LocalDateTime refreshExpires) {
-        // 3. ✅ RefreshToken 写入 HttpOnly Cookie
+        boolean isProd = SpringEnvUtil.isProd();
+        // RefreshToken 写入 HttpOnly Cookie
         Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
         // JS 无法读取（防 XSS）
         refreshCookie.setHttpOnly(true);
-        // 仅 HTTPS（生产环境必须）
-        refreshCookie.setSecure(SpringEnvUtil.isProd());
-        // 只允许刷新接口使用
-        refreshCookie.setPath("/im/auth/refresh");
+        // 仅 HTTPS（生产环境必须, 开发测试非必须）
+        refreshCookie.setSecure(isProd);
+        // 生产环境只允许刷新接口使用，其他环境允许所有接口使用（/api 是前端的代理前缀 前端请求刷新接口时的url是 http://192.168.31.1:3005/api/im/auth/refresh，那么需要允许的值是/api/im/auth/refresh）
+        String path = isProd ? "/api" + SpringEnvUtil.getProperty("server.servlet.context-path") + "/auth/refresh" : "/";
+        refreshCookie.setPath(path);
         // 过期时间 单位秒(浏览器显示 Cookie 过期时间使用的是 UTC 时间,所以会小8个小时)
         int maxAge = (int) Duration.between(CurrentTimeContext.get(), refreshExpires).getSeconds();
         refreshCookie.setMaxAge(maxAge);
-        // 防 CSRF
-        // refreshCookie.setAttribute("SameSite", "Strict");
-        refreshCookie.setAttribute("SameSite", "None");
+        // 防 CSRF, 设置 SameSite 属性，生产环境必须是 "Strict"，开发测试环境可以设置为 "Lax"
+        refreshCookie.setAttribute("SameSite", isProd ? "Strict" : "Lax");
 
         response.addCookie(refreshCookie);
     }
