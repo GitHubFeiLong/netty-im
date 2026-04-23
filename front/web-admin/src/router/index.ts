@@ -57,6 +57,40 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
 
 export const asyncRouterMap: AppRouteRecordRaw[] = [
   {
+    path: '/sysUser',
+    // component: () => import('@/views/SysUser/SysUser.vue'),
+    component: Layout,
+    name: 'SysUser',
+    meta: {
+      title: t('router.sys'),
+      icon: 'carbon:user-admin',
+      alwaysShow: true,
+      roles: ['ADMIN']
+    },
+    children: [
+      {
+        path: 'sysUser',
+        name: 'sysUser',
+        component: () => import('@/views/SysUser/SysUser.vue'),
+        meta: {
+          title: t('router.sysUser'),
+          icon: 'carbon:user',
+          roles: ['ADMIN']
+        }
+      },
+      {
+        path: 'imUser',
+        name: 'imUser',
+        component: () => import('@/views/SysUser/SysUser.vue'),
+        meta: {
+          title: t('router.imUser'),
+          icon: 'carbon:user',
+          roles: ['ADMIN']
+        }
+      }
+    ]
+  },
+  {
     path: '/level',
     component: Layout,
     redirect: '/level/menu1/menu1-1/menu1-1-1',

@@ -155,6 +155,8 @@ export default {
     exampleDetail: '综合示例 - 详情',
     errorPage: '错误页面',
     authorization: '权限管理',
+    sys: '系统管理',
+    sysUser: '系统用户',
     user: '用户管理',
     role: '角色管理',
     document: '文档',

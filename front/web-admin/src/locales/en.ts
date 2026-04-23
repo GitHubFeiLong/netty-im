@@ -155,6 +155,8 @@ export default {
     exampleDetail: 'Example page - detail',
     errorPage: 'Error page',
     authorization: 'Authorization',
+    sys: 'System management',
+    sysUser: 'System user',
     user: 'User management',
     role: 'Role management',
     document: 'Document',
