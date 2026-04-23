@@ -15,12 +15,6 @@ public interface RedisKeyConst {
      * 缓存会话信息
      */
     String IM_CONV_KEY = "cache:im:conv:{type}:{user1Id}:{userOrGroupId}";
-    /**
-     * 缓存token id状态
-     * 0-有效；
-     * 1-无效；
-     */
-    String AUTH_TOKEN_STATUS_KEY = "cache:auth:token:status:{tokenId}";
 
     /**
      * 获取完整的key

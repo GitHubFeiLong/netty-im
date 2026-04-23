@@ -8,14 +8,18 @@ import com.feilong.im.config.security.authentication.sysuser.SysUserDetails;
 import com.feilong.im.constant.RedisKeyConst;
 import com.feilong.im.constant.SecurityConstants;
 import com.feilong.im.context.CurrentTimeContext;
+import com.feilong.im.entity.SysToken;
 import com.feilong.im.enums.status.AuthTokenStatusEnum;
 import com.feilong.im.exception.ClientException;
 import com.feilong.im.properties.SecurityProperties;
+import com.feilong.im.service.SysTokenService;
 import com.feilong.im.util.JsonUtil;
 import com.feilong.im.util.StringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -34,16 +38,17 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @ConditionalOnProperty(value = "security.session.type", havingValue = "jwt")
 public class JwtTokenManager implements TokenManager {
 
-    private final SecretKey secretKey;
+    private SecretKey secretKey;
     private final SecurityProperties securityProperties;
+    private final SysTokenService sysTokenService;
     private final StringRedisTemplate stringRedisTemplate;
 
-    public JwtTokenManager(SecurityProperties securityProperties, StringRedisTemplate stringRedisTemplate) {
-        this.securityProperties = securityProperties;
-        this.stringRedisTemplate = stringRedisTemplate;
+    @PostConstruct
+    public void init() {
         this.secretKey = Keys.hmacShaKeyFor(securityProperties.getSession().getJwt().getSecretKey().getBytes());
     }
 
@@ -132,44 +137,6 @@ public class JwtTokenManager implements TokenManager {
     @Override
     public boolean validateToken(String token) {
         Claims claims = parseTokenToClaims(token);;
-
-        String tokenId = claims.getId();
-        log.debug("校验tokenId: {} 是否有效", tokenId);
-        String key = RedisKeyConst.getKey(RedisKeyConst.AUTH_TOKEN_STATUS_KEY, tokenId);
-        if (stringRedisTemplate.hasKey(key)) {
-            log.debug("redis中存在token id信息");
-            String status = stringRedisTemplate.opsForValue().get(key);
-            if (Objects.equals(status, AuthTokenStatusEnum.VALID.getId())) {
-                log.debug("token有效");
-                return true;
-            }
-            log.debug("token无效");
-            throw ClientException.of("登录失效，请重新登录", claims.getId());
-        }
-        log.debug("redis中不存在token id信息");
-        synchronized (this) {
-            if (stringRedisTemplate.hasKey(key)) {
-                log.debug("redis中存在token id信息");
-                String status = stringRedisTemplate.opsForValue().get(key);
-                if (Objects.equals(status, AuthTokenStatusEnum.VALID.getId())) {
-                    log.debug("token有效");
-                    return true;
-                }
-                log.debug("token无效");
-                throw ClientException.of("登录失效，请重新登录", claims.getId());
-            }
-
-            // boolean exists = sysAuthTokenBlacklistService.lambdaQuery().select(SysAuthTokenBlacklist::getId).eq(SysAuthTokenBlacklist::getId, claims.getId()).exists();
-            boolean exists = true;
-
-            AuthTokenStatusEnum authTokenStatusEnum = exists ? AuthTokenStatusEnum.INVALID : AuthTokenStatusEnum.VALID;
-            // 设置缓存
-            stringRedisTemplate.opsForValue().set(key, authTokenStatusEnum.getId(), 2, TimeUnit.HOURS);
-            if (exists) {
-                log.debug("token无效");
-                throw ClientException.of("登录失效，请重新登录", claims.getId());
-            }
-        }
         return true;
     }
 
@@ -194,29 +161,6 @@ public class JwtTokenManager implements TokenManager {
                 // Token已过期，直接返回
                 return;
             }
-        }
-
-        // 黑名单Token Key
-        String key = RedisKeyConst.getKey(RedisKeyConst.AUTH_TOKEN_STATUS_KEY, tokenId);
-        if (stringRedisTemplate.hasKey(key)) {
-            // 本身无效，就不需要再设置无效
-            if (Objects.equals(stringRedisTemplate.opsForValue().get(key), AuthTokenStatusEnum.INVALID.getId())) {
-                return;
-            }
-        }
-
-        synchronized (this) {
-            if (stringRedisTemplate.hasKey(key)) {
-                // 本身无效，就不需要再设置无效
-                if (Objects.equals(stringRedisTemplate.opsForValue().get(key), AuthTokenStatusEnum.INVALID.getId())) {
-                    return;
-                }
-            }
-
-            // 保存
-            // sysAuthTokenBlacklistService.save(tokenId, token);
-            // 设置缓存
-            stringRedisTemplate.opsForValue().set(key, AuthTokenStatusEnum.INVALID.getId(), 2, TimeUnit.HOURS);
         }
     }
 

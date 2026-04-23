@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.feilong.im.mapper.SysTokenMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.feilong.im.entity.SysToken">
+        <id column="id" property="id" />
+        <result column="token" property="token" />
+        <result column="type" property="type" />
+        <result column="user_id" property="userId" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, token, type, user_id, status, remark, create_time, update_time
+    </sql>
+
+    <!-- 认证用户TOKEN分页列表 -->
+    <select id="page" resultType="com.feilong.im.dto.bo.SysTokenBO">
+        <!-- 使用bind标签调用Java静态方法并将结果存储到变量 -->
+        <bind name="safeSorts" value="@com.feilong.im.util.MyBatisUtil@getSafeSorts(pageQuery)"/>
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `sys_token`
+        <where>
+            <if test="pageQuery.id != null">
+                AND `id` = #{pageQuery.id}
+            </if>
+            <if test="pageQuery.token != null and pageQuery.token.trim().length > 0">
+                AND `token` LIKE CONCAT('%',  #{pageQuery.token},'%')
+            </if>
+            <if test="pageQuery.type != null">
+                AND `type` =  #{pageQuery.type}
+            </if>
+            <if test="pageQuery.userId != null">
+                AND `user_id` =  #{pageQuery.userId}
+            </if>
+            <if test="pageQuery.status != null">
+                AND `status` =  #{pageQuery.status}
+            </if>
+            <if test="pageQuery.remark != null and pageQuery.remark.trim().length > 0">
+                AND `remark` LIKE CONCAT('%',  #{pageQuery.remark},'%')
+            </if>
+            <if test="pageQuery.createTime != null">
+                AND `create_time` =  #{pageQuery.createTime}
+            </if>
+            <if test="pageQuery.updateTime != null">
+                AND `update_time` =  #{pageQuery.updateTime}
+            </if>
+            <if test="pageQuery.startTime != null">
+                AND `created_time` &gt;=  #{pageQuery.startTime}
+            </if>
+            <if test="pageQuery.endTime != null">
+                AND `created_time` &lt;= #{pageQuery.endTime}
+            </if>
+        </where>
+        <if test="safeSorts != null and safeSorts.size() > 0">
+            ORDER BY
+            <foreach item="sort" index="index" collection="safeSorts" separator=",">
+                ${sort.field} ${sort.order}
+            </foreach>
+        </if>
+    </select>
+</mapper>

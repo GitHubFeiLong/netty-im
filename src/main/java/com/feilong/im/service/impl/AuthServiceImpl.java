@@ -16,11 +16,15 @@ import com.feilong.im.dto.form.ImSignInForm;
 import com.feilong.im.dto.form.SysSignInForm;
 import com.feilong.im.dto.req.ImSignUpReq;
 import com.feilong.im.entity.ImUser;
+import com.feilong.im.entity.SysToken;
 import com.feilong.im.enums.status.ImUserStatusEnum;
+import com.feilong.im.enums.status.SysTokenStatusEnum;
+import com.feilong.im.enums.type.SysTokenTypeEnum;
 import com.feilong.im.exception.ClientException;
 import com.feilong.im.mapstruct.ImUserEntityMapper;
 import com.feilong.im.service.ImUserService;
 import com.feilong.im.service.AuthService;
+import com.feilong.im.service.SysTokenService;
 import com.feilong.im.util.AssertUtil;
 import com.feilong.im.util.CurrentUserUtil;
 import com.feilong.im.util.SpringEnvUtil;
@@ -34,6 +38,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -53,6 +58,7 @@ public class AuthServiceImpl implements AuthService {
     private final ImUserEntityMapper imUserEntityMapper;
     private final HttpServletRequest request;
     private final HttpServletResponse response;
+    private final SysTokenService sysTokenService;
 
     /**
      * IM注册
@@ -84,11 +90,12 @@ public class AuthServiceImpl implements AuthService {
      * @return 登录结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public AuthenticationTokenDTO imSignIn(ImSignInForm req) {
         log.info("IM登录");
         // 1. 创建用于IM认证的令牌（未认证）
         Authentication authenticationToken = new ImUserAuthenticationToken(req.getUsername().trim(), req.getPassword().trim());
-        // 2. 执行认证（认证中）
+        // 2. 执行认证（认证成功）
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
         AuthenticationToken token = tokenManager.generateToken(authentication);
@@ -102,6 +109,8 @@ public class AuthServiceImpl implements AuthService {
         }
 
         setRefreshCookie(token.getRefreshToken(), token.getRefreshExpires());
+        // 登录成功
+        afterSignInHandler(token.getAccessToken(), authentication);
         return AuthenticationTokenDTO.builder()
                 .tokenType(token.getTokenType())
                 .accessToken(token.getAccessToken())
@@ -116,11 +125,12 @@ public class AuthServiceImpl implements AuthService {
      * @return 登录结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public AuthenticationTokenDTO sysSignIn(SysSignInForm req) {
         log.info("SYS登录");
         // 1. 创建用于SYS认证的令牌（未认证）
         Authentication authenticationToken = new SysUserAuthenticationToken(req.getUsername().trim(), req.getPassword().trim());
-        // 2. 执行认证（认证中）
+        // 2. 执行认证（认证成功）
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
         AuthenticationToken token = tokenManager.generateToken(authentication);
@@ -134,6 +144,8 @@ public class AuthServiceImpl implements AuthService {
         }
 
         setRefreshCookie(token.getRefreshToken(), token.getRefreshExpires());
+        // 登录成功
+        afterSignInHandler(token.getAccessToken(), authentication);
         return AuthenticationTokenDTO.builder()
                 .tokenType(token.getTokenType())
                 .accessToken(token.getAccessToken())
@@ -215,10 +227,44 @@ public class AuthServiceImpl implements AuthService {
      * @return 退出结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean signOut() {
         log.info("退出登录");
+        String currentTokenId = CurrentUserUtil.getCurrentTokenId();
         tokenManager.invalidateToken(CurrentTokenContext.get());
+        sysTokenService.lambdaUpdate().set(SysToken::getStatus, SysTokenStatusEnum.UNAVAILABLE.getId()).eq(SysToken::getId, currentTokenId).update();
         return true;
+    }
+
+    /**
+     * 登录成功后处理
+     * @param accessToken 认证token
+     * @param authentication 认证信息
+     */
+    public void afterSignInHandler(String accessToken, Authentication authentication) {
+        SysTokenTypeEnum type;
+        String tokenId;
+        Long userId;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof ImUserDetails userDetails) {
+            type = SysTokenTypeEnum.IM_USER;
+            tokenId = userDetails.getTokenId();
+            userId = userDetails.getId();
+        } else {
+            SysUserDetails userDetails = (SysUserDetails) principal;
+            type = SysTokenTypeEnum.SYS_USER;
+            tokenId = userDetails.getTokenId();
+            userId = userDetails.getId();
+        }
+        SysToken sysToken = new SysToken();
+        sysToken.setId(tokenId);
+        sysToken.setToken(accessToken);
+        sysToken.setType(type.getId());
+        sysToken.setUserId(userId);
+        sysToken.setStatus(SysTokenStatusEnum.AVAILABLE.getId());
+        sysToken.setRemark("认证成功颁发令牌");
+
+        sysTokenService.save(sysToken);
     }
 
     /**
