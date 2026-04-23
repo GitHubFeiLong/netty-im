@@ -14,6 +14,11 @@ public interface SecurityConstants {
     String LOGIN_PATH = "/auth/login/v1";
 
     /**
+     * 登出路径后缀，拦截器不校验token是否有效
+     */
+    String SIGN_OUT_API_SUFFIX = "/sign-out";
+
+    /**
      * 令牌模式
      */
     String TOKEN_MODEL_BEARER = "Bearer";

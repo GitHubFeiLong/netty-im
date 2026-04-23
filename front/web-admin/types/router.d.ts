@@ -46,6 +46,7 @@ declare module 'vue-router' {
     followAuth?: string
     canTo?: boolean
     permission?: string[]
+    roles?: string[]
   }
 }
 

@@ -10,12 +10,14 @@ import com.feilong.im.constant.SecurityConstants;
 import com.feilong.im.context.CurrentTimeContext;
 import com.feilong.im.entity.SysToken;
 import com.feilong.im.enums.status.AuthTokenStatusEnum;
+import com.feilong.im.enums.status.SysTokenStatusEnum;
 import com.feilong.im.exception.ClientException;
 import com.feilong.im.properties.SecurityProperties;
 import com.feilong.im.service.SysTokenService;
 import com.feilong.im.util.JsonUtil;
 import com.feilong.im.util.StringUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -76,22 +78,25 @@ public class JwtTokenManager implements TokenManager {
     }
 
     /**
-     * 解析令牌
+     * 解析令牌,返回Claims(无论token是否是过期)
      * @param token JWT Token
      * @return Claims
      */
     public Claims parseTokenToClaims(String token) {
-        if (token.startsWith(SecurityConstants.BEARER_TOKEN_PREFIX)) {
-            token = token.substring(SecurityConstants.BEARER_TOKEN_PREFIX.length());
+        try {
+            return Jwts.parser()
+                    // 设置验证密钥
+                    .verifyWith(secretKey)
+                    .build()
+                    // 解析并验证
+                    .parseSignedClaims(token)
+                    // 获取载荷
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            log.warn("Token 已过期，但仍解析其内容: {}", e.getMessage(), e);
+            return e.getClaims();
         }
-        return Jwts.parser()
-                // 设置验证密钥
-                .verifyWith(secretKey)
-                .build()
-                // 解析并验证
-                .parseSignedClaims(token)
-                // 获取载荷
-                .getPayload();
+
     }
 
     /**
@@ -136,7 +141,14 @@ public class JwtTokenManager implements TokenManager {
      */
     @Override
     public boolean validateToken(String token) {
-        Claims claims = parseTokenToClaims(token);;
+        Jwts.parser()
+                // 设置验证密钥
+                .verifyWith(secretKey)
+                .build()
+                // 解析并验证
+                .parseSignedClaims(token)
+                // 获取载荷
+                .getPayload();
         return true;
     }
 
@@ -162,6 +174,8 @@ public class JwtTokenManager implements TokenManager {
                 return;
             }
         }
+
+        sysTokenService.lambdaUpdate().set(SysToken::getStatus, SysTokenStatusEnum.UNAVAILABLE.getId()).eq(SysToken::getId, tokenId).update();
     }
 
     /**

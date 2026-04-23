@@ -54,8 +54,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 CurrentTokenContext.set(rawToken);
 
                 // 执行令牌有效性检查（包含密码学验签和过期时间验证）
-                tokenManager.validateToken(rawToken);
-
+                if (!request.getRequestURI().endsWith(SecurityConstants.SIGN_OUT_API_SUFFIX)) {
+                    tokenManager.validateToken(rawToken);
+                }
                 // 将令牌解析为 Spring Security 上下文认证对象
                 Authentication authentication = tokenManager.parseToken(rawToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

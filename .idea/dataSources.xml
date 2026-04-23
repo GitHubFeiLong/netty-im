@@ -85,7 +85,7 @@
       <jdbc-url>jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="9db4ae96-6740-415f-8d77-b3d12096ee26">
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/im?useUnicode=true&amp;useSSL=false&amp;allowMultiQueries=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;createDatabaseIfNotExist=true" group="Debug Session App" uuid="82700756-8aa1-4a30-a486-c063fd593c97">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

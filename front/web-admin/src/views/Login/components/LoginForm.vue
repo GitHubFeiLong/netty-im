@@ -277,8 +277,6 @@ const signIn = async () => {
         }
       } finally {
         loading.value = false
-        let a = await refreshTokenApi()
-        console.log('refreshTokenApi', a)
       }
     }
   })

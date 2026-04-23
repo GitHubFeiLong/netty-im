@@ -1,7 +1,5 @@
 package com.feilong.im.constant;
 
-import com.feilong.im.util.StringUtil;
-
 /**
  * @author cfl 2026/03/30
  */
