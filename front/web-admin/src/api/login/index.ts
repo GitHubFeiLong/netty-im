@@ -6,19 +6,19 @@ interface RoleParams {
 }
 
 export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {
-  return request.post({ url: '/im/auth/sys/sign-in', data })
+  return request.post({ url: '/auth/sys/sign-in', data })
 }
 
 export const userDetailsApi = (): Promise<IResponse<UserDetails>> => {
-  return request.get({ url: '/im/auth/user-details' })
+  return request.get({ url: '/auth/user-details' })
 }
 
 export const refreshTokenApi = (): Promise<IResponse<UserDetails>> => {
-  return request.post({ url: '/im/auth/refresh' })
+  return request.post({ url: '/auth/refresh' })
 }
 
 export const loginOutApi = (): Promise<IResponse> => {
-  return request.post({ url: '/im/auth/sign-out' })
+  return request.post({ url: '/auth/sign-out' })
 }
 
 export const getAdminRoleApi = (
