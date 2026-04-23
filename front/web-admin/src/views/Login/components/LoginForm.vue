@@ -252,10 +252,6 @@ const signIn = async () => {
           }
           userStore.setRememberMe(unref(remember))
 
-          // // 查询用户信息
-          // const userDetails = await userDetailsApi()
-          // userStore.setUserInfo(userDetails.data.sys)
-          // console.log('userDetails', userDetails)
           // 查询用户详细信息（包含角色名数组）
           const userDetails = await userDetailsApi()
           console.log('userDetails', userDetails)
@@ -271,18 +267,13 @@ const signIn = async () => {
           // ✅ 将角色名存储到 Store
           userStore.setRoleRouters(roles)
 
-          // 是否使用动态路由
-          if (appStore.getDynamicRouter) {
-            //
-            getRole()
-          } else {
-            await permissionStore.generateRoutes('static').catch(() => {})
-            permissionStore.getAddRouters.forEach((route) => {
-              addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
-            })
-            permissionStore.setIsAddRouters(true)
-            push({ path: redirect.value || permissionStore.addRouters[0].path })
-          }
+          await permissionStore.generateRoutes('frontEnd', roles).catch(() => {})
+          permissionStore.getAddRouters.forEach((route) => {
+            addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
+          })
+          permissionStore.setIsAddRouters(true)
+          const targetPath = redirect.value || '/'
+          push({ path: targetPath })
         }
       } finally {
         loading.value = false
@@ -301,7 +292,8 @@ const getRole = async () => {
     const roles = userInfo.roles
     if (roles) {
       userStore.setRoleRouters(roles)
-      await permissionStore.generateRoutes('frontEnd', roles).catch(() => {})
+      // await permissionStore.generateRoutes('frontEnd', roles).catch(() => {})
+      await permissionStore.generateRoutes('static', roles).catch(() => {})
       permissionStore.getAddRouters.forEach((route) => {
         addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
       })

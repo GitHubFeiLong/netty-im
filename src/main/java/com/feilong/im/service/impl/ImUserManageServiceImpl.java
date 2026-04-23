@@ -1,10 +1,6 @@
 package com.feilong.im.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.feilong.im.config.security.token.TokenManager;
-import com.feilong.im.entity.ImConvUser;
 import com.feilong.im.entity.ImFriend;
-import com.feilong.im.entity.SysAuthTokenBlacklist;
 import com.feilong.im.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

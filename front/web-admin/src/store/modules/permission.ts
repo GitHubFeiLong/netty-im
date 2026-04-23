@@ -48,6 +48,7 @@ export const usePermissionStore = defineStore('permission', {
           routerMap = generateRoutesByServer(routers as AppCustomRouteRecordRaw[])
         } else if (type === 'frontEnd') {
           // 模拟前端过滤菜单
+          console.log('generateRoutesByFrontEnd', routers)
           routerMap = generateRoutesByFrontEnd(cloneDeep(asyncRouterMap), routers as string[])
         } else {
           // 直接读取静态路由表

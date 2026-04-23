@@ -84,7 +84,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
             redirect: '/level/menu1/menu1-1/menu1-1-1',
             meta: {
               title: t('router.menu11'),
-              alwaysShow: true
+              alwaysShow: true,
+              roles: ['ADMIN']
             },
             children: [
               {
@@ -92,7 +93,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
                 name: 'Menu111',
                 component: () => import('@/views/Level/Menu111.vue'),
                 meta: {
-                  title: t('router.menu111')
+                  title: t('router.menu111'),
+                  roles: ['ADMIN']
                 }
               }
             ]
@@ -102,7 +104,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
             name: 'Menu12',
             component: () => import('@/views/Level/Menu12.vue'),
             meta: {
-              title: t('router.menu12')
+              title: t('router.menu12'),
+              roles: ['ADMIN']
             }
           }
         ]
@@ -112,7 +115,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'Menu2',
         component: () => import('@/views/Level/Menu2.vue'),
         meta: {
-          title: t('router.menu2')
+          title: t('router.menu2'),
+          roles: ['ADMIN']
         }
       }
     ]

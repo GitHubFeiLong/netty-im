@@ -52,6 +52,14 @@ export const generateRoutesByFrontEnd = (
       continue
     }
 
+    // 如果路由配置了 roles，检查用户是否有对应角色
+    if (meta.roles && meta.roles.length > 0) {
+      const hasPermission = keys.some((role) => meta.roles.includes(role))
+      if (!hasPermission) {
+        continue
+      }
+    }
+
     let data: Nullable<AppRouteRecordRaw> = null
 
     let onlyOneChild: Nullable<string> = null
@@ -63,18 +71,23 @@ export const generateRoutesByFrontEnd = (
       ) as string
     }
 
-    // 开发者可以根据实际情况进行扩展
-    for (const item of keys) {
-      // 通过路径去匹配
-      if (isUrl(item) && (onlyOneChild === item || route.path === item)) {
-        data = Object.assign({}, route)
-      } else {
-        const routePath = (onlyOneChild ?? pathResolve(basePath, route.path)).trim()
-        if (routePath === item || meta.followRoute === item || meta.roles?.includes(item)) {
-          data = Object.assign({}, route)
-        }
-      }
+    // 如果没有配置 roles 或者有权限，直接添加该路由
+    if (!meta.roles || meta.roles.length === 0 || keys.some((role) => meta.roles.includes(role))) {
+      data = Object.assign({}, route)
     }
+
+    // 开发者可以根据实际情况进行扩展
+    // for (const item of keys) {
+    //   // 通过路径去匹配
+    //   if (isUrl(item) && (onlyOneChild === item || route.path === item)) {
+    //     data = Object.assign({}, route)
+    //   } else {
+    //     const routePath = (onlyOneChild ?? pathResolve(basePath, route.path)).trim()
+    //     if (routePath === item || meta.followRoute === item || meta.roles?.includes(item)) {
+    //       data = Object.assign({}, route)
+    //     }
+    //   }
+    // }
 
     // recursive child routes
     if (route.children && data) {

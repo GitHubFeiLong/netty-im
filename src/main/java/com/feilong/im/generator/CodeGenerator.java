@@ -56,7 +56,7 @@ public class CodeGenerator {
      * 需要生成的表名（留空则生成所有表）
      */
     private static final List<String> TABLE_NAMES = List.of(
-            "sys_user"
+            "sys_token"
     );
 
     /**

@@ -8,11 +8,9 @@ import com.feilong.im.config.security.authentication.sysuser.SysUserDetails;
 import com.feilong.im.constant.RedisKeyConst;
 import com.feilong.im.constant.SecurityConstants;
 import com.feilong.im.context.CurrentTimeContext;
-import com.feilong.im.entity.SysAuthTokenBlacklist;
 import com.feilong.im.enums.status.AuthTokenStatusEnum;
 import com.feilong.im.exception.ClientException;
 import com.feilong.im.properties.SecurityProperties;
-import com.feilong.im.service.SysAuthTokenBlacklistService;
 import com.feilong.im.util.JsonUtil;
 import com.feilong.im.util.StringUtil;
 import io.jsonwebtoken.Claims;
@@ -22,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.crypto.SecretKey;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * JWT Token 管理器
@@ -44,12 +40,10 @@ public class JwtTokenManager implements TokenManager {
     private final SecretKey secretKey;
     private final SecurityProperties securityProperties;
     private final StringRedisTemplate stringRedisTemplate;
-    private final SysAuthTokenBlacklistService sysAuthTokenBlacklistService;
 
-    public JwtTokenManager(SecurityProperties securityProperties, StringRedisTemplate stringRedisTemplate, SysAuthTokenBlacklistService sysAuthTokenBlacklistService) {
+    public JwtTokenManager(SecurityProperties securityProperties, StringRedisTemplate stringRedisTemplate) {
         this.securityProperties = securityProperties;
         this.stringRedisTemplate = stringRedisTemplate;
-        this.sysAuthTokenBlacklistService = sysAuthTokenBlacklistService;
         this.secretKey = Keys.hmacShaKeyFor(securityProperties.getSession().getJwt().getSecretKey().getBytes());
     }
 
@@ -165,7 +159,8 @@ public class JwtTokenManager implements TokenManager {
                 throw ClientException.of("登录失效，请重新登录", claims.getId());
             }
 
-            boolean exists = sysAuthTokenBlacklistService.lambdaQuery().select(SysAuthTokenBlacklist::getId).eq(SysAuthTokenBlacklist::getId, claims.getId()).exists();
+            // boolean exists = sysAuthTokenBlacklistService.lambdaQuery().select(SysAuthTokenBlacklist::getId).eq(SysAuthTokenBlacklist::getId, claims.getId()).exists();
+            boolean exists = true;
 
             AuthTokenStatusEnum authTokenStatusEnum = exists ? AuthTokenStatusEnum.INVALID : AuthTokenStatusEnum.VALID;
             // 设置缓存
@@ -219,7 +214,7 @@ public class JwtTokenManager implements TokenManager {
             }
 
             // 保存
-            sysAuthTokenBlacklistService.save(tokenId, token);
+            // sysAuthTokenBlacklistService.save(tokenId, token);
             // 设置缓存
             stringRedisTemplate.opsForValue().set(key, AuthTokenStatusEnum.INVALID.getId(), 2, TimeUnit.HOURS);
         }

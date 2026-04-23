@@ -18,7 +18,7 @@ export const refreshTokenApi = (): Promise<IResponse<UserDetails>> => {
 }
 
 export const loginOutApi = (): Promise<IResponse> => {
-  return request.get({ url: '/mock/user/loginOut' })
+  return request.post({ url: '/im/auth/sign-out' })
 }
 
 export const getAdminRoleApi = (
