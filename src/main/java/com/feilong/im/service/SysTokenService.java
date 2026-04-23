@@ -10,6 +10,7 @@ import com.feilong.im.dto.form.SysTokenUpdateForm;
 import com.feilong.im.dto.page.query.SysTokenPageQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springframework.security.core.Authentication;
 
 /**
  * 认证用户TOKEN 服务类接口
@@ -52,5 +53,13 @@ public interface SysTokenService extends IService<SysToken> {
      * @return true-成功，false-失败
      */
     boolean delete(String ids);
+
+    /**
+     * 保存认证用户TOKEN
+     * @param accessToken 访问TOKEN
+     * @param authentication 认证信息
+     * @return 认证用户TOKEN
+     */
+    SysToken save(String accessToken, Authentication authentication);
 
 }

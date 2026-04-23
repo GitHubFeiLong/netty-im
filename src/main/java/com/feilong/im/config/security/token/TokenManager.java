@@ -21,10 +21,11 @@ public interface TokenManager {
      * 生成 JWT Token
      *
      * @param authentication 认证信息
+     * @param tokenId   令牌ID
      * @param ttl           过期时间 ，单位秒, 小于0”永久“，大于0指定时间
      * @return JWT Token
      */
-    String generateToken(Authentication authentication, int ttl);
+    String generateToken(Authentication authentication, String tokenId, int ttl);
 
     /**
      * 解析 Token 获取认证信息

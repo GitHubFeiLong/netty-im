@@ -104,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 记住我
         if (Boolean.TRUE.equals(req.getRememberMe())) {
-            String refreshToken = tokenManager.generateToken(authentication, securityProperties.getSession().getRefreshTokenTimeToLive() * 2);
+            String refreshToken = tokenManager.generateToken(authentication, token.getTokenId(), securityProperties.getSession().getRefreshTokenTimeToLive() * 2);
             token.setRefreshToken(refreshToken);
             token.setRefreshExpires(LocalDateTime.now().plusDays(7));
         }
@@ -138,7 +138,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 记住我
         if (Boolean.TRUE.equals(req.getRememberMe())) {
-            String refreshToken = tokenManager.generateToken(authentication, securityProperties.getSession().getRefreshTokenTimeToLive() * 2);
+            String refreshToken = tokenManager.generateToken(authentication, token.getTokenId(), securityProperties.getSession().getRefreshTokenTimeToLive() * 2);
             token.setRefreshToken(refreshToken);
             token.setRefreshExpires(LocalDateTime.now().plusDays(7));
         }
@@ -214,6 +214,10 @@ public class AuthServiceImpl implements AuthService {
         AuthenticationToken token = tokenManager.generateToken(authentication);
 
         setRefreshCookie(token.getRefreshToken(), token.getRefreshExpires());
+
+        // 保存令牌到数据库
+        sysTokenService.save(token.getAccessToken(), authentication);
+
         return AuthenticationTokenDTO.builder()
                 .tokenType(token.getTokenType())
                 .accessToken(token.getAccessToken())
@@ -230,9 +234,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean signOut() {
         log.info("退出登录");
-        String currentTokenId = CurrentUserUtil.getCurrentTokenId();
         tokenManager.invalidateToken(CurrentTokenContext.get());
-        sysTokenService.lambdaUpdate().set(SysToken::getStatus, SysTokenStatusEnum.UNAVAILABLE.getId()).eq(SysToken::getId, currentTokenId).update();
         return true;
     }
 
@@ -242,29 +244,7 @@ public class AuthServiceImpl implements AuthService {
      * @param authentication 认证信息
      */
     public void afterSignInHandler(String accessToken, Authentication authentication) {
-        SysTokenTypeEnum type;
-        String tokenId;
-        Long userId;
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof ImUserDetails userDetails) {
-            type = SysTokenTypeEnum.IM_USER;
-            tokenId = userDetails.getTokenId();
-            userId = userDetails.getId();
-        } else {
-            SysUserDetails userDetails = (SysUserDetails) principal;
-            type = SysTokenTypeEnum.SYS_USER;
-            tokenId = userDetails.getTokenId();
-            userId = userDetails.getId();
-        }
-        SysToken sysToken = new SysToken();
-        sysToken.setId(tokenId);
-        sysToken.setToken(accessToken);
-        sysToken.setType(type.getId());
-        sysToken.setUserId(userId);
-        sysToken.setStatus(SysTokenStatusEnum.AVAILABLE.getId());
-        sysToken.setRemark("认证成功颁发令牌");
-
-        sysTokenService.save(sysToken);
+        sysTokenService.save(accessToken, authentication);
     }
 
     /**
@@ -286,8 +266,7 @@ public class AuthServiceImpl implements AuthService {
         // JS 无法读取（防 XSS）
         refreshCookie.setHttpOnly(true);
         // 生产环境只允许刷新接口使用，其他环境允许所有接口使用（/api 是前端的代理前缀 前端请求刷新接口时的url是 http://192.168.31.1:3005/api/im/auth/refresh，那么需要允许的值是/api/im/auth/refresh）
-        String path = isProd ? "/api" + SpringEnvUtil.getProperty("server.servlet.context-path") + "/auth/refresh" : "/";
-        refreshCookie.setPath(path);
+        refreshCookie.setPath("/api" + SpringEnvUtil.getProperty("server.servlet.context-path") + "/auth/refresh");
         // 过期时间 单位秒(浏览器显示 Cookie 过期时间使用的是 UTC 时间,所以会小8个小时)
         int maxAge = (int) Duration.between(CurrentTimeContext.get(), refreshExpires).getSeconds();
         refreshCookie.setMaxAge(maxAge);

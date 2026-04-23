@@ -64,11 +64,12 @@ public class JwtTokenManager implements TokenManager {
     public AuthenticationToken generateToken(Authentication authentication) {
         int accessTokenTimeToLive = securityProperties.getSession().getAccessTokenTimeToLive();
         int refreshTokenTimeToLive = securityProperties.getSession().getRefreshTokenTimeToLive();
-
-        String newAccessToken = generateToken(authentication, accessTokenTimeToLive);
-        String refreshToken = generateToken(authentication, refreshTokenTimeToLive);
+        String tokenId = UUID.randomUUID().toString().replace("-", "");
+        String newAccessToken = generateToken(authentication, tokenId, accessTokenTimeToLive);
+        String refreshToken = generateToken(authentication, tokenId, refreshTokenTimeToLive);
 
         return AuthenticationToken.builder()
+                .tokenId(tokenId)
                 .accessToken(newAccessToken)
                 .refreshToken(refreshToken)
                 .tokenType(SecurityConstants.TOKEN_MODEL_BEARER)
@@ -175,21 +176,26 @@ public class JwtTokenManager implements TokenManager {
             }
         }
 
-        sysTokenService.lambdaUpdate().set(SysToken::getStatus, SysTokenStatusEnum.UNAVAILABLE.getId()).eq(SysToken::getId, tokenId).update();
+        sysTokenService.lambdaUpdate()
+                .set(SysToken::getStatus, SysTokenStatusEnum.UNAVAILABLE.getId())
+                .set(SysToken::getRemark, "退出登录")
+                .eq(SysToken::getId, tokenId)
+                .update();
     }
 
     /**
      * 生成 JWT Token
      *
      * @param authentication 认证信息
+     * @param tokenId        令牌ID
      * @param ttl           过期时间 ，单位秒, 小于0”永久“，大于0指定时间
      * @return JWT Token
      */
     @Override
-    public String generateToken(Authentication authentication, int ttl) {
+    public String generateToken(Authentication authentication, String tokenId, int ttl) {
         Map<String, Object> payload = new HashMap<>();
         Object principal = authentication.getPrincipal();
-        String tokenId = UUID.randomUUID().toString().replace("-", "");
+        tokenId = Optional.ofNullable(tokenId).orElseGet(() -> UUID.randomUUID().toString().replace("-", ""));
 
         String subject = principal.toString();
         if (principal instanceof ImUserDetails userDetails) {

@@ -18,6 +18,9 @@ public class AuthenticationToken {
     @Schema(description = "令牌类型", example = "Bearer")
     private String tokenType;
 
+    @Schema(description = "令牌ID")
+    private String tokenId;
+
     @Schema(description = "访问令牌")
     private String accessToken;
 

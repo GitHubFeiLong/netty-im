@@ -1,5 +1,7 @@
 package com.feilong.im.service.impl;
 
+import com.feilong.im.config.security.authentication.imuser.ImUserDetails;
+import com.feilong.im.config.security.authentication.sysuser.SysUserDetails;
 import com.feilong.im.entity.SysToken;
 import com.feilong.im.dto.SysTokenDTO;
 import com.feilong.im.dto.bo.SysTokenBO;
@@ -8,6 +10,8 @@ import com.feilong.im.dto.form.SysTokenForm;
 import com.feilong.im.dto.form.SysTokenSaveForm;
 import com.feilong.im.dto.form.SysTokenUpdateForm;
 import com.feilong.im.dto.page.query.SysTokenPageQuery;
+import com.feilong.im.enums.status.SysTokenStatusEnum;
+import com.feilong.im.enums.type.SysTokenTypeEnum;
 import com.feilong.im.service.SysTokenService;
 import com.feilong.im.mapper.SysTokenMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,6 +23,8 @@ import com.feilong.im.util.AssertUtil;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -126,5 +132,41 @@ public class SysTokenServiceImpl extends ServiceImpl<SysTokenMapper, SysToken> i
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
         return this.removeByIds(idList);
+    }
+
+    /**
+     * 保存认证用户TOKEN
+     *
+     * @param accessToken    访问TOKEN
+     * @param authentication 认证信息
+     * @return 认证用户TOKEN
+     */
+    @Override
+    public SysToken save(String accessToken, Authentication authentication) {
+        SysTokenTypeEnum type;
+        String tokenId;
+        Long userId;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof ImUserDetails userDetails) {
+            type = SysTokenTypeEnum.IM_USER;
+            tokenId = userDetails.getTokenId();
+            userId = userDetails.getId();
+        } else {
+            SysUserDetails userDetails = (SysUserDetails) principal;
+            type = SysTokenTypeEnum.SYS_USER;
+            tokenId = userDetails.getTokenId();
+            userId = userDetails.getId();
+        }
+        SysToken sysToken = new SysToken();
+        sysToken.setId(tokenId);
+        sysToken.setToken(accessToken);
+        sysToken.setType(type.getId());
+        sysToken.setUserId(userId);
+        sysToken.setStatus(SysTokenStatusEnum.AVAILABLE.getId());
+        sysToken.setRemark("认证成功颁发令牌或刷新令牌");
+
+        super.save(sysToken);
+
+        return sysToken;
     }
 }
