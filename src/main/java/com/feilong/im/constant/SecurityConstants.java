@@ -7,12 +7,6 @@ package com.feilong.im.constant;
  * @since 2023/11/24
  */
 public interface SecurityConstants {
-
-    /**
-     * 登录路径，不加上上下文
-     */
-    String LOGIN_PATH = "/auth/login/v1";
-
     /**
      * 登出路径后缀，拦截器不校验token是否有效
      */
@@ -32,11 +26,6 @@ public interface SecurityConstants {
      * 角色前缀，用于区分 authorities 角色和权限， ROLE_* 角色 、没有前缀的是权限
      */
     String ROLE_PREFIX = "ROLE_";
-
-    /**
-     * JWT 刷新 Token 过期时间，7天
-     */
-    Integer JWT_REFRESH_TOKEN_TTL = 7 * 24 * 60 * 60;
 
     /**
      * JWT 载荷字段 用户详情json的key

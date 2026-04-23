@@ -15,12 +15,9 @@ security:
     - ${server.error.path:${error.path:/error}}
     - /**/sign-in                # 登录
     - /**/sign-up                # 注册
-    - /**/sign-out                  # 退出
-    - /**/user-details             # 获取登录用户信息
-    - /auth/token/refresh-token  # 刷新令牌接口
-    - /ws/**                # WebSocket接口
-    - /mails/**
-    - /im*/**
+    - /**/sign-out               # 退出
+    - /**/user-details           # 获取登录用户信息
+    - /**/refresh-token          # 刷新令牌接口
   # 非安全端点路径，完全绕过 Spring Security 的安全控制
   unsecured-urls:
     - ${springdoc.swagger-ui.path}

@@ -1,5 +1,6 @@
 package com.feilong.im.util;
 
+import com.feilong.im.constant.SecurityConstants;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +22,7 @@ public class SpringSecurityUtil {
             return false;
         }
 
-        String roleWithPrefix = "ROLE_" + role.toUpperCase();
+        String roleWithPrefix = SecurityConstants.ROLE_PREFIX + role.toUpperCase();
         return authentication.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals(roleWithPrefix));
     }
 

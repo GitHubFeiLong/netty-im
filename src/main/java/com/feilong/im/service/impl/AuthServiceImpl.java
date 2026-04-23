@@ -22,6 +22,7 @@ import com.feilong.im.enums.status.SysTokenStatusEnum;
 import com.feilong.im.enums.type.SysTokenTypeEnum;
 import com.feilong.im.exception.ClientException;
 import com.feilong.im.mapstruct.ImUserEntityMapper;
+import com.feilong.im.properties.SecurityProperties;
 import com.feilong.im.service.ImUserService;
 import com.feilong.im.service.AuthService;
 import com.feilong.im.service.SysTokenService;
@@ -59,6 +60,7 @@ public class AuthServiceImpl implements AuthService {
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final SysTokenService sysTokenService;
+    private final SecurityProperties securityProperties;
 
     /**
      * IM注册
@@ -101,9 +103,8 @@ public class AuthServiceImpl implements AuthService {
         AuthenticationToken token = tokenManager.generateToken(authentication);
 
         // 记住我
-        if (req.getRememberMe() != null && req.getRememberMe()) {
-            // 7天有效期
-            String refreshToken = tokenManager.generateToken(authentication, SecurityConstants.JWT_REFRESH_TOKEN_TTL);
+        if (Boolean.TRUE.equals(req.getRememberMe())) {
+            String refreshToken = tokenManager.generateToken(authentication, securityProperties.getSession().getRefreshTokenTimeToLive() * 2);
             token.setRefreshToken(refreshToken);
             token.setRefreshExpires(LocalDateTime.now().plusDays(7));
         }
@@ -136,9 +137,8 @@ public class AuthServiceImpl implements AuthService {
         AuthenticationToken token = tokenManager.generateToken(authentication);
 
         // 记住我
-        if (req.getRememberMe() != null && req.getRememberMe()) {
-            // 7天有效期
-            String refreshToken = tokenManager.generateToken(authentication, SecurityConstants.JWT_REFRESH_TOKEN_TTL);
+        if (Boolean.TRUE.equals(req.getRememberMe())) {
+            String refreshToken = tokenManager.generateToken(authentication, securityProperties.getSession().getRefreshTokenTimeToLive() * 2);
             token.setRefreshToken(refreshToken);
             token.setRefreshExpires(LocalDateTime.now().plusDays(7));
         }
