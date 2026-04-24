@@ -1,5 +1,5 @@
 import request from '@/axios'
-import { UserDetails, UserType } from './types'
+import { TokenType, UserDetails, UserType } from './types'
 
 interface RoleParams {
   roleName: string
@@ -13,7 +13,7 @@ export const userDetailsApi = (): Promise<IResponse<UserDetails>> => {
   return request.get({ url: '/auth/user-details' })
 }
 
-export const refreshTokenApi = (): Promise<IResponse<UserDetails>> => {
+export const refreshTokenApi = (): Promise<IResponse<TokenType>> => {
   return request.post({ url: '/auth/refresh' })
 }
 

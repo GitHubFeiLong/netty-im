@@ -2,7 +2,6 @@ import { AxiosResponse, InternalAxiosRequestConfig } from './types'
 import { ElMessage } from 'element-plus'
 import qs from 'qs'
 import { SUCCESS_CODE, TRANSFORM_REQUEST_DATA } from '@/constants'
-import { useUserStoreWithOut } from '@/store/modules/user'
 import { objToFormData } from '@/utils'
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
@@ -37,16 +36,21 @@ const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
 
 const defaultResponseInterceptors = (response: AxiosResponse) => {
   console.log('response: ', response)
-  if (response?.config?.responseType === 'blob') {
-    // 如果是文件流，直接过
-    return response
-  } else if (response.data.code === SUCCESS_CODE) {
-    return response.data
+  if (response.status !== 401) {
+    if (response?.config?.responseType === 'blob') {
+      // 如果是文件流，直接过
+      return response
+    } else if (response.data.code === SUCCESS_CODE) {
+      return response.data
+    } else if ((response as any).code === SUCCESS_CODE) {
+      return response.data
+    } else {
+      console.error('错误了', response)
+      ElMessage.error(response?.data?.data?.clientMessage)
+    }
   } else {
-    ElMessage.error(response?.data?.data?.clientMessage)
-    if (response?.data?.code === 401) {
-      const userStore = useUserStoreWithOut()
-      userStore.logout()
+    if (false) {
+      // let a = '/sign-in'
     }
   }
 }

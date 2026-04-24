@@ -116,6 +116,17 @@
     "code": "验证码",
     "codePlaceholder": "请输入验证码"
   },
+  "sysUser":{
+    "username": "用户名",
+    "password": "密码",
+    "roles": "角色",
+    "addUser": "新增用户",
+    "editUser": "编辑用户",
+    "searchUser": "搜索用户",
+    "resetPassword": "重置密码",
+    "confirmPassword": "确认密码",
+    "newPassword": "新密码"
+  },
   "router": {
     "login": "登录",
     "level": "多级菜单",

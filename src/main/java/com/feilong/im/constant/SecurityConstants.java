@@ -10,7 +10,12 @@ public interface SecurityConstants {
     /**
      * 登出路径后缀，拦截器不校验token是否有效
      */
-    String SIGN_OUT_API_SUFFIX = "/sign-out";
+    String SIGN_OUT_API_SUFFIX = "/auth/sign-out";
+
+    /**
+     * 刷新TOKEN
+     */
+    String REFRESH_API_SUFFIX = "/auth/refresh";
 
     /**
      * 令牌模式

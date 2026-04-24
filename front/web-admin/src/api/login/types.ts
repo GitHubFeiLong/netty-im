@@ -18,3 +18,9 @@ export type UserDetails = {
   im: any
   sys: any
 }
+
+export type TokenType = {
+  accessExpires: string
+  accessToken: string
+  tokenType: string
+}
