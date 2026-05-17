@@ -5,6 +5,6 @@ export const saveSysUserApi = (data: AddSysUserType): Promise<IResponse<SysUserT
   return request.post({ url: '/sys/user', data })
 }
 
-export const pageApi = (data: any): Promise<IResponse<SysUserType>> => {
+export const pageApi = (data: any): Promise<IResponse<IPage<SysUserType>>> => {
   return request.post({ url: '/sys-user/page', data })
 }

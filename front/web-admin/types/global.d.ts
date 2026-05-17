@@ -54,6 +54,14 @@ declare global {
     timestamp: string
   }
 
+  declare interface IPage<T = any> {
+    total: number
+    size: number
+    current: number
+    pages: number
+    records: T[]
+  }
+
   declare interface ThemeTypes {
     elColorPrimary?: string
     leftMenuBorderColor?: string
